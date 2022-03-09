@@ -1,0 +1,40 @@
+﻿@using TamagotchiWeb.Entities
+@model IEnumerable<Animal>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Animals</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Breed</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Color</th>
+            <th>Organization Id</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model != null && Model.Any())
+        {
+            foreach(var animal in Model)
+            {
+                <tr>
+                    <td>@animal.id</td>
+                    <td>@animal.name</td>
+                    <td>@animal.type</td>
+                    <td>@animal.primaryBreed</td>
+                    <td>@animal.gender</td>
+                    <td>@animal.age</td>
+                    <td>@animal.primaryColor</td>
+                    <td>@animal.organizationId</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
