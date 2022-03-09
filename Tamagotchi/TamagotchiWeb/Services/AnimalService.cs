@@ -6,11 +6,12 @@ namespace TamagotchiWeb.Services
 {
     public class AnimalService : BaseService, IAnimalService
     {
-        private const string GetAnimalsSegment = Constants.BaseApiController + "animals?limit=100";
+        private const string PageSegment = "animals?page={0}&limit=100";
+        private const string GetAnimalsSegment = Constants.BaseApiController + PageSegment;
 
-        public async Task<GetAnimals> GetAnimals()
+        public async Task<GetAnimals> GetAnimals(int page)
         {
-            var result = await MakeApiCall<AnimalsDto>(GetAnimalsSegment, HttpMethod.Get);
+            var result = await MakeApiCall<AnimalsDto>(string.Format(GetAnimalsSegment, page), HttpMethod.Get);
 
             return await Task.FromResult(MappingInventory(result.Data));
         }
