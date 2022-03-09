@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TamagotchiWeb.Data;
 using TamagotchiWeb.Entities;
+using TamagotchiWeb.Models;
 using TamagotchiWeb.Services;
 
 namespace TamagotchiWeb.Controllers
@@ -18,9 +19,8 @@ namespace TamagotchiWeb.Controllers
         {
             //IEnumerable<Animal> animals = _db.Animals;
             var result = await _animalService.GetAnimals();
-            IEnumerable<Animal> animals = result.Animals;
 
-            return View(animals);
+            return View(result);
         }
     }
 }
