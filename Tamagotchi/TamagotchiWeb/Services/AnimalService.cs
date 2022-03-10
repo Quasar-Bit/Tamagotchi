@@ -36,7 +36,11 @@ namespace TamagotchiWeb.Services
                 gender = x.gender,
                 size = x.size,
                 coat = x.coat,
-                //attributeId = x.attributes
+                declawed = x.attributes?.declawed,
+                houseTrained = x.attributes?.house_trained,
+                shotsCurrent = x.attributes?.shots_current,
+                spayedNeutered = x.attributes?.spayed_neutered,
+                specialNeeds = x.attributes?.special_needs,
                 childrenEnvinronment = x.environment?.children,
                 dogsEnvinronment = x.environment?.dogs,
                 catsEnvinronment = x.environment?.cats,

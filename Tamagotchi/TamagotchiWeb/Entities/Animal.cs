@@ -18,7 +18,11 @@
         public string gender { get; set; }
         public string size { get; set; }
         public string coat { get; set; }
-        public string attributeId { get; set; }
+        public bool? spayedNeutered { get; set; }
+        public bool? houseTrained { get; set; }
+        public bool? declawed { get; set; }
+        public bool? specialNeeds { get; set; }
+        public bool? shotsCurrent { get; set; }
         public bool? childrenEnvinronment { get; set; }
         public bool? dogsEnvinronment { get; set; }
         public bool? catsEnvinronment { get; set; }
