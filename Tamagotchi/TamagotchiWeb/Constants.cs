@@ -1,0 +1,8 @@
+﻿namespace TamagotchiWeb
+{
+    public static class Constants
+    {
+        public const string BaseApiController = "https://api.petfinder.com/v2/";
+        public const string AccessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJaTDBDSm9CdnoxWFBQOTRHclVxUmxWdlVvOURVUU9QWkI5cW5LMHd3czZPQ21hdldkSiIsImp0aSI6IjdjZjc5NGY3MzQwNDJlOTViMDg0ZjUxNDA3NDRiNGNlNDIxMDA5NDJiYTg4MjUxZWI4ZmI4ZjY4OGU4NDk2YzUzZWFlMDQ0ZDhmNmQ4ZTA1IiwiaWF0IjoxNjQ2ODc4NjQ2LCJuYmYiOjE2NDY4Nzg2NDYsImV4cCI6MTY0Njg4MjI0Niwic3ViIjoiIiwic2NvcGVzIjpbXX0.i13YHUiNAwDQ00FlrBcxccVl9YGm7cYX1zA7wt7q6Wel26N0EfvAXnhck-Eev6cVGGHKeccdf4d0dlIU9_QehbdxCh1SE4Mp0-3Dy8gzWfF2Au9qBHrVJB9NOIoUJ55w7pDGthZL_JXBtFGnqWaPEMNuMudzVql6eyQCxZuuFPIdYOy3GFIZpHhvwbd7UYspmSKJMIbHnwoKsdSn2qODL-M66XSpa_lKwxighFiR7Woy68DyommNtFTQ2I2SKvLuWAvs5UQnRWbOgTc2-Da2fMwvtUcjrqJVSjjC8U83n1eB6-6eHq-i3wUrBaMWd3nbtN2wqPC_fuSim8JNoqGALA";
+    }
+}
