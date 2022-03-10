@@ -20,15 +20,15 @@ namespace TamagotchiWeb.Services
         {
             var content = data.animals.Select(x => new Entities.Animal
             {
-                id = x.id,
+                animalId = x.id,
                 organizationId = x.organization_id,
                 url = x.url,
                 type = x.type,
                 species = x.species,
                 primaryBreed = x.breeds?.primary,
                 secondaryBreed = x.breeds?.secondary,
-                isMixedBreed = x.breeds.mixed,
-                isUnknownBreed = x.breeds.unknown,
+                isMixedBreed = x.breeds?.mixed,
+                isUnknownBreed = x.breeds?.unknown,
                 primaryColor = x.colors?.primary,
                 secondaryColor = x.colors?.secondary,
                 tertiaryColor = x.colors?.tertiary,

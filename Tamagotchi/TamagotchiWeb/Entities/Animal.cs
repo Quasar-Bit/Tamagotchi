@@ -2,7 +2,8 @@
 {
     public class Animal
     {
-        public int? id { get; set; }
+        public int id { get; set; }
+        public int? animalId { get; set; }
         public string? organizationId { get; set; }
         public string? url { get; set; }
         public string? type { get; set; }
