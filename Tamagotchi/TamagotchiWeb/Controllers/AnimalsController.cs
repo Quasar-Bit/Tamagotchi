@@ -14,14 +14,10 @@ namespace TamagotchiWeb.Controllers
             _db = db;
             _animalService = new AnimalService();
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var result = new GetAnimals
-            {
-                Animals = _db.Animals
-            };
 
-            return View(result);
+            return View(await _animalService.GetAnimals(1));
         }
 
         [HttpPost]
