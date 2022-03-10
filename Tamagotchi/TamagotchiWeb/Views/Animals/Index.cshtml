@@ -9,7 +9,9 @@
 
 <button id="synchronize" class="btn btn-success float-right col-3" onclick="onSynch()"> Synch </button>
 
-<table id="tableRole" class="table table-bordered table-striped">
+@if(Model != null && Model.Pagination?.total_count > 0 && Model.Animals != null && Model.Animals.Any())
+{
+    <table id="tableRole" class="table table-bordered table-striped">
     <thead>
     <tr> 
         <th>Id</th>
@@ -38,10 +40,10 @@
             <td>@animal.organizationId</td>
             <td style="text-align:center;">
                 <div class="btn-group btn-group-sm ">
-                    <a onclick="onEditingRole(@JsonSerializer.Serialize(animal)" class="btn btn-info">
+                    <a onclick="onEditingRole(@JsonSerializer.Serialize(animal))" class="btn btn-info">
                         <i class="fas fa-pen"></i>
                     </a>
-                    <a onclick="onDeletingRole(@JsonSerializer.Serialize(animal)" class="btn btn-danger">
+                    <a onclick="onDeletingRole(@JsonSerializer.Serialize(animal))" class="btn btn-danger">
                         <i class="fas fa-trash"></i>
                     </a>
                 </div>
@@ -51,8 +53,16 @@
     </tbody>
 </table>
 
-<script>
+}
 
+<script>
     function onSynch() {
-        Util.makeRequest(null, '/Animals/Synch');
-    }</script>
+        $.ajaxSetup({ cache: true });
+        $.ajax({
+            async: true,
+            type: "Post",
+            url: '/Animals/Synch'
+        });
+       // util.makeRequest(null, '/Animals/Synch');
+    }
+    </script>
