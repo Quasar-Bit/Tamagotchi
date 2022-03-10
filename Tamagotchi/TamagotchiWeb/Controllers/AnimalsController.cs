@@ -14,10 +14,14 @@ namespace TamagotchiWeb.Controllers
             _db = db;
             _animalService = new AnimalService();
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
+            var result = new GetAnimals
+            {
+                Animals = _db.Animals
+            };
 
-            return View(await _animalService.GetAnimals(1));
+            return View(result);
         }
 
         [HttpPost]
@@ -25,9 +29,9 @@ namespace TamagotchiWeb.Controllers
         {
             var firstRequest = await _animalService.GetAnimals(1);
 
-            for (int i = 1; i <= firstRequest.Pagination.total_pages; i++)
+            for (int i = 1; i <= 800; i++)
             {
-                var answer = await _animalService.GetAnimals(800);
+                var answer = await _animalService.GetAnimals(i);
 
                 foreach (var item in answer.Animals)
                 {
@@ -36,6 +40,8 @@ namespace TamagotchiWeb.Controllers
 
                 _db.SaveChanges();
             }
+
+            _db.SaveChanges();
 
             return RedirectToAction("index");
         }
