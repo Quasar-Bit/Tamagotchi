@@ -32,9 +32,9 @@ namespace TamagotchiWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Synch(string gg)
         {
-            var firstRequest = await _animalService.GetAnimals(1);
+            //var firstRequest = await _animalService.GetAnimals(1);
 
-            for (int i = 801; i <= 900; i++)
+            for (int i = 1301; i <= 1400; i++)
             {
                 var answer = await _animalService.GetAnimals(i);
 
@@ -45,7 +45,6 @@ namespace TamagotchiWeb.Controllers
 
                 _db.SaveChanges();
             }
-
 
             return RedirectToAction("index");
         }

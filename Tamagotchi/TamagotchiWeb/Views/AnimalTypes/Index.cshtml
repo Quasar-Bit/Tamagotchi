@@ -15,7 +15,7 @@
 {
     <table id="tableRole" class="table table-bordered table-striped">
     <thead>
-    <tr> s
+    <tr>
         <th>Name</th>
         <th>Coats</th>
         <th>Genders</th>
@@ -24,9 +24,8 @@
     </tr>
     </thead>
     <tbody>
-    @for (var i = 0; i < 100; i++)
+    @foreach(var animal in Model.AnimalTypes)
     {
-        var animal = Model.AnimalTypes.ElementAt(i);
         <tr>
             <td>@animal.name</td>
             <td>@animal.coats</td>

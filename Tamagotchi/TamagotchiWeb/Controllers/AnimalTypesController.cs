@@ -30,12 +30,12 @@ namespace TamagotchiWeb.Controllers
         public async Task<IActionResult> Synch(string gg)
         {
             var answer = await _animalTypeService.GetAnimalTypes();
-            foreach (var item in answer.AnimalTypes)
-            {
-                _db.AnimalTypes.Add(item);
-            }
+            //foreach (var item in answer.AnimalTypes)
+            //{
+            //    _db.AnimalTypes.Add(item);
+            //}
 
-            _db.SaveChanges();
+            //_db.SaveChanges();
 
             return RedirectToAction("index");
         }

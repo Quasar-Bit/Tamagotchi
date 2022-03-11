@@ -20,7 +20,7 @@ namespace TamagotchiWeb.Controllers
         {
             var result = new GetOrganizations
             {
-                Organizations = _db.Organizations,
+                //Organizations = _db.Organizations,
                 Pagination = new Pagination
                 {
                     total_count = _db.Organizations.Count()
@@ -35,18 +35,17 @@ namespace TamagotchiWeb.Controllers
         {
             var firstRequest = await _animalService.GetOrganizations(1);
 
-            for (int i = 801; i <= 900; i++)
-            {
-                var answer = await _animalService.GetOrganizations(i);
+            //for (int i = 6; i <= firstRequest.Pagination.total_pages; i++)
+            //{
+            //    var answer = await _animalService.GetOrganizations(i);
 
-                foreach (var item in answer.Organizations)
-                {
-                    _db.Organizations.Add(item);
-                }
+            //    foreach (var item in answer.Organizations)
+            //    {
+            //        _db.Organizations.Add(item);
+            //    }
 
-                _db.SaveChanges();
-            }
-
+            //    _db.SaveChanges();
+            //}
 
             return RedirectToAction("index");
         }
