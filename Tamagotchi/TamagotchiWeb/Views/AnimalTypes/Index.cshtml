@@ -1,0 +1,62 @@
+﻿
+@using TamagotchiWeb.Entities
+@using System.Text.Json
+@model TamagotchiWeb.Models.GetAnimalTypes
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Animal Types</h1>
+
+<button id="synchronize" class="btn btn-success float-right col-3" onclick="onSynch()"> Synch </button>
+
+<label>@Model?.AnimalTypes.Count()</label>
+@if(Model != null && Model.AnimalTypes != null && Model.AnimalTypes.Any())
+{
+    <table id="tableRole" class="table table-bordered table-striped">
+    <thead>
+    <tr> 
+        <th>Name</th>
+        <th>Coats</th>
+        <th>Genders</th>
+        <th>Colors</th>
+        <th style="width: 5%">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for (var i = 0; i < 100; i++)
+    {
+        var animal = Model.AnimalTypes.ElementAt(i);
+        <tr>
+            <td>@animal.name</td>
+            <td>@animal.coats</td>
+            <td>@animal.genders</td>
+            <td>@animal.colors</td>
+            <td style="text-align:center;">
+                <div class="btn-group btn-group-sm ">
+                    <a onclick="onEditingRole(@JsonSerializer.Serialize(animal))" class="btn btn-info">
+                        <i class="fas fa-pen"></i>
+                    </a>
+                    <a onclick="onDeletingRole(@JsonSerializer.Serialize(animal))" class="btn btn-danger">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+}
+
+<script>
+    function onSynch() {
+        $.ajaxSetup({ cache: true });
+        $.ajax({
+            async: true,
+            type: "Post",
+            url: '/AnimalTypes/Synch'
+        });
+       // util.makeRequest(null, '/Animals/Synch');
+    }
+    </script>

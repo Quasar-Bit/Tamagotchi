@@ -1,0 +1,66 @@
+﻿
+@using TamagotchiWeb.Entities
+@using System.Text.Json
+@model TamagotchiWeb.Models.GetOrganizations
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Organizations</h1>
+
+<button id="synchronize" class="btn btn-success float-right col-3" onclick="onSynch()"> Synch </button>
+
+<label>@Model?.Pagination?.total_count</label>
+@if(Model != null && Model.Pagination?.total_count > 0 && Model.Organizations != null && Model.Organizations.Any())
+{
+    <table id="tableRole" class="table table-bordered table-striped">
+    <thead>
+    <tr> 
+        <th>Organization Id</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Website</th>
+        <th>Address</th>
+        <th style="width: 5%">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for (var i = 0; i < 100; i++)
+    {
+        var animal = Model.Organizations.ElementAt(i);
+        <tr>
+            <td>@animal.organizationId</td>
+            <td>@animal.name</td>
+            <td>@animal.email</td>
+            <td>@animal.phone</td>
+            <td>@animal.website</td>
+            <td>@animal.address1 + @animal.city + @animal.country + @animal.postcode</td>
+            <td style="text-align:center;">
+                <div class="btn-group btn-group-sm ">
+                    <a onclick="onEditingRole(@JsonSerializer.Serialize(animal))" class="btn btn-info">
+                        <i class="fas fa-pen"></i>
+                    </a>
+                    <a onclick="onDeletingRole(@JsonSerializer.Serialize(animal))" class="btn btn-danger">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+}
+
+<script>
+    function onSynch() {
+        $.ajaxSetup({ cache: true });
+        $.ajax({
+            async: true,
+            type: "Post",
+            url: '/Organizations/Synch'
+        });
+       // util.makeRequest(null, '/Animals/Synch');
+    }
+    </script>

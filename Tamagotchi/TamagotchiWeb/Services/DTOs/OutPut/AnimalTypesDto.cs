@@ -2,7 +2,7 @@
 
 namespace TamagotchiWeb.Services.DTOs.OutPut
 {
-    public class TypesDto
+    public class AnimalTypesDto
     {
         public List<Type> types { get; set; }
     }

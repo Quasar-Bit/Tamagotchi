@@ -16,7 +16,7 @@ namespace TamagotchiWeb.Services.DTOs.OutPut
         public string thursday { get; set; }
         public string friday { get; set; }
         public string saturday { get; set; }
-        public object sunday { get; set; }
+        public string sunday { get; set; }
     }
 
     public class Adoption
@@ -31,7 +31,7 @@ namespace TamagotchiWeb.Services.DTOs.OutPut
         public string twitter { get; set; }
         public string youtube { get; set; }
         public string instagram { get; set; }
-        public object pinterest { get; set; }
+        public string pinterest { get; set; }
     }
 
     public class Organization

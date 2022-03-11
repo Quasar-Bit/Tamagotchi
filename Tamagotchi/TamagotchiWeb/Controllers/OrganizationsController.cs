@@ -3,17 +3,18 @@ using TamagotchiWeb.Data;
 using TamagotchiWeb.Models;
 using TamagotchiWeb.Services;
 using TamagotchiWeb.Services.DTOs.OutPut.Common;
+using TamagotchiWeb.Services.Interfaces;
 
 namespace TamagotchiWeb.Controllers
 {
-    public class AnimalsController : Controller
+    public class OrganizationsController : Controller
     {
-        private readonly IAnimalService _animalService;
+        private readonly IOrganizationService _animalService;
         private readonly Context _db;
-        public AnimalsController(Context db)
+        public OrganizationsController(Context db)
         {
             _db = db;
-            _animalService = new AnimalService();
+            _animalService = new OrganizationService();
         }
         public IActionResult Index()
         {
@@ -32,15 +33,15 @@ namespace TamagotchiWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Synch(string gg)
         {
-            var firstRequest = await _animalService.GetAnimals(1);
+            var firstRequest = await _animalService.GetOrganizations(1);
 
             for (int i = 801; i <= 900; i++)
             {
-                var answer = await _animalService.GetAnimals(i);
+                var answer = await _animalService.GetOrganizations(i);
 
-                foreach (var item in answer.Animals)
+                foreach (var item in answer.Organizations)
                 {
-                    _db.Animals.Add(item);
+                    _db.Organizations.Add(item);
                 }
 
                 _db.SaveChanges();
