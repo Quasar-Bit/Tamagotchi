@@ -18,12 +18,12 @@ namespace TamagotchiWeb.Controllers
         }
         public IActionResult Index()
         {
-            var result = new GetAnimals
+            var result = new GetOrganizations
             {
-                //Animals = _db.Animals,
+                Organizations = _db.Organizations,
                 Pagination = new Pagination
                 {
-                    total_count = _db.Animals.Count()
+                    total_count = _db.Organizations.Count()
                 }
             };
 
