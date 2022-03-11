@@ -1,6 +1,6 @@
 ﻿namespace TamagotchiWeb.Entities
 {
-    public class Type
+    public class AnimalType
     {
         public int id { get; set; }
         public string? name { get; set; }

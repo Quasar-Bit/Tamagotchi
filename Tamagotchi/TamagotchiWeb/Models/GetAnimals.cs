@@ -1,4 +1,5 @@
 ﻿using TamagotchiWeb.Services.DTOs.OutPut;
+using TamagotchiWeb.Services.DTOs.OutPut.Common;
 
 namespace TamagotchiWeb.Models
 {

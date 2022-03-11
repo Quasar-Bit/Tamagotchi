@@ -2,6 +2,7 @@
 using TamagotchiWeb.Data;
 using TamagotchiWeb.Models;
 using TamagotchiWeb.Services;
+using TamagotchiWeb.Services.DTOs.OutPut.Common;
 
 namespace TamagotchiWeb.Controllers
 {
@@ -19,7 +20,7 @@ namespace TamagotchiWeb.Controllers
             var result = new GetAnimals
             {
                 //Animals = _db.Animals,
-                Pagination = new Services.DTOs.OutPut.Pagination
+                Pagination = new Pagination
                 {
                     total_count = _db.Animals.Count()
                 }
