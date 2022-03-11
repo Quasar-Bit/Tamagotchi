@@ -2,6 +2,7 @@
 using TamagotchiWeb.Data;
 using TamagotchiWeb.Models;
 using TamagotchiWeb.Services;
+using TamagotchiWeb.Services.DTOs.OutPut.Common;
 
 namespace TamagotchiWeb.Controllers
 {
@@ -18,8 +19,8 @@ namespace TamagotchiWeb.Controllers
         {
             var result = new GetAnimals
             {
-                Animals = _db.Animals,
-                Pagination = new Services.DTOs.OutPut.Pagination
+                //Animals = _db.Animals,
+                Pagination = new Pagination
                 {
                     total_count = _db.Animals.Count()
                 }
@@ -31,20 +32,19 @@ namespace TamagotchiWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Synch(string gg)
         {
-            var firstRequest = await _animalService.GetAnimals(1);
+            //var firstRequest = await _animalService.GetAnimals(1);
 
-            //for (int i = 401; i <= 800; i++)
-            //{
-            //    var answer = await _animalService.GetAnimals(i);
+            for (int i = 1301; i <= 1400; i++)
+            {
+                var answer = await _animalService.GetAnimals(i);
 
-            //    foreach (var item in answer.Animals)
-            //    {
-            //        _db.Animals.Add(item);
-            //    }
+                foreach (var item in answer.Animals)
+                {
+                    _db.Animals.Add(item);
+                }
 
-            //    _db.SaveChanges();
-            //}
-
+                _db.SaveChanges();
+            }
 
             return RedirectToAction("index");
         }

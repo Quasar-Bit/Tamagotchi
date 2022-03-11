@@ -1,44 +1,36 @@
-﻿@using TamagotchiWeb.Entities
+﻿
+@using TamagotchiWeb.Entities
 @using System.Text.Json
-@model TamagotchiWeb.Models.GetAnimals
+@model TamagotchiWeb.Models.GetAnimalTypes
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Animals</h1>
+<h1>Animal Types</h1>
 
 <button id="synchronize" class="btn btn-success float-right col-3" onclick="onSynch()"> Synch </button>
 
-<label>@Model?.Pagination?.total_count</label>
-@if(Model != null && Model.Pagination?.total_count > 0 && Model.Animals != null && Model.Animals.Any())
+<label>@Model?.AnimalTypes.Count()</label>
+@if(Model != null && Model.AnimalTypes != null && Model.AnimalTypes.Any())
 {
     <table id="tableRole" class="table table-bordered table-striped">
     <thead>
-    <tr> 
-        <th>Id</th>
+    <tr>
         <th>Name</th>
-        <th>Type</th>
-        <th>Breed</th>
-        <th>Gender</th>
-        <th>Age</th>
-        <th>Color</th>
-        <th>Organization Id</th>
+        <th>Coats</th>
+        <th>Genders</th>
+        <th>Colors</th>
         <th style="width: 5%">Action</th>
     </tr>
     </thead>
     <tbody>
-    @for (var i = 0; i < 100; i++)
+    @foreach(var animal in Model.AnimalTypes)
     {
-        var animal = Model.Animals.ElementAt(i);
         <tr>
-            <td>@animal.id</td>
             <td>@animal.name</td>
-            <td>@animal.type</td>
-            <td>@animal.primaryBreed</td>
-            <td>@animal.gender</td>
-            <td>@animal.age</td>
-            <td>@animal.primaryColor</td>
-            <td>@animal.organizationId</td>
+            <td>@animal.coats</td>
+            <td>@animal.genders</td>
+            <td>@animal.colors</td>
             <td style="text-align:center;">
                 <div class="btn-group btn-group-sm ">
                     <a onclick="onEditingRole(@JsonSerializer.Serialize(animal))" class="btn btn-info">
@@ -62,7 +54,7 @@
         $.ajax({
             async: true,
             type: "Post",
-            url: '/Animals/Synch'
+            url: '/AnimalTypes/Synch'
         });
        // util.makeRequest(null, '/Animals/Synch');
     }

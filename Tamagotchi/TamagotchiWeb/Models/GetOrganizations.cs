@@ -2,9 +2,9 @@
 
 namespace TamagotchiWeb.Models
 {
-    public class GetAnimals
+    public class GetOrganizations
     {
-        public IEnumerable<Entities.Animal> Animals { get; set; }
+        public IEnumerable<Entities.Organization> Organizations { get; set; }
         public Pagination Pagination { get; set; }
     }
 }

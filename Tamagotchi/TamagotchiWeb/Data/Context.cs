@@ -11,5 +11,7 @@ namespace TamagotchiWeb.Data
         }
 
         public DbSet<Animal> Animals { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<AnimalType> AnimalTypes { get; set; }
     }
 }
