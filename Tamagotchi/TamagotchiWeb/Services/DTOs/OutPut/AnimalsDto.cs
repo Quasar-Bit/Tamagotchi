@@ -1,4 +1,6 @@
-﻿namespace TamagotchiWeb.Services.DTOs.OutPut
+﻿using TamagotchiWeb.Services.DTOs.OutPut.Common;
+
+namespace TamagotchiWeb.Services.DTOs.OutPut
 {
     public class AnimalsDto
     {
@@ -6,7 +8,6 @@
         public Pagination pagination { get; set; }
     }
 
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class Breeds
     {
         public string primary { get; set; }
@@ -38,60 +39,11 @@
         public bool? cats { get; set; }
     }
 
-    public class Photo
-    {
-        public string small { get; set; }
-        public string medium { get; set; }
-        public string large { get; set; }
-        public string full { get; set; }
-    }
-
-    public class PrimaryPhotoCropped
-    {
-        public string small { get; set; }
-        public string medium { get; set; }
-        public string large { get; set; }
-        public string full { get; set; }
-    }
-
-    public class Address
-    {
-        public string address1 { get; set; }
-        public string address2 { get; set; }
-        public string city { get; set; }
-        public string state { get; set; }
-        public string postcode { get; set; }
-        public string country { get; set; }
-    }
-
     public class Contact
     {
         public string email { get; set; }
         public string phone { get; set; }
         public Address address { get; set; }
-    }
-
-    public class Self
-    {
-        public string href { get; set; }
-    }
-
-    public class Type
-    {
-        public string href { get; set; }
-    }
-
-    public class Organization
-    {
-        public string href { get; set; }
-    }
-
-    public class Links
-    {
-        public Self self { get; set; }
-        public Type type { get; set; }
-        public Organization organization { get; set; }
-        public Next next { get; set; }
     }
 
     public class Animal
@@ -114,27 +66,13 @@
         public string description { get; set; }
         public string organization_animal_id { get; set; }
         public List<Photo> photos { get; set; }
-        public PrimaryPhotoCropped primary_photo_cropped { get; set; }
+        public Photo primary_photo_cropped { get; set; }
         public List<object> videos { get; set; }
         public string status { get; set; }
         public DateTime status_changed_at { get; set; }
         public DateTime published_at { get; set; }
         public object distance { get; set; }
         public Contact contact { get; set; }
-        public Links _links { get; set; }
-    }
-
-    public class Next
-    {
-        public string href { get; set; }
-    }
-
-    public class Pagination
-    {
-        public int count_per_page { get; set; }
-        public int total_count { get; set; }
-        public int current_page { get; set; }
-        public int total_pages { get; set; }
         public Links _links { get; set; }
     }
 }

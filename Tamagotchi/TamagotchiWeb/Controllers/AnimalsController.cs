@@ -18,7 +18,7 @@ namespace TamagotchiWeb.Controllers
         {
             var result = new GetAnimals
             {
-                Animals = _db.Animals,
+                //Animals = _db.Animals,
                 Pagination = new Services.DTOs.OutPut.Pagination
                 {
                     total_count = _db.Animals.Count()
@@ -33,17 +33,17 @@ namespace TamagotchiWeb.Controllers
         {
             var firstRequest = await _animalService.GetAnimals(1);
 
-            //for (int i = 401; i <= 800; i++)
-            //{
-            //    var answer = await _animalService.GetAnimals(i);
+            for (int i = 801; i <= 900; i++)
+            {
+                var answer = await _animalService.GetAnimals(i);
 
-            //    foreach (var item in answer.Animals)
-            //    {
-            //        _db.Animals.Add(item);
-            //    }
+                foreach (var item in answer.Animals)
+                {
+                    _db.Animals.Add(item);
+                }
 
-            //    _db.SaveChanges();
-            //}
+                _db.SaveChanges();
+            }
 
 
             return RedirectToAction("index");

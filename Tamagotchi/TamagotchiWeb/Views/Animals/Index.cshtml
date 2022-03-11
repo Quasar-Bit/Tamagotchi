@@ -9,6 +9,7 @@
 
 <button id="synchronize" class="btn btn-success float-right col-3" onclick="onSynch()"> Synch </button>
 
+<label>@Model?.Pagination?.total_count</label>
 @if(Model != null && Model.Pagination?.total_count > 0 && Model.Animals != null && Model.Animals.Any())
 {
     <table id="tableRole" class="table table-bordered table-striped">
