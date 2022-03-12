@@ -32,19 +32,19 @@ namespace TamagotchiWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Synch(string gg)
         {
-            //var firstRequest = await _animalService.GetAnimals(1);
+            var firstRequest = await _animalService.GetAnimals(1);
 
-            for (int i = 1301; i <= 1400; i++)
-            {
-                var answer = await _animalService.GetAnimals(i);
+            //for (int i = 1801; i <= firstRequest.Pagination.total_pages; i++)
+            //{
+            //    var answer = await _animalService.GetAnimals(i);
 
-                foreach (var item in answer.Animals)
-                {
-                    _db.Animals.Add(item);
-                }
+            //    foreach (var item in answer.Animals)
+            //    {
+            //        _db.Animals.Add(item);
+            //    }
 
-                _db.SaveChanges();
-            }
+            //    _db.SaveChanges();
+            //}
 
             return RedirectToAction("index");
         }

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Data;
+using TamagotchiWeb.Data.Repositories;
+using TamagotchiWeb.Data.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
+
+builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
+
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 var app = builder.Build();
 
