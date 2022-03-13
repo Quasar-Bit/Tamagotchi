@@ -12,10 +12,9 @@ public abstract class BaseApiController<T> : ControllerBase, IDisposable
 {
     private const string RequiredField = "The '{0}' field is required.";
 
-    protected BaseApiController(IMediator mediator, ILogger<T> logger)
+    protected BaseApiController( ILogger<T> logger)
     {
         Logger = logger;
-        Mediator = mediator;
     }
 
     protected ILogger<T> Logger { get; }

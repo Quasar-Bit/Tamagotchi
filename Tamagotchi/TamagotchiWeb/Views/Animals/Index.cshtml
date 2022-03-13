@@ -85,9 +85,6 @@
                 {
                     data: "id",
                     render: function (data, type, row) {
-                        const otherUsersBtn = '<a href="/" onclick="logInAs(\'' + data + '\')" class="btn btn-secondary"><i class="fas fa-eye"></i></a>'
-                            + "<a onclick='onDeletingUser(" + JSON.stringify(row) + ")' class='btn btn-danger'><i class='fas fa-trash'></i></a>";
-
                         return "<div class='btn-group btn-group-sm'>"
                             + "<a onclick='onEditingAnimal(" + JSON.stringify(row) + ")' class='btn btn-info'><i class='fas fa-pen'></i></a>"
                             + "<a onclick='onDeletingAnimal(" + JSON.stringify(row) + ")' class='btn btn-danger'><i class='fas fa-trash'></i></a>"

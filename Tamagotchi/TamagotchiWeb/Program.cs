@@ -1,9 +1,6 @@
 using MediatR;
-using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using TamagotchiWeb.Application.Animals.Queries.GetAll;
-using TamagotchiWeb.Application.Animals.Queries.GetAll.DTOs;
 using TamagotchiWeb.Data;
 using TamagotchiWeb.Data.Repositories;
 using TamagotchiWeb.Data.Repositories.Interfaces;
@@ -22,7 +19,7 @@ builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
 //builder.Services.AddMediatR(typeof(GetAnimalsHandler).GetTypeInfo().Assembly);
 builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
-
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

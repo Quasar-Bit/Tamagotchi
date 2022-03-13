@@ -1,5 +1,5 @@
 ﻿
-using MapsterMapper;
+using AutoMapper;
 using MediatR;
 using TamagotchiWeb.Application.Animals.Base.DTOs;
 using TamagotchiWeb.Application.Animals.Queries.GetAll.DTOs;

@@ -1,4 +1,5 @@
 ﻿//using MediatR;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TamagotchiWeb.Application.Animals.Base.DTOs;
 using TamagotchiWeb.Application.Animals.Queries.GetAll.DTOs;
@@ -14,13 +15,16 @@ namespace TamagotchiWeb.Controllers
     {
         private readonly IAnimalRepository _animalRepository;
         //private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
         public AnimalsController(
         //IMediator mediator,
+        IMapper mapper,
                IAnimalRepository animalRepository,
                ILogger<AnimalsController> logger) : base(logger)
         {
             //_mediator = mediator;
+            _mapper = mapper;
             _animalRepository = animalRepository;
         }
 
@@ -54,22 +58,12 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-
-
-
-
                 IEnumerable<GetAnimal> subscriptions;
 
                 var dtParameters = data;
 
-                var userId = dtParameters.AdditionalValues.ElementAt(0);
-
                 subscriptions = _animalRepository.GetReadOnlyQuery()
-                    .Select(x => new GetAnimal
-                    {
-                        Name = x.name,
-                        Age = x.age
-                    });
+                    .Select(_mapper.Map<GetAnimal>);
 
                 var total = subscriptions.Count();
 
@@ -80,7 +74,7 @@ namespace TamagotchiWeb.Controllers
                                                              s.Name.ContainsInsensitive(searchBy)
                     );
 
-                var orderableProperty = nameof(GetAnimal.Name);
+                var orderableProperty = nameof(GetAnimal.AnimalId);
                 var toOrderAscending = true;
                 if (dtParameters.Order != null && dtParameters.Length > 0)
                 {
@@ -102,7 +96,7 @@ namespace TamagotchiWeb.Controllers
                     .Take(dtParameters.Length)
                 };
 
-                var gg = result.Data.ToList();
+                //var gg = result.Data.ToList();
                 return new JsonResult(result);
             }
             catch (Exception ex)
