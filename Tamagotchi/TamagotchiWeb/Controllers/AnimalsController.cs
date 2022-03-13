@@ -5,6 +5,7 @@ using TamagotchiWeb.Application.Animals.Queries.GetAll.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
+using TamagotchiWeb.Extensions;
 using TamagotchiWeb.Services;
 
 namespace TamagotchiWeb.Controllers
@@ -53,12 +54,55 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var result = _animalRepository.GetReadOnlyQuery()
+
+
+
+
+                IEnumerable<GetAnimal> subscriptions;
+
+                var dtParameters = data;
+
+                var userId = dtParameters.AdditionalValues.ElementAt(0);
+
+                subscriptions = _animalRepository.GetReadOnlyQuery()
                     .Select(x => new GetAnimal
                     {
                         Name = x.name,
                         Age = x.age
                     });
+
+                var total = subscriptions.Count();
+
+                var searchBy = dtParameters.Search?.Value;
+
+                if (!string.IsNullOrEmpty(searchBy))
+                    subscriptions = subscriptions.Where(s => s.Type.ContainsInsensitive(searchBy) ||
+                                                             s.Name.ContainsInsensitive(searchBy)
+                    );
+
+                var orderableProperty = nameof(GetAnimal.Name);
+                var toOrderAscending = true;
+                if (dtParameters.Order != null && dtParameters.Length > 0)
+                {
+                    orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
+                    toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
+                }
+
+                var orderedSubscriptions = toOrderAscending
+                    ? subscriptions.OrderBy(x => x.GetPropertyValue(orderableProperty))
+                    : subscriptions.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
+
+                var result = new DtResult<GetAnimal>
+                {
+                    Draw = dtParameters.Draw,
+                    RecordsTotal = total,
+                    RecordsFiltered = orderedSubscriptions.Count(),
+                    Data = orderedSubscriptions
+                    .Skip(dtParameters.Start)
+                    .Take(dtParameters.Length)
+                };
+
+                var gg = result.Data.ToList();
                 return new JsonResult(result);
             }
             catch (Exception ex)
