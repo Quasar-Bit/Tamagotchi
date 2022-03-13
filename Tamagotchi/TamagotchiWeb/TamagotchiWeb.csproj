@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />
@@ -18,6 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Application\Animals\Commands\" />
+    <Folder Include="Application\AnimalTypes\Commands\" />
+    <Folder Include="Application\Organizations\Commands\" />
     <Folder Include="Services\DTOs\Input\" />
   </ItemGroup>
 
