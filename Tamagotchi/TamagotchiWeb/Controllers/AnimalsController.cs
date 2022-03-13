@@ -14,6 +14,8 @@ namespace TamagotchiWeb.Controllers
     public class AnimalsController : BaseController<AnimalsController>
     {
         private readonly IAnimalRepository _animalRepository;
+        private readonly IAnimalTypeRepository _animalTypeRepository;
+        private readonly IOrganizationRepository _organizationRepository;
         //private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
@@ -21,11 +23,15 @@ namespace TamagotchiWeb.Controllers
         //IMediator mediator,
         IMapper mapper,
                IAnimalRepository animalRepository,
+               IAnimalTypeRepository animalTypeRepository,
+               IOrganizationRepository organizationRepository,
                ILogger<AnimalsController> logger) : base(logger)
         {
             //_mediator = mediator;
             _mapper = mapper;
             _animalRepository = animalRepository;
+            _animalTypeRepository = animalTypeRepository;
+            _organizationRepository = organizationRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -63,7 +69,16 @@ namespace TamagotchiWeb.Controllers
                 var dtParameters = data;
 
                 subscriptions = _animalRepository.GetReadOnlyQuery()
-                    .Select(_mapper.Map<GetAnimal>);
+                    .Select(x => new GetAnimal
+                    {
+                        Name = x.name,
+                        Type = x.type
+                        //PrimaryBreed = x.primaryBreed,
+                        //Gender = x.gender,
+                        //Age = x.age,
+                        //PrimaryColor = x.primaryColor,
+                        //OrganizationId = x.organizationId
+                    });
 
                 var total = subscriptions.Count();
 

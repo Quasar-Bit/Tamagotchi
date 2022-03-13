@@ -18,6 +18,8 @@ builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
 //builder.Services.AddMediatR(typeof(GetAnimalsQuery).GetTypeInfo().Assembly);
 //builder.Services.AddMediatR(typeof(GetAnimalsHandler).GetTypeInfo().Assembly);
 builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
+builder.Services.AddTransient<IAnimalTypeRepository, AnimalTypeRepository>();
+builder.Services.AddTransient<IOrganizationRepository, OrganizationRepository>();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
