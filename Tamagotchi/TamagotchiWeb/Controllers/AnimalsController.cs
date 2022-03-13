@@ -1,21 +1,16 @@
-﻿//using MediatR;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TamagotchiWeb.Application.Animals.Base.DTOs;
-using TamagotchiWeb.Application.Animals.Queries.GetAll.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
 using TamagotchiWeb.Extensions;
-using TamagotchiWeb.Services;
 
 namespace TamagotchiWeb.Controllers
 {
     public class AnimalsController : BaseController<AnimalsController>
     {
         private readonly IAnimalRepository _animalRepository;
-        private readonly IAnimalTypeRepository _animalTypeRepository;
-        private readonly IOrganizationRepository _organizationRepository;
         //private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
@@ -23,15 +18,11 @@ namespace TamagotchiWeb.Controllers
         //IMediator mediator,
         IMapper mapper,
                IAnimalRepository animalRepository,
-               IAnimalTypeRepository animalTypeRepository,
-               IOrganizationRepository organizationRepository,
                ILogger<AnimalsController> logger) : base(logger)
         {
             //_mediator = mediator;
             _mapper = mapper;
             _animalRepository = animalRepository;
-            _animalTypeRepository = animalTypeRepository;
-            _organizationRepository = organizationRepository;
         }
 
         public async Task<IActionResult> Index()

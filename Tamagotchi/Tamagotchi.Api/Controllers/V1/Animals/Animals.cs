@@ -50,7 +50,7 @@ public class Animals : BaseApiController<Animals>
                                                          s.Name.ContainsInsensitive(searchBy)
                 );
 
-            var orderableProperty = nameof(GetAnimal.AnimalId);
+            var orderableProperty = nameof(GetAnimal.OrganizationId);
             var toOrderAscending = true;
             if (dtParameters.Order != null && dtParameters.Length > 0)
             {

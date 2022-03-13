@@ -131,27 +131,6 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                //if (string.IsNullOrEmpty(model.Id))
-                //    await _mediator.Send(new CreateSubscriptionCommand
-                //    {
-                //        Name = model.Name,
-                //        Mdn = model.Mdn,
-                //        UserId = model.UserId,
-                //        IsActive = model.IsActive,
-                //        IsCycle = model.IsCycle,
-                //        PlanId = model.PlanId,
-                //        ResellerId = model.ResellerId
-                //    });
-                //else
-                //    await _mediator.Send(new UpdateSubscriptionCommand
-                //    {
-                //        Id = model.Id,
-                //        Mdn = model.Mdn,
-                //        Name = model.Name,
-                //        IsActive = model.IsActive,
-                //        IsCycle = model.IsCycle,
-                //        PlanId = model.PlanId
-                //    });
                 return GetAll();
             }
             catch (Exception ex)
@@ -165,7 +144,6 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                //await _mediator.Send(new DeleteSubscriptionCommand { Id = item.Id });
 
                 return GetAll();
             }
@@ -173,40 +151,6 @@ namespace TamagotchiWeb.Controllers
             {
                 return GetErrorView(ex);
             }
-        }
-
-        //public IActionResult Index()
-        //{
-        //    var result = new GetAnimals
-        //    {
-        //        //Animals = _db.Animals,
-        //        Pagination = new Pagination
-        //        {
-        //            total_count = _db.Animals.Count()
-        //        }
-        //    };
-
-        //    return View(result);
-        //}
-
-        [HttpPost]
-        public async Task<IActionResult> Synch(string gg)
-        {
-            //var firstRequest = await _animalService.GetAnimals(1);
-
-            //for (int i = 1801; i <= firstRequest.Pagination.total_pages; i++)
-            //{
-            //    var answer = await _animalService.GetAnimals(i);
-
-            //    foreach (var item in answer.Animals)
-            //    {
-            //        _db.Animals.Add(item);
-            //    }
-
-            //    _db.SaveChanges();
-            //}
-
-            return RedirectToAction("index");
         }
 
     }
