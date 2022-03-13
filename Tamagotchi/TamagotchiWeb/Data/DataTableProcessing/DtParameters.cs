@@ -1,5 +1,4 @@
-﻿using SS.Application.Core.DataTableProcessing;
-
+﻿
 namespace TamagotchiWeb.Data.DataTableProcessing;
 
 /// <summary>

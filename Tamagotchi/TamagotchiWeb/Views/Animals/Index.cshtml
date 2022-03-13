@@ -1,4 +1,117 @@
-﻿@using TamagotchiWeb.Entities
+﻿@*@model IEnumerable<SS.Domain.Core.Identity.Models.UserDto>*@
+@{
+    ViewBag.Title = "Animals";
+}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header  row clearfix">
+                       @* <div class="row col-4">
+                            @await Html.PartialAsync("_Filter", Model)
+                        </div>
+
+                        <div class="col-3 offset-5 float-left">
+                            <button id="newSubscription" class="btn btn-success  col-12"
+                                    onclick="onCreateSubscription(getById('#userList'))">
+                                @Localizer["new_subscription"]
+                            </button>
+                        </div>*@
+                    </div>
+                    
+                    <table id="tableAnimals" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Breed</th>
+                                <th>Gender</th>
+                                <th>Age</th>
+                                <th>Color</th>
+                                <th>Organization Id</th>
+                                <th style="width: 5%">Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>$(document).ready(function () {
+       var r = $('#tableAnimals').DataTable({
+            "paging": true,
+            "processing": true,
+            "serverSide": true,
+            "searching": true,
+            "lengthChange": true,
+            "responsive": true,
+            "columnDefs": [{ targets: 'no-sort', orderable: true }],
+            "ordering": true,
+            "autoWidth": false,
+            "ajax": {
+                "url": '/Animals/GetPaginatedTable',
+                "type": "POST",
+                "data": function (data) {
+                    var additionalValues = [];
+                    additionalValues[0] = null;
+                    data.additionalValues = additionalValues;
+                    return data;
+                }
+            },
+            "columns": [
+                { data: "animalId" },
+                { data: "name" },
+                { data: "type" },
+                { data: "primaryBreed" },
+                { data: "gender" },
+                { data: "age" },
+                { data: "primaryColor" },
+                { data: "organizationId" },
+                //{
+                //    data: "creationTime",
+                //    render: function (data, type, row) {
+                //        let date = new Date(data);
+                //        return date.toUTCString();
+                //    }
+                //},
+                {
+                    data: "id",
+                    render: function (data, type, row) {
+                        const otherUsersBtn = '<a href="/" onclick="logInAs(\'' + data + '\')" class="btn btn-secondary"><i class="fas fa-eye"></i></a>'
+                            + "<a onclick='onDeletingUser(" + JSON.stringify(row) + ")' class='btn btn-danger'><i class='fas fa-trash'></i></a>";
+
+                        return "<div class='btn-group btn-group-sm'>"
+                            + "<a onclick='onEditingAnimal(" + JSON.stringify(row) + ")' class='btn btn-info'><i class='fas fa-pen'></i></a>"
+                            + "<a onclick='onDeletingAnimal(" + JSON.stringify(row) + ")' class='btn btn-danger'><i class='fas fa-trash'></i></a>"
+                            + "</div>";
+                    }
+                }
+            ]
+        });
+    });
+
+   
+    
+    //function onCreateSubscription(userId) {
+    //    Util.editModal({ userId: userId }, '/Subscription/OpenCreateUpdate');
+    //};
+
+    //function checkAvailability() {
+    //    var email = getById('#userList');
+    //    if (email == null || email == "") {
+    //        $("#newSubscription").prop("disabled", true);
+    //    }
+    //    else {
+    //        $("#newSubscription").prop("disabled", false);
+    //    }
+    //};
+    </script>
+
+
+@*@using TamagotchiWeb.Entities
 @using System.Text.Json
 @model TamagotchiWeb.Models.GetAnimals
 @{
@@ -66,4 +179,4 @@
         });
        // util.makeRequest(null, '/Animals/Synch');
     }
-    </script>
+    </script>*@

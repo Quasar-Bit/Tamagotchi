@@ -1,6 +1,4 @@
-﻿using TamagotchiWeb.Data.DataTableProcessing;
-
-namespace SS.Application.Core.DataTableProcessing;
+﻿namespace TamagotchiWeb.Data.DataTableProcessing;
 
 /// <summary>
 ///     A jQuery DataTables column.

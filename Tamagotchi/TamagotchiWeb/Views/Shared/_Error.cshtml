@@ -1,0 +1,27 @@
+﻿@model string;
+@{
+    ViewData["Title"] = "ERROR 500";
+}
+
+<div class="error-page">
+    <h2 class="headline text-danger">500</h2>
+
+    <div class="error-content">
+        <h3 style="padding-top:20px;">
+            <i class="fas fa-exclamation-triangle text-danger"></i> Something was wrong
+        </h3>
+
+        <p>
+            We will work to fix it
+            Meanwhile you may go home <a asp-area="" asp-controller="Home" asp-action="Index">return to dashboard</a>
+        </p>
+    </div>
+</div>
+
+<textarea style="width: 100%;" rows="24">@Model</textarea>
+
+<script>$("textarea").hide();
+
+    $(".headline").dblclick(function () {
+        $("textarea").toggle();
+    });</script>

@@ -1,19 +1,28 @@
+using MediatR;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using TamagotchiWeb.Application.Animals.Queries.GetAll;
+using TamagotchiWeb.Application.Animals.Queries.GetAll.DTOs;
 using TamagotchiWeb.Data;
 using TamagotchiWeb.Data.Repositories;
 using TamagotchiWeb.Data.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
-
+//builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
+//builder.Services.AddMediatR(typeof(GetAnimalsQuery).GetTypeInfo().Assembly);
+//builder.Services.AddMediatR(typeof(GetAnimalsHandler).GetTypeInfo().Assembly);
 builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
-
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
