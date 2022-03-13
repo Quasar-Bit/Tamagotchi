@@ -11,16 +11,13 @@ namespace TamagotchiWeb.Controllers
     public class AnimalsController : BaseController<AnimalsController>
     {
         private readonly IAnimalRepository _animalRepository;
-        //private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
         public AnimalsController(
-        //IMediator mediator,
         IMapper mapper,
                IAnimalRepository animalRepository,
                ILogger<AnimalsController> logger) : base(logger)
         {
-            //_mediator = mediator;
             _mapper = mapper;
             _animalRepository = animalRepository;
         }
@@ -102,7 +99,6 @@ namespace TamagotchiWeb.Controllers
                     .Take(dtParameters.Length)
                 };
 
-                //var gg = result.Data.ToList();
                 return new JsonResult(result);
             }
             catch (Exception ex)

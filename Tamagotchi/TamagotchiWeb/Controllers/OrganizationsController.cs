@@ -117,11 +117,11 @@ namespace TamagotchiWeb.Controllers
                 subscriptions = _organizationRepository.GetReadOnlyQuery()
                     .Select(x => new GetOrganization
                     {
-                        //phone = x.phone,
+                        phone = x.phone,
                         name = x.name,
-                        //email = x.email,
-                        //website = x.website,
-                        //address1 = x.address1,
+                        email = x.email,
+                        website = x.website,
+                        address1 = x.address1,
                         organizationId = x.organizationId
                     });
 
