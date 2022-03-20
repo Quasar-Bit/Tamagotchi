@@ -8,6 +8,7 @@ using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
+using TamagotchiWeb.Entities;
 using TamagotchiWeb.Extensions;
 
 namespace TamagotchiWeb.Controllers
@@ -114,13 +115,13 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult OpenCreateUpdate(GetAnimal model)
+        public IActionResult OpenCreateUpdate(GetAnimalType model)
         {
             try
             {
-                return PartialView("Modal/CreateUpdatePopup", model);
+                return PartialView("Popups/CreateUpdatePopup", model);
             }
-            catch (Exception ex)
+            catch (Exception ex) 
             {
                 return GetErrorView(ex);
             }

@@ -1,0 +1,27 @@
+﻿@model TamagotchiWeb.Application.AnimalTypes.Base.DTOs.GetAnimalType
+
+<form method="post">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Create Animal Type</h2>
+            <hr />
+
+        </div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Coats"></label>
+            <input asp-for="Coats" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Genders"></label>
+            <input asp-for="Genders" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Colors"></label>
+            <input asp-for="Colors" class="form-control" />
+        </div>
+    </div>
+</form>
