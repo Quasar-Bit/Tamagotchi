@@ -1,6 +1,7 @@
 ﻿@model TamagotchiWeb.Application.AnimalTypes.Base.DTOs.GetAnimalType
 
-<form method="post" asp-action="CreateOrUpdate" asp-controller="AnimalTypes">
+
+<form method="post" asp-action="CreateOrUpdate" asp-controller="AnimalTypes" data-val="false">
     <div class="modal-header">
             <h4 class="text-primary">Create Animal Type</h4>
             <button type="button" class="close" onclick="Util.closeModal()">
@@ -9,9 +10,14 @@
     </div>
         
     <div class="modal-body">
+        
+        <input asp-for="Id" class="form-control" hidden="hidden" />
+
+        @*<div asp-validation-summary="All"></div>*@
         <div class="mb-3">
             <label asp-for="Name"></label>
-            <input asp-for="Name" class="form-control" placeholder="Input Name" />
+            <input asp-for="Name" class="form-control" placeholder="Input Name" required />
+            @*<span asp-validation-for="Name" class="text-danger"></span>*@
         </div>
 
         <div class="mb-3">
@@ -25,21 +31,21 @@
         </div>
 
         <div class="mb-3">
-        <label asp-for="Colors"></label>
-        <input asp-for="Colors" class="form-control" placeholder="Input Colors" />
+            <label asp-for="Colors"></label>
+            <input asp-for="Colors" class="form-control" placeholder="Input Colors" />
         </div>
     </div>
         
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
         
         <a onclick="Util.closeModal()" class="btn btn-secondary float-right">Close </a>
     </div>
 </form>
 
-<script>
-    function futureFeature()
-    {
-        Util.closeModal();
+@section Scripts
+{
+    @{
+        <partial name="_ValidationScriptsPartial" />
     }
-</script>
+}

@@ -43,46 +43,55 @@
     
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js" defer ></script>
-<script>$(document).ready(function () {
-       var r = $('#tableAnimalTypes').DataTable({
-            "paging": true,
-            "processing": true,
-            "serverSide": true,
-            "searching": true,
-            "lengthChange": true,
-            "responsive": true,
-            "columnDefs": [{ targets: 'no-sort', orderable: true }],
-            "ordering": true,
-            "autoWidth": false,
-            "ajax": {
-                "url": '/AnimalTypes/GetPaginatedTable',
-                "type": "POST",
-                "data": function (data) {
-                    var additionalValues = [];
-                    additionalValues[0] = null;
-                    data.additionalValues = additionalValues;
-                    return data;
-                }
-            },
-            "columns": [
-                { data: "name" },
-                { data: "coats" },
-                { data: "genders" },
-                { data: "colors" },
-                {
-                    data: "id",
-                    render: function (data, type, row) {
-                        return "<div class='btn-group btn-group-sm'>"
-                            + "<a onclick='onEditingAnimal(" + JSON.stringify(row) + ")' class='btn btn-info'><i class='fas fa-pen'></i></a>"
-                            + "<a onclick='onDeletingAnimal(" + JSON.stringify(row) + ")' class='btn btn-danger'><i class='fas fa-trash'></i></a>"
-                            + "</div>";
+    <script>$(document).ready(function () {
+           var r = $('#tableAnimalTypes').DataTable({
+                "paging": true,
+                "processing": true,
+                "serverSide": true,
+                "searching": true,
+                "lengthChange": true,
+                "responsive": true,
+                "columnDefs": [{ targets: 'no-sort', orderable: true }],
+                "ordering": true,
+                "autoWidth": false,
+                "ajax": {
+                    "url": '/AnimalTypes/GetPaginatedTable',
+                    "type": "POST",
+                    "data": function (data) {
+                        var additionalValues = [];
+                        additionalValues[0] = null;
+                        data.additionalValues = additionalValues;
+                        return data;
                     }
-                }
-            ]
+                },
+                "columns": [
+                    { data: "name" },
+                    { data: "coats" },
+                    { data: "genders" },
+                    { data: "colors" },
+                    {
+                        data: "id",
+                        render: function (data, type, row) {
+                            return "<div class='btn-group btn-group-sm'>"
+                                + "<a onclick='onEditingAnimalType(" + JSON.stringify(row) + ")' class='btn btn-info'><i class='bi bi-pencil-fill'></i></a>"
+                                + "<a onclick='onDeletingAnimalType(" + JSON.stringify(row) + ")' class='btn btn-danger'><i class='bi bi-trash-fill'></i></a>"
+                                + "</div>";
+                        }
+                    }
+                ]
+            });
         });
-    });
-
+        
+        function onEditingAnimalType(model)
+        {
+            Util.editModal(model,'/AnimalTypes/OpenPopup');
+        }
+        function onDeletingAnimalType(model)
+        {
+            Util.makeRequest(model,'/AnimalTypes/Delete');
+        }
     </script>
+    
 
 
 

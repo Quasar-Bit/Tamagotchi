@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Application.Animals.Base.DTOs;
 using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
 using TamagotchiWeb.Controllers.Base;
@@ -128,17 +129,49 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var animalType = new AnimalType
+                if(model.Name == model.Coats)
                 {
-                    coats = model.Coats,
-                    colors = model.Colors,
-                    name = model.Name,
-                    genders = model.Genders
-                };
+                    ModelState.AddModelError("isMatchError", "The Name cannot exactly match coats.");
+                }
+                if(ModelState.IsValid)
+                {
+                    ModelState.Clear();
+                    if (model.Id is 0)
+                    {
+                        var animalType = new AnimalType
+                        {
+                            coats = model.Coats,
+                            colors = model.Colors,
+                            name = model.Name,
+                            genders = model.Genders
+                        };
 
-                await _animalTypeRepository.AddAsync(animalType);
-                await _animalTypeRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                        await _animalTypeRepository.AddAsync(animalType);
+                    }
+                    else
+                    {
+                        var editableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
 
+                        if(editableAnimalType != null)
+                        {
+                            editableAnimalType.coats = model.Coats;
+                            editableAnimalType.colors = model.Colors;
+                            editableAnimalType.name = model.Name;
+                            editableAnimalType.genders = model.Genders;
+
+                            _animalTypeRepository.Update(editableAnimalType);
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
+                    }
+                    await _animalTypeRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -152,7 +185,15 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                return GetAll();
+                var editableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
+
+                if (editableAnimalType != null)
+                    _animalTypeRepository.Remove(editableAnimalType);
+                else
+                    return NotFound();
+
+                await _animalTypeRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                return RedirectToActionPermanent(nameof(Index));
             }
             catch (Exception ex)
             {
