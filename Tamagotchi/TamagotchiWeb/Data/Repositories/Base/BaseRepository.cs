@@ -84,6 +84,7 @@ public abstract class BaseRepository<TEntity> : IRepository<TEntity> where TEnti
 
         await Table.AddRangeAsync(enumerable).ConfigureAwait(false);
     }
+    public IUnitOfWork UnitOfWork => _context;
 
     public TEntity Update(TEntity entity)
     {

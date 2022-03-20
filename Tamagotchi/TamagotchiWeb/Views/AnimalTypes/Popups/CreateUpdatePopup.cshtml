@@ -1,6 +1,6 @@
 ﻿@model TamagotchiWeb.Application.AnimalTypes.Base.DTOs.GetAnimalType
 
-<form method="post">
+<form method="post" asp-action="CreateOrUpdate" asp-controller="AnimalTypes">
     <div class="modal-header">
             <h4 class="text-primary">Create Animal Type</h4>
             <button type="button" class="close" onclick="Util.closeModal()">

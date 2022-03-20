@@ -1,7 +1,4 @@
-﻿
-
-//using MediatR;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TamagotchiWeb.Application.Animals.Base.DTOs;
 using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
@@ -103,8 +100,6 @@ namespace TamagotchiWeb.Controllers
                     .Skip(dtParameters.Start)
                     .Take(dtParameters.Length)
                 };
-
-                //var gg = result.Data.ToList();
                 return new JsonResult(result);
             }
             catch (Exception ex)
@@ -115,7 +110,7 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult OpenCreateUpdate(GetAnimalType model)
+        public IActionResult OpenPopup(GetAnimalType model)
         {
             try
             {
@@ -128,11 +123,23 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate(GetAnimal model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOrUpdate(GetAnimalType model)
         {
             try
             {
-                return GetAll();
+                var animalType = new AnimalType
+                {
+                    coats = model.Coats,
+                    colors = model.Colors,
+                    name = model.Name,
+                    genders = model.Genders
+                };
+
+                await _animalTypeRepository.AddAsync(animalType);
+                await _animalTypeRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -141,11 +148,10 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(GetAnimal item)
+        public async Task<IActionResult> Delete(GetAnimalType model)
         {
             try
             {
-
                 return GetAll();
             }
             catch (Exception ex)
@@ -153,6 +159,5 @@ namespace TamagotchiWeb.Controllers
                 return GetErrorView(ex);
             }
         }
-
     }
 }
