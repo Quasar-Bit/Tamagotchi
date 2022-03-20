@@ -2,6 +2,10 @@
 @{
     ViewBag.Title = "Animal Types";
 }
+@if(TempData["success"] != null)
+{
+    <h2>@TempData["success"]</h2>
+}
 
     <div class="container p-3">
         <div class="row pt-4">
@@ -88,8 +92,12 @@
         }
         function onDeletingAnimalType(model)
         {
-            Util.makeRequest(model,'/AnimalTypes/Delete');
-            location.reload();
+            Util.makeRequest(model,'/AnimalTypes/Delete', { onSuccessComplete: reloadPage() });
+        }
+
+        function reloadPage()
+        {
+             location.reload();
         }
     </script>
     

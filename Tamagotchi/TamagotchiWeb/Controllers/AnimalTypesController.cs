@@ -147,6 +147,7 @@ namespace TamagotchiWeb.Controllers
                         };
 
                         await _animalTypeRepository.AddAsync(animalType);
+                        TempData["success"] = "Animal type created successfully.";
                     }
                     else
                     {
@@ -160,6 +161,7 @@ namespace TamagotchiWeb.Controllers
                             editableAnimalType.genders = model.Genders;
 
                             _animalTypeRepository.Update(editableAnimalType);
+                            TempData["success"] = "Animal type updated successfully.";
                         }
                         else
                         {
@@ -193,6 +195,7 @@ namespace TamagotchiWeb.Controllers
                     return NotFound();
 
                 await _animalTypeRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                TempData["success"] = "Animal type deleted successfully.";
                 return RedirectToActionPermanent(nameof(Index));
             }
             catch (Exception ex)

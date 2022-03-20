@@ -3,7 +3,7 @@
 
 <form method="post" asp-action="CreateOrUpdate" asp-controller="AnimalTypes" data-val="false">
     <div class="modal-header">
-            <h4 class="text-primary">Create Animal Type</h4>
+            <h4 class="text-primary">@(Model?.Id > 0 ? "Update Animal Type" : "Create Animal Type") </h4>
             <button type="button" class="close" onclick="Util.closeModal()">
                 <i class="bi bi-x" style="color:white;"></i>
             </button>
