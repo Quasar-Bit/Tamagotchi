@@ -1,0 +1,51 @@
+﻿@model TamagotchiWeb.Application.AnimalTypes.Base.DTOs.GetAnimalType
+
+
+<form method="post" asp-action="CreateOrUpdate" asp-controller="AnimalTypes" data-val="false">
+    <div class="modal-header">
+            <h4 class="text-primary">Create Animal Type</h4>
+            <button type="button" class="close" onclick="Util.closeModal()">
+                <i class="bi bi-x" style="color:white;"></i>
+            </button>
+    </div>
+        
+    <div class="modal-body">
+        
+        <input asp-for="Id" class="form-control" hidden="hidden" />
+
+        @*<div asp-validation-summary="All"></div>*@
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" placeholder="Input Name" required />
+            @*<span asp-validation-for="Name" class="text-danger"></span>*@
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Coats"></label>
+            <input asp-for="Coats" class="form-control" placeholder="Input Coats" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Genders"></label>
+            <input asp-for="Genders" class="form-control" placeholder="Input Genders" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Colors"></label>
+            <input asp-for="Colors" class="form-control" placeholder="Input Colors" />
+        </div>
+    </div>
+        
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        
+        <a onclick="Util.closeModal()" class="btn btn-secondary float-right">Close </a>
+    </div>
+</form>
+
+@section Scripts
+{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

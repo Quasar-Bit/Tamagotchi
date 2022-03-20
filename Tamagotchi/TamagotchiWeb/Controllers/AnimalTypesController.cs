@@ -1,13 +1,12 @@
-﻿
-
-//using MediatR;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Application.Animals.Base.DTOs;
 using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
+using TamagotchiWeb.Entities;
 using TamagotchiWeb.Extensions;
 
 namespace TamagotchiWeb.Controllers
@@ -102,8 +101,6 @@ namespace TamagotchiWeb.Controllers
                     .Skip(dtParameters.Start)
                     .Take(dtParameters.Length)
                 };
-
-                //var gg = result.Data.ToList();
                 return new JsonResult(result);
             }
             catch (Exception ex)
@@ -114,11 +111,68 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult OpenCreateUpdate(GetAnimal model)
+        public IActionResult OpenPopup(GetAnimalType model)
         {
             try
             {
-                return PartialView("Modal/CreateUpdatePopup", model);
+                return PartialView("Popups/CreateUpdatePopup", model);
+            }
+            catch (Exception ex) 
+            {
+                return GetErrorView(ex);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOrUpdate(GetAnimalType model)
+        {
+            try
+            {
+                if(model.Name == model.Coats)
+                {
+                    ModelState.AddModelError("isMatchError", "The Name cannot exactly match coats.");
+                }
+                if(ModelState.IsValid)
+                {
+                    ModelState.Clear();
+                    if (model.Id is 0)
+                    {
+                        var animalType = new AnimalType
+                        {
+                            coats = model.Coats,
+                            colors = model.Colors,
+                            name = model.Name,
+                            genders = model.Genders
+                        };
+
+                        await _animalTypeRepository.AddAsync(animalType);
+                    }
+                    else
+                    {
+                        var editableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
+
+                        if(editableAnimalType != null)
+                        {
+                            editableAnimalType.coats = model.Coats;
+                            editableAnimalType.colors = model.Colors;
+                            editableAnimalType.name = model.Name;
+                            editableAnimalType.genders = model.Genders;
+
+                            _animalTypeRepository.Update(editableAnimalType);
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
+                    }
+                    await _animalTypeRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -127,31 +181,24 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate(GetAnimal model)
+        public async Task<IActionResult> Delete(GetAnimalType model)
         {
             try
             {
-                return GetAll();
+                var editableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
+
+                if (editableAnimalType != null)
+                    _animalTypeRepository.Remove(editableAnimalType);
+                else
+                    return NotFound();
+
+                await _animalTypeRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                return RedirectToActionPermanent(nameof(Index));
             }
             catch (Exception ex)
             {
                 return GetErrorView(ex);
             }
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(GetAnimal item)
-        {
-            try
-            {
-
-                return GetAll();
-            }
-            catch (Exception ex)
-            {
-                return GetErrorView(ex);
-            }
-        }
-
     }
 }

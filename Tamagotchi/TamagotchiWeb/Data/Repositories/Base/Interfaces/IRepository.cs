@@ -17,6 +17,8 @@ namespace TamagotchiWeb.Data.Repositories.Base.Interfaces;
 
 public interface IRepository<TEntity> where TEntity : class, new()
 {
+    IUnitOfWork UnitOfWork { get; }
+
     void Remove(TEntity entity);
 
     void RemoveRange(IEnumerable<TEntity> entities);

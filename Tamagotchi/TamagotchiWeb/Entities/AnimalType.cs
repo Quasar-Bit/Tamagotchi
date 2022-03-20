@@ -1,4 +1,6 @@
-﻿namespace TamagotchiWeb.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TamagotchiWeb.Entities
 {
     public class AnimalType
     {
