@@ -55,11 +55,11 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                IEnumerable<GetAnimalType> subscriptions;
+                IEnumerable<GetAnimalType> animalTypes;
 
                 var dtParameters = data;
 
-                subscriptions = _animalTypeRepository.GetReadOnlyQuery()
+                animalTypes = _animalTypeRepository.GetReadOnlyQuery()
                     .Select(x => new GetAnimalType
                     {
                         Name = x.name,
@@ -69,12 +69,12 @@ namespace TamagotchiWeb.Controllers
                         Id = x.id
                     });
 
-                var total = subscriptions.Count();
+                var total = animalTypes.Count();
 
                 var searchBy = dtParameters.Search?.Value;
 
                 if (!string.IsNullOrEmpty(searchBy))
-                    subscriptions = subscriptions.Where(s => s.Coats.ContainsInsensitive(searchBy) ||
+                    animalTypes = animalTypes.Where(s => s.Coats.ContainsInsensitive(searchBy) ||
                                                              s.Colors.ContainsInsensitive(searchBy) ||
                                                              s.Genders.ContainsInsensitive(searchBy) ||
                                                              s.Name.ContainsInsensitive(searchBy)
@@ -88,16 +88,16 @@ namespace TamagotchiWeb.Controllers
                     toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
                 }
 
-                var orderedSubscriptions = toOrderAscending
-                    ? subscriptions.OrderBy(x => x.GetPropertyValue(orderableProperty))
-                    : subscriptions.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
+                var orderedAnimalTypes = toOrderAscending
+                    ? animalTypes.OrderBy(x => x.GetPropertyValue(orderableProperty))
+                    : animalTypes.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
 
                 var result = new DtResult<GetAnimalType>
                 {
                     Draw = dtParameters.Draw,
                     RecordsTotal = total,
-                    RecordsFiltered = orderedSubscriptions.Count(),
-                    Data = orderedSubscriptions
+                    RecordsFiltered = orderedAnimalTypes.Count(),
+                    Data = orderedAnimalTypes
                     .Skip(dtParameters.Start)
                     .Take(dtParameters.Length)
                 };

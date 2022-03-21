@@ -12,7 +12,7 @@
     <div class="modal-body">
         
         <input asp-for="id" class="form-control" hidden="hidden" />
-        <input asp-for="url" class="form-control" hidden="hidden" />
+        @*<input asp-for="url" class="form-control" hidden="hidden" />
         <input asp-for="address2" class="form-control" hidden="hidden" />
         <input asp-for="state" class="form-control" hidden="hidden" />
         <input asp-for="postcode" class="form-control" hidden="hidden" />
@@ -20,7 +20,7 @@
         <input asp-for="country" class="form-control" hidden="hidden" />
         <input asp-for="photos" class="form-control" hidden="hidden" />
         <input asp-for="primaryIcon" class="form-control" hidden="hidden" />
-        <input asp-for="primaryPhoto" class="form-control" hidden="hidden" />
+        <input asp-for="primaryPhoto" class="form-control" hidden="hidden" />*@
 
         <div class="mb-3">
             <label asp-for="name"></label>
@@ -29,7 +29,7 @@
 
         <div class="mb-3">
             <label asp-for="organizationId"></label>
-            <input asp-for="organizationId" class="form-control" placeholder="Input Organization Id" />
+            <input asp-for="organizationId" class="form-control" placeholder="Input Organization Id" required />
         </div>
 
         <div class="mb-3">

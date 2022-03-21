@@ -74,13 +74,14 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                IEnumerable<GetOrganization> subscriptions;
+                IEnumerable<GetOrganization> organizations;
 
                 var dtParameters = data;
 
-                subscriptions = _organizationRepository.GetReadOnlyQuery()
+                organizations = _organizationRepository.GetReadOnlyQuery()
                     .Select(x => new GetOrganization
                     {
+                        id = x.id,
                         phone = x.phone,
                         name = x.name,
                         email = x.email,
@@ -89,15 +90,17 @@ namespace TamagotchiWeb.Controllers
                         organizationId = x.organizationId
                     });
 
-                var total = subscriptions.Count();
+                var total = organizations.Count();
 
                 var searchBy = dtParameters.Search?.Value;
 
                 if (!string.IsNullOrEmpty(searchBy))
-                    subscriptions = subscriptions.Where(s => s.name.ContainsInsensitive(searchBy) ||
-                                                             //s.email.ContainsInsensitive(searchBy) ||
-                                                             s.organizationId.ContainsInsensitive(searchBy)
-                                                             //s.address1.ContainsInsensitive(searchBy)
+                    organizations = organizations.Where(s => s.name.ContainsInsensitive(searchBy) ||
+                                                             s.email.ContainsInsensitive(searchBy) ||
+                                                             s.organizationId.ContainsInsensitive(searchBy) ||
+                                                             s.phone.ContainsInsensitive(searchBy) ||
+                                                             s.website.ContainsInsensitive(searchBy) ||
+                                                             s.address1.ContainsInsensitive(searchBy)
                     );
 
                 var orderableProperty = nameof(GetOrganization.id);
@@ -116,8 +119,8 @@ namespace TamagotchiWeb.Controllers
                 {
                     Draw = dtParameters.Draw,
                     RecordsTotal = total,
-                    RecordsFiltered = subscriptions.Count(),
-                    Data = subscriptions
+                    RecordsFiltered = organizations.Count(),
+                    Data = organizations
                     .Skip(dtParameters.Start)
                     .Take(dtParameters.Length)
                 };
