@@ -1,36 +1,4 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using TamagotchiWeb.Data;
-//using TamagotchiWeb.Models;
-//using TamagotchiWeb.Services;
-//using TamagotchiWeb.Services.DTOs.OutPut.Common;
-//using TamagotchiWeb.Services.Interfaces;
-
-//namespace TamagotchiWeb.Controllers
-//{
-//    public class OrganizationsController : Controller
-//    {
-//        private readonly IOrganizationService _animalService;
-//        private readonly Context _db;
-//        public OrganizationsController(Context db)
-//        {
-//            _db = db;
-//            _animalService = new OrganizationService();
-//        }
-//        public IActionResult Index()
-//        {
-//            var result = new GetOrganizations
-//            {
-//                //Organizations = _db.Organizations,
-//                Pagination = new Pagination
-//                {
-//                    total_count = _db.Organizations.Count()
-//                }
-//            };
-
-//            return View(result);
-//        }
-
-//        [HttpPost]
+﻿//        [HttpPost]
 //        public async Task<IActionResult> Synch(string gg)
 //        {
 //            var firstRequest = await _animalService.GetOrganizations(1);
@@ -49,19 +17,15 @@
 
 //            return RedirectToAction("index");
 //        }
-//    }
-//}
-
-
 
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TamagotchiWeb.Application.Animals.Base.DTOs;
-using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
+using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Application.Organizations.Base.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
+using TamagotchiWeb.Entities;
 using TamagotchiWeb.Extensions;
 
 namespace TamagotchiWeb.Controllers
@@ -168,11 +132,11 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult OpenCreateUpdate(GetAnimal model)
+        public IActionResult OpenPopup(GetOrganization model)
         {
             try
             {
-                return PartialView("Modal/CreateUpdatePopup", model);
+                return PartialView("Popups/CreateUpdatePopup", model);
             }
             catch (Exception ex)
             {
@@ -181,11 +145,61 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate(GetAnimal model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOrUpdate(GetOrganization model)
         {
             try
             {
-                return GetAll();
+                if (model.name == model.organizationId)
+                {
+                    ModelState.AddModelError("isMatchError", "The Name cannot exactly match OrganizationId.");
+                }
+                if (ModelState.IsValid)
+                {
+                    ModelState.Clear();
+                    if (model.id is 0)
+                    {
+                        var organization = new Organization
+                        {
+                            phone = model.phone,
+                            name = model.name,
+                            email = model.email,
+                            website = model.website,
+                            address1 = model.address1,
+                            organizationId = model.organizationId
+                        };
+
+                        await _organizationRepository.AddAsync(organization);
+                        TempData["success"] = "Organization created successfully.";
+                    }
+                    else
+                    {
+                        var editableOrganization = await _organizationRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.id, new CancellationToken());
+
+                        if (editableOrganization != null)
+                        {
+                            editableOrganization.phone = model.phone;
+                            editableOrganization.name = model.name;
+                            editableOrganization.email = model.email;
+                            editableOrganization.website = model.website;
+                            editableOrganization.address1 = model.address1;
+                            editableOrganization.organizationId = model.organizationId;
+
+                            _organizationRepository.Update(editableOrganization);
+                            TempData["success"] = "Organization updated successfully.";
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
+                    }
+                    await _organizationRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -194,18 +208,26 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(GetAnimal item)
+        public async Task<IActionResult> Delete(GetOrganization model)
         {
             try
             {
+                var deletableOrganization = await _organizationRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.id, new CancellationToken());
 
-                return GetAll();
+                if (deletableOrganization != null)
+                    _organizationRepository.Remove(deletableOrganization);
+                else
+                    return NotFound();
+
+                await _organizationRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+
+                TempData["success"] = "Organization has deleted successfully.";
+                return RedirectToActionPermanent(nameof(Index));
             }
             catch (Exception ex)
             {
                 return GetErrorView(ex);
             }
         }
-
     }
 }

@@ -187,10 +187,10 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var editableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
+                var deletableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
 
-                if (editableAnimalType != null)
-                    _animalTypeRepository.Remove(editableAnimalType);
+                if (deletableAnimalType != null)
+                    _animalTypeRepository.Remove(deletableAnimalType);
                 else
                     return NotFound();
 
