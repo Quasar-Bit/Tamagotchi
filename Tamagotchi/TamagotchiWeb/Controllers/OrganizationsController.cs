@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Application.Organizations.Base.DTOs;
+using TamagotchiWeb.Application.Organizations.Queries.GetAll.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
@@ -14,12 +16,15 @@ namespace TamagotchiWeb.Controllers
     {
         private readonly IOrganizationRepository _organizationRepository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
         public OrganizationsController(
-        IMapper mapper,
-               IOrganizationRepository organizationRepository,
-               ILogger<OrganizationsController> logger) : base(logger)
+            IMediator mediator,
+            IMapper mapper,
+            IOrganizationRepository organizationRepository,
+            ILogger<OrganizationsController> logger) : base(logger)
         {
+            _mediator = mediator;
             _mapper = mapper;
             _organizationRepository = organizationRepository;
         }
@@ -36,74 +41,25 @@ namespace TamagotchiWeb.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult GetAll()
-        {
-            try
-            {
-                return PartialView("_Table");
-            }
-            catch (Exception ex)
-            {
-                return GetErrorView(ex);
-            }
-        }
+        //[HttpPost]
+        //public IActionResult GetAll()
+        //{
+        //    try
+        //    {
+        //        return PartialView("_Table");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return GetErrorView(ex);
+        //    }
+        //}
 
         [HttpPost]
         public async Task<IActionResult> GetPaginatedTable(DtParameters data)
         {
             try
             {
-                IEnumerable<GetOrganization> organizations;
-
-                var dtParameters = data;
-
-                organizations = _organizationRepository.GetReadOnlyQuery()
-                    .Select(x => new GetOrganization
-                    {
-                        id = x.id,
-                        phone = x.phone,
-                        name = x.name,
-                        email = x.email,
-                        website = x.website,
-                        address1 = x.address1,
-                        organizationId = x.organizationId
-                    });
-
-                var total = organizations.Count();
-
-                var searchBy = dtParameters.Search?.Value;
-
-                if (!string.IsNullOrEmpty(searchBy))
-                    organizations = organizations.Where(s => s.name.ContainsInsensitive(searchBy) ||
-                                                             s.email.ContainsInsensitive(searchBy) ||
-                                                             s.organizationId.ContainsInsensitive(searchBy) ||
-                                                             s.phone.ContainsInsensitive(searchBy) ||
-                                                             s.website.ContainsInsensitive(searchBy) ||
-                                                             s.address1.ContainsInsensitive(searchBy)
-                    );
-
-                var orderableProperty = nameof(GetOrganization.id);
-                var toOrderAscending = true;
-                if (dtParameters.Order != null && dtParameters.Length > 0)
-                {
-                    orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
-                    toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
-                }
-
-                //var orderedSubscriptions = toOrderAscending
-                //    ? subscriptions.OrderBy(x => x.GetPropertyValue(orderableProperty))
-                //    : subscriptions.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
-
-                var result = new DtResult<GetOrganization>
-                {
-                    Draw = dtParameters.Draw,
-                    RecordsTotal = total,
-                    RecordsFiltered = organizations.Count(),
-                    Data = organizations
-                    .Skip(dtParameters.Start)
-                    .Take(dtParameters.Length)
-                };
+                var result = await _mediator.Send(new GetOrganizationsQuery { DtParameters = data });
 
                 return new JsonResult(result);
             }
