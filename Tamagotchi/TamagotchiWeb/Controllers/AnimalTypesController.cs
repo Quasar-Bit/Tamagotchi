@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Application.Animals.Base.DTOs;
 using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
+using TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
@@ -15,12 +17,15 @@ namespace TamagotchiWeb.Controllers
     {
         private readonly IAnimalTypeRepository _animalTypeRepository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
         public AnimalTypesController(
-        IMapper mapper,
-               IAnimalTypeRepository animalTypeRepository,
-               ILogger<AnimalTypesController> logger) : base(logger)
+            IMediator mediator,
+            IMapper mapper,
+            IAnimalTypeRepository animalTypeRepository,
+            ILogger<AnimalTypesController> logger) : base(logger)
         {
+            _mediator = mediator;
             _mapper = mapper;
             _animalTypeRepository = animalTypeRepository;
         }
@@ -38,10 +43,11 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
+                var animalTypes = await _mediator.Send(new GetAnimalTypesQuery());
                 return PartialView("_Table");
             }
             catch (Exception ex)
@@ -55,52 +61,8 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                IEnumerable<GetAnimalType> animalTypes;
-
-                var dtParameters = data;
-
-                animalTypes = _animalTypeRepository.GetReadOnlyQuery()
-                    .Select(x => new GetAnimalType
-                    {
-                        Name = x.name,
-                        Coats = x.coats,
-                        Colors = x.colors,
-                        Genders = x.genders,
-                        Id = x.id
-                    });
-
-                var total = animalTypes.Count();
-
-                var searchBy = dtParameters.Search?.Value;
-
-                if (!string.IsNullOrEmpty(searchBy))
-                    animalTypes = animalTypes.Where(s => s.Coats.ContainsInsensitive(searchBy) ||
-                                                             s.Colors.ContainsInsensitive(searchBy) ||
-                                                             s.Genders.ContainsInsensitive(searchBy) ||
-                                                             s.Name.ContainsInsensitive(searchBy)
-                    );
-
-                var orderableProperty = nameof(GetAnimal.AnimalId);
-                var toOrderAscending = true;
-                if (dtParameters.Order != null && dtParameters.Length > 0)
-                {
-                    orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
-                    toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
-                }
-
-                var orderedAnimalTypes = toOrderAscending
-                    ? animalTypes.OrderBy(x => x.GetPropertyValue(orderableProperty))
-                    : animalTypes.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
-
-                var result = new DtResult<GetAnimalType>
-                {
-                    Draw = dtParameters.Draw,
-                    RecordsTotal = total,
-                    RecordsFiltered = orderedAnimalTypes.Count(),
-                    Data = orderedAnimalTypes
-                    .Skip(dtParameters.Start)
-                    .Take(dtParameters.Length)
-                };
+                var result = await _mediator.Send(new GetAnimalTypesQuery { DtParameters = data });
+                
                 return new JsonResult(result);
             }
             catch (Exception ex)

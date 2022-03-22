@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll;
 using TamagotchiWeb.Data;
 using TamagotchiWeb.Data.Repositories;
 using TamagotchiWeb.Data.Repositories.Interfaces;
@@ -14,9 +15,13 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
-//builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
+
+builder.Services.AddMvc();
+builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddTransient<IMediator, Mediator>();
 //builder.Services.AddMediatR(typeof(GetAnimalsQuery).GetTypeInfo().Assembly);
-//builder.Services.AddMediatR(typeof(GetAnimalsHandler).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(typeof(GetAnimalTypesHandler).GetTypeInfo().Assembly);
+
 builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
 builder.Services.AddTransient<IAnimalTypeRepository, AnimalTypeRepository>();
 builder.Services.AddTransient<IOrganizationRepository, OrganizationRepository>();
