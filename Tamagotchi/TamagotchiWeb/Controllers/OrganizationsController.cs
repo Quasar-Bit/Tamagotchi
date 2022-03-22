@@ -1,24 +1,4 @@
-﻿//        [HttpPost]
-//        public async Task<IActionResult> Synch(string gg)
-//        {
-//            var firstRequest = await _animalService.GetOrganizations(1);
-
-//            //for (int i = 6; i <= firstRequest.Pagination.total_pages; i++)
-//            //{
-//            //    var answer = await _animalService.GetOrganizations(i);
-
-//            //    foreach (var item in answer.Organizations)
-//            //    {
-//            //        _db.Organizations.Add(item);
-//            //    }
-
-//            //    _db.SaveChanges();
-//            //}
-
-//            return RedirectToAction("index");
-//        }
-
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Application.Organizations.Base.DTOs;
@@ -130,7 +110,7 @@ namespace TamagotchiWeb.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
-                return null;
+                return new JsonResult(null);
             }
         }
 

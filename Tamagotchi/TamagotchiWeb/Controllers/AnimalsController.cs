@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Application.Animals.Base.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
+using TamagotchiWeb.Entities;
 using TamagotchiWeb.Extensions;
 
 namespace TamagotchiWeb.Controllers
@@ -14,9 +16,9 @@ namespace TamagotchiWeb.Controllers
         private readonly IMapper _mapper;
 
         public AnimalsController(
-        IMapper mapper,
-               IAnimalRepository animalRepository,
-               ILogger<AnimalsController> logger) : base(logger)
+            IMapper mapper,
+            IAnimalRepository animalRepository,
+            ILogger<AnimalsController> logger) : base(logger)
         {
             _mapper = mapper;
             _animalRepository = animalRepository;
@@ -52,15 +54,17 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                IEnumerable<GetAnimal> subscriptions;
+                IEnumerable<GetAnimal> animals;
 
                 var dtParameters = data;
 
-                subscriptions = _animalRepository.GetReadOnlyQuery()
+                animals = _animalRepository.GetReadOnlyQuery()
                     .Select(x => new GetAnimal
                     {
+                        Id = x.id,
                         Name = x.name,
                         Type = x.type
+                        //AnimalId = x.animalId,
                         //PrimaryBreed = x.primaryBreed,
                         //Gender = x.gender,
                         //Age = x.age,
@@ -68,12 +72,12 @@ namespace TamagotchiWeb.Controllers
                         //OrganizationId = x.organizationId
                     });
 
-                var total = subscriptions.Count();
+                var total = animals.Count();
 
                 var searchBy = dtParameters.Search?.Value;
 
                 if (!string.IsNullOrEmpty(searchBy))
-                    subscriptions = subscriptions.Where(s => s.Type.ContainsInsensitive(searchBy) ||
+                    animals = animals.Where(s => s.Type.ContainsInsensitive(searchBy) ||
                                                              s.Name.ContainsInsensitive(searchBy)
                     );
 
@@ -85,16 +89,16 @@ namespace TamagotchiWeb.Controllers
                     toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
                 }
 
-                var orderedSubscriptions = toOrderAscending
-                    ? subscriptions.OrderBy(x => x.GetPropertyValue(orderableProperty))
-                    : subscriptions.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
+                var orderedAnimals = toOrderAscending
+                    ? animals.OrderBy(x => x.GetPropertyValue(orderableProperty))
+                    : animals.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
 
                 var result = new DtResult<GetAnimal>
                 {
                     Draw = dtParameters.Draw,
                     RecordsTotal = total,
-                    RecordsFiltered = orderedSubscriptions.Count(),
-                    Data = orderedSubscriptions
+                    RecordsFiltered = orderedAnimals.Count(),
+                    Data = orderedAnimals
                     .Skip(dtParameters.Start)
                     .Take(dtParameters.Length)
                 };
@@ -104,16 +108,17 @@ namespace TamagotchiWeb.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
-                return null;
+                return new JsonResult(null);
             }
         }
 
+
         [HttpPost]
-        public IActionResult OpenCreateUpdate(GetAnimal model)
+        public IActionResult OpenPopup(GetAnimal model)
         {
             try
             {
-                return PartialView("Modal/CreateUpdatePopup", model);
+                return PartialView("Popups/CreateUpdatePopup", model);
             }
             catch (Exception ex)
             {
@@ -122,32 +127,66 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateOrUpdate(GetAnimal model)
         {
             try
             {
-                //if (string.IsNullOrEmpty(model.Id))
-                //    await _mediator.Send(new CreateSubscriptionCommand
-                //    {
-                //        Name = model.Name,
-                //        Mdn = model.Mdn,
-                //        UserId = model.UserId,
-                //        IsActive = model.IsActive,
-                //        IsCycle = model.IsCycle,
-                //        PlanId = model.PlanId,
-                //        ResellerId = model.ResellerId
-                //    });
-                //else
-                //    await _mediator.Send(new UpdateSubscriptionCommand
-                //    {
-                //        Id = model.Id,
-                //        Mdn = model.Mdn,
-                //        Name = model.Name,
-                //        IsActive = model.IsActive,
-                //        IsCycle = model.IsCycle,
-                //        PlanId = model.PlanId
-                //    });
-                return GetAll();
+                //if (model.Name == model.Type)
+                //{
+                //    ModelState.AddModelError("isMatchError", "The Name cannot exactly match Type.");
+                //}
+                if (ModelState.IsValid)
+                {
+                    ModelState.Clear();
+                    if (model.Id is 0)
+                    {
+                        var animal = new Animal
+                        {
+                            animalId = model.AnimalId,
+                            type = model.Type,
+                            name = model.Name
+                            //organizationAnimalId = model.OrganizationAnimalId,
+                            //primaryBreed = model.PrimaryBreed,
+                            //organizationId = model.OrganizationId
+                        };
+
+                        await _animalRepository.AddAsync(animal);
+                        TempData["success"] = "Animal has created successfully.";
+                    }
+                    else
+                    {
+                        var editableAnimal = await _animalRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
+                        
+                        if (editableAnimal != null)
+                        {
+                            if (editableAnimal.animalId != model.AnimalId)
+                            {
+                                return RedirectToAction("Index"); //fix logic
+                            }
+
+                            editableAnimal.name = model.Name;
+                            editableAnimal.type = model.Type;
+                            editableAnimal.animalId = model.AnimalId;
+                            //editableAnimal.organizationAnimalId = model.OrganizationAnimalId;
+                            //editableAnimal.primaryBreed = model.PrimaryBreed;
+                            //editableAnimal.organizationId = model.OrganizationId;
+
+                            _animalRepository.Update(editableAnimal);
+                            TempData["success"] = "Animal has updated successfully.";
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
+                    }
+                    await _animalRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -156,53 +195,26 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(GetAnimal item)
+        public async Task<IActionResult> Delete(GetAnimal model)
         {
             try
             {
-                //await _mediator.Send(new DeleteSubscriptionCommand { Id = item.Id });
+                var deletableAnimal = await _animalRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
 
-                return GetAll();
+                if (deletableAnimal != null)
+                    _animalRepository.Remove(deletableAnimal);
+                else
+                    return NotFound();
+
+                await _animalRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+
+                TempData["success"] = "Animal has deleted successfully.";
+                return RedirectToActionPermanent(nameof(Index));
             }
             catch (Exception ex)
             {
                 return GetErrorView(ex);
             }
         }
-
-        //public IActionResult Index()
-        //{
-        //    var result = new GetAnimals
-        //    {
-        //        //Animals = _db.Animals,
-        //        Pagination = new Pagination
-        //        {
-        //            total_count = _db.Animals.Count()
-        //        }
-        //    };
-
-        //    return View(result);
-        //}
-
-        [HttpPost]
-        public async Task<IActionResult> Synch(string gg)
-        {
-            //var firstRequest = await _animalService.GetAnimals(1);
-
-            //for (int i = 1801; i <= firstRequest.Pagination.total_pages; i++)
-            //{
-            //    var answer = await _animalService.GetAnimals(i);
-
-            //    foreach (var item in answer.Animals)
-            //    {
-            //        _db.Animals.Add(item);
-            //    }
-
-            //    _db.SaveChanges();
-            //}
-
-            return RedirectToAction("index");
-        }
-
     }
 }
