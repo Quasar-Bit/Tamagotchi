@@ -1,4 +1,4 @@
-﻿@*@model IEnumerable<SS.Domain.Core.Identity.Models.UserDto>*@
+﻿
 @{
     ViewBag.Title = "Animal Types";
 }
@@ -22,7 +22,22 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header  row clearfix"></div>
+                    <div class="card-header  row clearfix">
+                       @* <div class="row col-4">
+                            @await Html.PartialAsync("_Filter", Model)
+                        </div>
+
+                        <div class="col-3 offset-5 float-left">
+                            <button id="newSubscription" class="btn btn-success  col-12"
+                                    onclick="onCreateSubscription(getById('#userList'))">
+                                @Localizer["new_subscription"]
+                            </button>
+                        </div>*@
+                    </div>
+                    
+                    <div>
+
+                    </div>
                     
                     <table id="tableAnimalTypes" class="table table-bordered table-striped">
                         <thead>
@@ -69,6 +84,13 @@
                     { data: "coats" },
                     { data: "genders" },
                     { data: "colors" },
+                //{
+                //    data: "creationTime",
+                //    render: function (data, type, row) {
+                //        let date = new Date(data);
+                //        return date.toUTCString();
+                //    }
+                //},
                     {
                         data: "id",
                         render: function (data, type, row) {
@@ -88,64 +110,16 @@
         }
         function onDeletingAnimalType(model)
         {
-            Util.makeRequest(model,'/AnimalTypes/Delete');
+            Util.makeRequest(model,'/AnimalTypes/Delete', { onSuccessComplete: reloadPage() });
+        }
+
+        function reloadPage()
+        {
+             location.reload();
         }
     </script>
     
-
-
-
-
 @*
-@using TamagotchiWeb.Entities
-@using System.Text.Json
-@model TamagotchiWeb.Models.GetAnimalTypes
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Animal Types</h1>
-
-<button id="synchronize" class="btn btn-success float-right col-3" onclick="onSynch()"> Synch </button>
-
-<label>@Model?.AnimalTypes.Count()</label>
-@if(Model != null && Model.AnimalTypes != null && Model.AnimalTypes.Any())
-{
-    <table id="tableRole" class="table table-bordered table-striped">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Coats</th>
-        <th>Genders</th>
-        <th>Colors</th>
-        <th style="width: 5%">Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach(var animal in Model.AnimalTypes)
-    {
-        <tr>
-            <td>@animal.name</td>
-            <td>@animal.coats</td>
-            <td>@animal.genders</td>
-            <td>@animal.colors</td>
-            <td style="text-align:center;">
-                <div class="btn-group btn-group-sm ">
-                    <a onclick="onEditingRole(@JsonSerializer.Serialize(animal))" class="btn btn-info">
-                        <i class="fas fa-pen"></i>
-                    </a>
-                    <a onclick="onDeletingRole(@JsonSerializer.Serialize(animal))" class="btn btn-danger">
-                        <i class="fas fa-trash"></i>
-                    </a>
-                </div>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-
-}
-
 <script>
     function onSynch() {
         $.ajaxSetup({ cache: true });

@@ -1,0 +1,61 @@
+﻿@model TamagotchiWeb.Application.Organizations.Base.DTOs.GetOrganization
+
+
+<form method="post" asp-action="CreateOrUpdate" asp-controller="Organizations" data-val="false">
+    <div class="modal-header">
+            <h4 class="text-primary">@(Model?.id > 0 ? "Update Organization" : "Create Organization") </h4>
+            <button type="button" class="close" onclick="Util.closeModal()">
+                <i class="bi bi-x" style="color:white;"></i>
+            </button>
+    </div>
+        
+    <div class="modal-body">
+        
+        <input asp-for="id" class="form-control" hidden="hidden" />
+        @*<input asp-for="url" class="form-control" hidden="hidden" />
+        <input asp-for="address2" class="form-control" hidden="hidden" />
+        <input asp-for="state" class="form-control" hidden="hidden" />
+        <input asp-for="postcode" class="form-control" hidden="hidden" />
+        <input asp-for="city" class="form-control" hidden="hidden" />
+        <input asp-for="country" class="form-control" hidden="hidden" />
+        <input asp-for="photos" class="form-control" hidden="hidden" />
+        <input asp-for="primaryIcon" class="form-control" hidden="hidden" />
+        <input asp-for="primaryPhoto" class="form-control" hidden="hidden" />*@
+
+        <div class="mb-3">
+            <label asp-for="name"></label>
+            <input asp-for="name" class="form-control" placeholder="Input Name" required />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="organizationId"></label>
+            <input asp-for="organizationId" class="form-control" placeholder="Input Organization Id" required />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="phone"></label>
+            <input asp-for="phone" class="form-control" placeholder="Input Organization Phone" />
+        </div>
+        
+        <div class="mb-3">
+            <label asp-for="address1"></label>
+            <input asp-for="address1" class="form-control" placeholder="Input Organization Url" />
+        </div>
+        
+        <div class="mb-3">
+            <label asp-for="email"></label>
+            <input asp-for="email" class="form-control" placeholder="Input Organization Email" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="website"></label>
+            <input asp-for="website" class="form-control" placeholder="Input Organization Email" />
+        </div>
+    </div>
+        
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        
+        <a onclick="Util.closeModal()" class="btn btn-secondary float-right">Close</a>
+    </div>
+</form>

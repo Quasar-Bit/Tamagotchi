@@ -1,67 +1,11 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using TamagotchiWeb.Data;
-//using TamagotchiWeb.Models;
-//using TamagotchiWeb.Services;
-//using TamagotchiWeb.Services.DTOs.OutPut.Common;
-//using TamagotchiWeb.Services.Interfaces;
-
-//namespace TamagotchiWeb.Controllers
-//{
-//    public class OrganizationsController : Controller
-//    {
-//        private readonly IOrganizationService _animalService;
-//        private readonly Context _db;
-//        public OrganizationsController(Context db)
-//        {
-//            _db = db;
-//            _animalService = new OrganizationService();
-//        }
-//        public IActionResult Index()
-//        {
-//            var result = new GetOrganizations
-//            {
-//                //Organizations = _db.Organizations,
-//                Pagination = new Pagination
-//                {
-//                    total_count = _db.Organizations.Count()
-//                }
-//            };
-
-//            return View(result);
-//        }
-
-//        [HttpPost]
-//        public async Task<IActionResult> Synch(string gg)
-//        {
-//            var firstRequest = await _animalService.GetOrganizations(1);
-
-//            //for (int i = 6; i <= firstRequest.Pagination.total_pages; i++)
-//            //{
-//            //    var answer = await _animalService.GetOrganizations(i);
-
-//            //    foreach (var item in answer.Organizations)
-//            //    {
-//            //        _db.Organizations.Add(item);
-//            //    }
-
-//            //    _db.SaveChanges();
-//            //}
-
-//            return RedirectToAction("index");
-//        }
-//    }
-//}
-
-
-
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TamagotchiWeb.Application.Animals.Base.DTOs;
-using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
+using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Application.Organizations.Base.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
+using TamagotchiWeb.Entities;
 using TamagotchiWeb.Extensions;
 
 namespace TamagotchiWeb.Controllers
@@ -110,13 +54,14 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                IEnumerable<GetOrganization> subscriptions;
+                IEnumerable<GetOrganization> organizations;
 
                 var dtParameters = data;
 
-                subscriptions = _organizationRepository.GetReadOnlyQuery()
+                organizations = _organizationRepository.GetReadOnlyQuery()
                     .Select(x => new GetOrganization
                     {
+                        id = x.id,
                         phone = x.phone,
                         name = x.name,
                         email = x.email,
@@ -125,15 +70,17 @@ namespace TamagotchiWeb.Controllers
                         organizationId = x.organizationId
                     });
 
-                var total = subscriptions.Count();
+                var total = organizations.Count();
 
                 var searchBy = dtParameters.Search?.Value;
 
                 if (!string.IsNullOrEmpty(searchBy))
-                    subscriptions = subscriptions.Where(s => s.name.ContainsInsensitive(searchBy) ||
-                                                             //s.email.ContainsInsensitive(searchBy) ||
-                                                             s.organizationId.ContainsInsensitive(searchBy)
-                                                             //s.address1.ContainsInsensitive(searchBy)
+                    organizations = organizations.Where(s => s.name.ContainsInsensitive(searchBy) ||
+                                                             s.email.ContainsInsensitive(searchBy) ||
+                                                             s.organizationId.ContainsInsensitive(searchBy) ||
+                                                             s.phone.ContainsInsensitive(searchBy) ||
+                                                             s.website.ContainsInsensitive(searchBy) ||
+                                                             s.address1.ContainsInsensitive(searchBy)
                     );
 
                 var orderableProperty = nameof(GetOrganization.id);
@@ -152,8 +99,8 @@ namespace TamagotchiWeb.Controllers
                 {
                     Draw = dtParameters.Draw,
                     RecordsTotal = total,
-                    RecordsFiltered = subscriptions.Count(),
-                    Data = subscriptions
+                    RecordsFiltered = organizations.Count(),
+                    Data = organizations
                     .Skip(dtParameters.Start)
                     .Take(dtParameters.Length)
                 };
@@ -163,16 +110,16 @@ namespace TamagotchiWeb.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
-                return null;
+                return new JsonResult(null);
             }
         }
 
         [HttpPost]
-        public IActionResult OpenCreateUpdate(GetAnimal model)
+        public IActionResult OpenPopup(GetOrganization model)
         {
             try
             {
-                return PartialView("Modal/CreateUpdatePopup", model);
+                return PartialView("Popups/CreateUpdatePopup", model);
             }
             catch (Exception ex)
             {
@@ -181,11 +128,61 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate(GetAnimal model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOrUpdate(GetOrganization model)
         {
             try
             {
-                return GetAll();
+                if (model.name == model.organizationId)
+                {
+                    ModelState.AddModelError("isMatchError", "The Name cannot exactly match OrganizationId.");
+                }
+                if (ModelState.IsValid)
+                {
+                    ModelState.Clear();
+                    if (model.id is 0)
+                    {
+                        var organization = new Organization
+                        {
+                            phone = model.phone,
+                            name = model.name,
+                            email = model.email,
+                            website = model.website,
+                            address1 = model.address1,
+                            organizationId = model.organizationId
+                        };
+
+                        await _organizationRepository.AddAsync(organization);
+                        TempData["success"] = "Organization created successfully.";
+                    }
+                    else
+                    {
+                        var editableOrganization = await _organizationRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.id, new CancellationToken());
+
+                        if (editableOrganization != null)
+                        {
+                            editableOrganization.phone = model.phone;
+                            editableOrganization.name = model.name;
+                            editableOrganization.email = model.email;
+                            editableOrganization.website = model.website;
+                            editableOrganization.address1 = model.address1;
+                            editableOrganization.organizationId = model.organizationId;
+
+                            _organizationRepository.Update(editableOrganization);
+                            TempData["success"] = "Organization updated successfully.";
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
+                    }
+                    await _organizationRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -194,18 +191,26 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(GetAnimal item)
+        public async Task<IActionResult> Delete(GetOrganization model)
         {
             try
             {
+                var deletableOrganization = await _organizationRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.id, new CancellationToken());
 
-                return GetAll();
+                if (deletableOrganization != null)
+                    _organizationRepository.Remove(deletableOrganization);
+                else
+                    return NotFound();
+
+                await _organizationRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+
+                TempData["success"] = "Organization has deleted successfully.";
+                return RedirectToActionPermanent(nameof(Index));
             }
             catch (Exception ex)
             {
                 return GetErrorView(ex);
             }
         }
-
     }
 }

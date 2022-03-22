@@ -1,42 +1,40 @@
 ﻿@{
     ViewBag.Title = "Animals";
 }
+    <div class="container p-3">
+        <div class="row pt-4">
+            <div class="col-6">
+                <h2 class="text-primary">Animals</h2>
+            </div>
+            <div class="col-6 text-end">
+                <a onclick="Util.editModal(null,'/Animals/OpenPopup')" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> &nbsp; Create
+                </a>
+            </div>
+        </div>
+        <br />
+    </div>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header  row clearfix">
-                       @* <div class="row col-4">
-                            @await Html.PartialAsync("_Filter", Model)
-                        </div>
-
-                        <div class="col-3 offset-5 float-left">
-                            <button id="newSubscription" class="btn btn-success  col-12"
-                                    onclick="onCreateSubscription(getById('#userList'))">
-                                @Localizer["new_subscription"]
-                            </button>
-                        </div>*@
-                    </div>
-                    
-                    <div>
-
-                    </div>
                     <table id="tableAnimals" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Id</th>
                                 <th>Name</th>
                                 <th>Type</th>
+                                @*
+                                <th>Id</th>
                                 <th>Breed</th>
                                 <th>Gender</th>
                                 <th>Age</th>
                                 <th>Color</th>
-                                <th>Organization Id</th>
+                                <th>Organization Id</th>*@
                                 <th style="width: 5%">Action</th>
                             </tr>
                         </thead>
                     </table>
-
                 </div>
             </div>
         </div>
@@ -66,27 +64,20 @@
                 }
             },
             "columns": [
-                { data: "animalId" },
                 { data: "name" },
                 { data: "type" },
-                { data: "primaryBreed" },
-                { data: "gender" },
-                { data: "age" },
-                { data: "primaryColor" },
-                { data: "organizationId" },
-                //{
-                //    data: "creationTime",
-                //    render: function (data, type, row) {
-                //        let date = new Date(data);
-                //        return date.toUTCString();
-                //    }
-                //},
+                //{ data: "animalId" },
+                //{ data: "primaryBreed" },
+                //{ data: "gender" },
+                //{ data: "age" },
+                //{ data: "primaryColor" },
+                //{ data: "organizationId" },
                 {
                     data: "id",
                     render: function (data, type, row) {
                         return "<div class='btn-group btn-group-sm'>"
-                            + "<a onclick='onEditingAnimal(" + JSON.stringify(row) + ")' class='btn btn-info'><i class='fas fa-pen'></i></a>"
-                            + "<a onclick='onDeletingAnimal(" + JSON.stringify(row) + ")' class='btn btn-danger'><i class='fas fa-trash'></i></a>"
+                            + "<a onclick='onEditingAnimal(" + JSON.stringify(row) + ")' class='btn btn-info'><i class='bi bi-pencil-fill'></i></a>"
+                            + "<a onclick='onDeletingAnimal(" + JSON.stringify(row) + ")' class='btn btn-danger'><i class='bi bi-trash-fill'></i></a>"
                             + "</div>";
                     }
                 }
@@ -94,90 +85,17 @@
         });
     });
 
-   
-    
-    //function onCreateSubscription(userId) {
-    //    Util.editModal({ userId: userId }, '/Subscription/OpenCreateUpdate');
-    //};
-
-    //function checkAvailability() {
-    //    var email = getById('#userList');
-    //    if (email == null || email == "") {
-    //        $("#newSubscription").prop("disabled", true);
-    //    }
-    //    else {
-    //        $("#newSubscription").prop("disabled", false);
-    //    }
-    //};
-    </script>
-
-
-@*@using TamagotchiWeb.Entities
-@using System.Text.Json
-@model TamagotchiWeb.Models.GetAnimals
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Animals</h1>
-
-<button id="synchronize" class="btn btn-success float-right col-3" onclick="onSynch()"> Synch </button>
-
-<label>@Model?.Pagination?.total_count</label>
-@if(Model != null && Model.Pagination?.total_count > 0 && Model.Animals != null && Model.Animals.Any())
-{
-    <table id="tableRole" class="table table-bordered table-striped">
-    <thead>
-    <tr> 
-        <th>Id</th>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Breed</th>
-        <th>Gender</th>
-        <th>Age</th>
-        <th>Color</th>
-        <th>Organization Id</th>
-        <th style="width: 5%">Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    @for (var i = 0; i < 100; i++)
+    function onEditingAnimal(model)
     {
-        var animal = Model.Animals.ElementAt(i);
-        <tr>
-            <td>@animal.id</td>
-            <td>@animal.name</td>
-            <td>@animal.type</td>
-            <td>@animal.primaryBreed</td>
-            <td>@animal.gender</td>
-            <td>@animal.age</td>
-            <td>@animal.primaryColor</td>
-            <td>@animal.organizationId</td>
-            <td style="text-align:center;">
-                <div class="btn-group btn-group-sm ">
-                    <a onclick="onEditingRole(@JsonSerializer.Serialize(animal))" class="btn btn-info">
-                        <i class="fas fa-pen"></i>
-                    </a>
-                    <a onclick="onDeletingRole(@JsonSerializer.Serialize(animal))" class="btn btn-danger">
-                        <i class="fas fa-trash"></i>
-                    </a>
-                </div>
-            </td>
-        </tr>
+        Util.editModal(model,'/Animals/OpenPopup');
     }
-    </tbody>
-</table>
-
-}
-
-<script>
-    function onSynch() {
-        $.ajaxSetup({ cache: true });
-        $.ajax({
-            async: true,
-            type: "Post",
-            url: '/Animals/Synch'
-        });
-       // util.makeRequest(null, '/Animals/Synch');
+    function onDeletingAnimal(model)
+    {
+        Util.makeRequest(model,'/Animals/Delete', { onSuccessComplete: reloadPage() });
     }
-    </script>*@
+
+    function reloadPage()
+    {
+        location.reload();
+    }
+    </script>

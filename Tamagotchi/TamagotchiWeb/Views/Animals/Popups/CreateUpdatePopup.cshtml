@@ -1,0 +1,36 @@
+﻿@model TamagotchiWeb.Application.Animals.Base.DTOs.GetAnimal
+
+<form method="post" asp-action="CreateOrUpdate" asp-controller="Animals" data-val="false">
+    <div class="modal-header">
+            <h4 class="text-primary">@(Model?.Id > 0 ? "Update Animal" : "Create Animal") </h4>
+            <button type="button" class="close" onclick="Util.closeModal()">
+                <i class="bi bi-x" style="color:white;"></i>
+            </button>
+    </div>
+        
+    <div class="modal-body">
+        
+        <input asp-for="Id" class="form-control" hidden="hidden" />
+
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" placeholder="Input Name" required />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Type"></label>
+            <input asp-for="Type" class="form-control" placeholder="Input Type" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="AnimalId"></label>
+            <input asp-for="AnimalId" class="form-control" placeholder="Input Animal Id" required />
+        </div>
+    </div>
+        
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        
+        <a onclick="Util.closeModal()" class="btn btn-secondary float-right">Close </a>
+    </div>
+</form>
