@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using MapsterMapper;
 using MediatR;
 using TamagotchiWeb.Application.Organizations.Base.DTOs;
 using TamagotchiWeb.Application.Organizations.Queries.GetAll.DTOs;

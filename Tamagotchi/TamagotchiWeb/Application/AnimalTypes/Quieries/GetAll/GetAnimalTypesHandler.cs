@@ -1,10 +1,13 @@
-﻿using AutoMapper;
+﻿
+using MapsterMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Application.Animals.Base.DTOs;
 using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
 using TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll.DTOs;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
+using TamagotchiWeb.Entities;
 using TamagotchiWeb.Extensions;
 
 namespace TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll
@@ -28,16 +31,9 @@ namespace TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll
             IEnumerable<GetAnimalType> animalTypes;
 
             var dtParameters = request.DtParameters;
-
+            
             animalTypes = _animalTypeRepository.GetReadOnlyQuery()
-                .Select(x => new GetAnimalType
-                {
-                    Name = x.name,
-                    Coats = x.coats,
-                    Colors = x.colors,
-                    Genders = x.genders,
-                    Id = x.id
-                });
+                .Select(_mapper.Map<GetAnimalType>);
 
             var total = animalTypes.Count();
 

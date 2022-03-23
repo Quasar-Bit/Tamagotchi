@@ -1,5 +1,4 @@
 ﻿
-using Mapster;
 using MapsterMapper;
 using MediatR;
 using TamagotchiWeb.Application.Animals.Base.DTOs;

@@ -11,7 +11,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 var app = builder.Build();
 
