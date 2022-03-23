@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TamagotchiWeb.Application.Animals.Base.DTOs;
+using TamagotchiWeb.Application.Animals.Queries.GetAll.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using TamagotchiWeb.Data.DataTableProcessing;
 using TamagotchiWeb.Data.Repositories.Interfaces;
@@ -14,12 +16,15 @@ namespace TamagotchiWeb.Controllers
     {
         private readonly IAnimalRepository _animalRepository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
         public AnimalsController(
             IMapper mapper,
+            IMediator mediator,
             IAnimalRepository animalRepository,
             ILogger<AnimalsController> logger) : base(logger)
         {
+            _mediator = mediator;
             _mapper = mapper;
             _animalRepository = animalRepository;
         }
@@ -54,54 +59,7 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                IEnumerable<GetAnimal> animals;
-
-                var dtParameters = data;
-
-                animals = _animalRepository.GetReadOnlyQuery()
-                    .Select(x => new GetAnimal
-                    {
-                        Id = x.id,
-                        Name = x.name,
-                        Type = x.type
-                        //AnimalId = x.animalId,
-                        //PrimaryBreed = x.primaryBreed,
-                        //Gender = x.gender,
-                        //Age = x.age,
-                        //PrimaryColor = x.primaryColor,
-                        //OrganizationId = x.organizationId
-                    });
-
-                var total = animals.Count();
-
-                var searchBy = dtParameters.Search?.Value;
-
-                if (!string.IsNullOrEmpty(searchBy))
-                    animals = animals.Where(s => s.Type.ContainsInsensitive(searchBy) ||
-                                                             s.Name.ContainsInsensitive(searchBy)
-                    );
-
-                var orderableProperty = nameof(GetAnimal.AnimalId);
-                var toOrderAscending = true;
-                if (dtParameters.Order != null && dtParameters.Length > 0)
-                {
-                    orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
-                    toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
-                }
-
-                var orderedAnimals = toOrderAscending
-                    ? animals.OrderBy(x => x.GetPropertyValue(orderableProperty))
-                    : animals.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
-
-                var result = new DtResult<GetAnimal>
-                {
-                    Draw = dtParameters.Draw,
-                    RecordsTotal = total,
-                    RecordsFiltered = orderedAnimals.Count(),
-                    Data = orderedAnimals
-                    .Skip(dtParameters.Start)
-                    .Take(dtParameters.Length)
-                };
+                var result = await _mediator.Send(new GetAnimalsQuery { DtParameters = data });
 
                 return new JsonResult(result);
             }
@@ -111,7 +69,6 @@ namespace TamagotchiWeb.Controllers
                 return new JsonResult(null);
             }
         }
-
 
         [HttpPost]
         public IActionResult OpenPopup(GetAnimal model)
