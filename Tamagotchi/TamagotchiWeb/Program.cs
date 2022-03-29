@@ -6,6 +6,8 @@ using TamagotchiWeb.Data;
 using TamagotchiWeb.Data.Repositories;
 using TamagotchiWeb.Data.Repositories.Interfaces;
 using Mapster;
+using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
+using TamagotchiWeb.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,14 +25,13 @@ builder.Services.AddTransient<IOrganizationRepository, OrganizationRepository>()
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 
-
-
 builder.Services.AddMvc();
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddTransient<IMediator, Mediator>();
 
 
 var config = TypeAdapterConfig.GlobalSettings;
+config.NewConfig<AnimalType, GetAnimalType>();
 config.Apply(config.Scan(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddSingleton(config);

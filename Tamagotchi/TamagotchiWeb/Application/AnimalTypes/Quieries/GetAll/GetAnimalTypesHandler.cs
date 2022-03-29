@@ -1,4 +1,5 @@
 ﻿
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -31,9 +32,11 @@ namespace TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll
             IEnumerable<GetAnimalType> animalTypes;
 
             var dtParameters = request.DtParameters;
-            
+
             animalTypes = _animalTypeRepository.GetReadOnlyQuery()
-                .Select(_mapper.Map<GetAnimalType>);
+                //.Select(x => _mapper.Adapt<GetAnimalType>());
+                //.Select(_mapper.Map<GetAnimalType>);
+                .Select(x => _mapper.Map<GetAnimalType>(x));
 
             var total = animalTypes.Count();
 
