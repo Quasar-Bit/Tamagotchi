@@ -29,14 +29,16 @@ namespace TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll
         public async Task<DtResult<GetAnimalType>> Handle(GetAnimalTypesQuery request,
             CancellationToken cancellationToken)
         {
-            IEnumerable<GetAnimalType> animalTypes;
-
             var dtParameters = request.DtParameters;
 
-            animalTypes = _animalTypeRepository.GetReadOnlyQuery()
-                //.Select(x => _mapper.Adapt<GetAnimalType>());
-                //.Select(_mapper.Map<GetAnimalType>);
-                .Select(x => _mapper.Map<GetAnimalType>(x));
+            var animalTypes = _animalTypeRepository.GetReadOnlyQuery().Select(x => new GetAnimalType
+            {
+                Id = x.id,
+                Name = x.name,
+                Coats = x.coats,
+                Colors = x.colors,
+                Genders = x.genders
+            });
 
             var total = animalTypes.Count();
 
@@ -49,24 +51,24 @@ namespace TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll
                                                          s.Name.ContainsInsensitive(searchBy)
                 );
 
-            var orderableProperty = nameof(GetAnimal.AnimalId);
-            var toOrderAscending = true;
-            if (dtParameters.Order != null && dtParameters.Length > 0)
-            {
-                orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
-                toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
-            }
+            //var orderableProperty = nameof(GetAnimalType.Id);
+            //var toOrderAscending = true;
+            //if (dtParameters.Order != null && dtParameters.Length > 0)
+            //{
+            //    orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
+            //    toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
+            //}
 
-            var orderedAnimalTypes = toOrderAscending
-                ? animalTypes.OrderBy(x => x.GetPropertyValue(orderableProperty))
-                : animalTypes.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
+            //var orderedAnimalTypes = toOrderAscending
+            //    ? animalTypes.OrderBy(x => x.GetPropertyValue(orderableProperty))
+            //    : animalTypes.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
 
             var result = new DtResult<GetAnimalType>
             {
                 Draw = dtParameters.Draw,
                 RecordsTotal = total,
-                RecordsFiltered = orderedAnimalTypes.Count(),
-                Data = orderedAnimalTypes
+                RecordsFiltered = animalTypes.Count(),
+                Data = animalTypes
                 .Skip(dtParameters.Start)
                 .Take(dtParameters.Length)
             };

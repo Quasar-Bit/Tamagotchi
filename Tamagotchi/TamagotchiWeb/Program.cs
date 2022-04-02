@@ -11,13 +11,14 @@ using TamagotchiWeb.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
+var config = TypeAdapterConfig.GlobalSettings;
+config.Apply(config.Scan(Assembly.GetExecutingAssembly()));
+builder.Services.AddSingleton(config);
 
 builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
 builder.Services.AddTransient<IAnimalTypeRepository, AnimalTypeRepository>();
@@ -26,16 +27,12 @@ builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 
 builder.Services.AddMvc();
-builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 builder.Services.AddTransient<IMediator, Mediator>();
-
-
-var config = TypeAdapterConfig.GlobalSettings;
-config.NewConfig<AnimalType, GetAnimalType>();
-config.Apply(config.Scan(Assembly.GetExecutingAssembly()));
-
-builder.Services.AddSingleton(config);
 builder.Services.AddScoped<IMapper, ServiceMapper>();
+
+// Add services to the container.
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 
