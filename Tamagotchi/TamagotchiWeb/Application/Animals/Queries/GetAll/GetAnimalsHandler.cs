@@ -26,11 +26,21 @@ public class GetAnimalsHandler : IRequestHandler<GetAnimalsQuery, DtResult<GetAn
     public async Task<DtResult<GetAnimal>> Handle(GetAnimalsQuery request,
         CancellationToken cancellationToken)
     {
-        IEnumerable<GetAnimal> animals;
-
         var dtParameters = request.DtParameters;
 
-        animals = _animalRepository.GetReadOnlyQuery().Select(x => _mapper.Map<GetAnimal>(x));
+        var animals = _animalRepository.GetReadOnlyQuery().Select(x => new GetAnimal
+        {
+            Id = x.id,
+            
+            AnimalId = x.animalId,
+            Name = x.name,
+            Type = x.type,
+            Age = x.age,
+            Gender = x.gender,
+            PrimaryBreed = x.primaryBreed,
+            PrimaryColor = x.primaryColor,
+            OrganizationId = x.organizationId
+        });
         
         var total = animals.Count();
 
@@ -41,13 +51,13 @@ public class GetAnimalsHandler : IRequestHandler<GetAnimalsQuery, DtResult<GetAn
                                                      s.Name.ContainsInsensitive(searchBy)
             );
 
-        var orderableProperty = nameof(Animal.animalId);
-        var toOrderAscending = true;
-        if (dtParameters.Order != null && dtParameters.Length > 0)
-        {
-            orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
-            toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
-        }
+        //var orderableProperty = nameof(Animal.animalId);
+        //var toOrderAscending = true;
+        //if (dtParameters.Order != null && dtParameters.Length > 0)
+        //{
+        //    orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
+        //    toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
+        //}
 
         //var orderedAnimals = toOrderAscending
         //    ? animals.OrderBy(x => x.GetPropertyValue(orderableProperty))

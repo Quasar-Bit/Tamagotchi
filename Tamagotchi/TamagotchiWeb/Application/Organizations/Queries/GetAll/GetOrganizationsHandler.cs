@@ -25,11 +25,9 @@ namespace TamagotchiWeb.Application.Organizations.Queries.GetAll
         public async Task<DtResult<GetOrganization>> Handle(GetOrganizationsQuery request,
             CancellationToken cancellationToken)
         {
-            IEnumerable<GetOrganization> organizations;
-
             var dtParameters = request.DtParameters;
 
-            organizations = _organizationRepository.GetReadOnlyQuery()
+            var organizations = _organizationRepository.GetReadOnlyQuery()
                 .Select(x => new GetOrganization
                 {
                     id = x.id,
@@ -54,13 +52,13 @@ namespace TamagotchiWeb.Application.Organizations.Queries.GetAll
                                                          s.address1.ContainsInsensitive(searchBy)
                 );
 
-            var orderableProperty = nameof(GetOrganization.id);
-            var toOrderAscending = true;
-            if (dtParameters.Order != null && dtParameters.Length > 0)
-            {
-                orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
-                toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
-            }
+            //var orderableProperty = nameof(GetOrganization.id);
+            //var toOrderAscending = true;
+            //if (dtParameters.Order != null && dtParameters.Length > 0)
+            //{
+            //    orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
+            //    toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
+            //}
 
             //var orderedSubscriptions = toOrderAscending
             //    ? subscriptions.OrderBy(x => x.GetPropertyValue(orderableProperty))

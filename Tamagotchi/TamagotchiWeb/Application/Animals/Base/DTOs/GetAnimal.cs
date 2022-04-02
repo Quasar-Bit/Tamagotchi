@@ -13,6 +13,13 @@ namespace TamagotchiWeb.Application.Animals.Base.DTOs
         [Required(ErrorMessage = "Name field is required!")]
         [DisplayName("Name")]
         public string? Name { get; set; }
+
+        public string PrimaryBreed { get; set; }
+        public string Gender { get; set; }
+        public string Age { get; set; }
+        public string PrimaryColor { get; set; }
+        public string OrganizationId { get; set; }
+
         //public string Size { get; set; }
         //public bool SpayedNeutered { get; set; }
         //public bool Declawed { get; set; }
