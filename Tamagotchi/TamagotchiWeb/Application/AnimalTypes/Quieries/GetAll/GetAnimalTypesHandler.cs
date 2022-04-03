@@ -27,8 +27,6 @@ namespace TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll
         public async Task<DtResult<GetAnimalType>> Handle(GetAnimalTypesQuery request,
             CancellationToken cancellationToken)
         {
-            var dtParameters = request.DtParameters;
-
             var animalTypes = _animalTypeRepository.GetReadOnlyQuery().Select(x => new GetAnimalType
             {
                 Id = x.id,
@@ -38,7 +36,7 @@ namespace TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll
                 Genders = x.genders
             });
 
-            var searchBy = dtParameters.Search?.Value;
+            var searchBy = request.DtParameters.Search?.Value;
 
             Expression<Func<GetAnimalType, bool>> filter = x => x.Coats.ContainsInsensitive(searchBy) ||
                                                          x.Colors.ContainsInsensitive(searchBy) ||

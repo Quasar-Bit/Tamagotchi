@@ -90,7 +90,7 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                if (model.name == model.organizationId)
+                if (model.Name == model.OrganizationId)
                 {
                     ModelState.AddModelError("isMatchError", "The Name cannot exactly match OrganizationId.");
                 }
@@ -101,12 +101,12 @@ namespace TamagotchiWeb.Controllers
                     {
                         var organization = new Organization
                         {
-                            phone = model.phone,
-                            name = model.name,
-                            email = model.email,
-                            website = model.website,
-                            address1 = model.address1,
-                            organizationId = model.organizationId
+                            phone = model.Phone,
+                            name = model.Name,
+                            email = model.Email,
+                            website = model.Website,
+                            address1 = model.Address1,
+                            organizationId = model.OrganizationId
                         };
 
                         await _organizationRepository.AddAsync(organization);
@@ -118,12 +118,12 @@ namespace TamagotchiWeb.Controllers
 
                         if (editableOrganization != null)
                         {
-                            editableOrganization.phone = model.phone;
-                            editableOrganization.name = model.name;
-                            editableOrganization.email = model.email;
-                            editableOrganization.website = model.website;
-                            editableOrganization.address1 = model.address1;
-                            editableOrganization.organizationId = model.organizationId;
+                            editableOrganization.phone = model.Phone;
+                            editableOrganization.name = model.Name;
+                            editableOrganization.email = model.Email;
+                            editableOrganization.website = model.Website;
+                            editableOrganization.address1 = model.Address1;
+                            editableOrganization.organizationId = model.OrganizationId;
 
                             _organizationRepository.Update(editableOrganization);
                             TempData["success"] = "Organization updated successfully.";

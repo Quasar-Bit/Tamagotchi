@@ -88,6 +88,7 @@
     {
         Util.editModal(model,'/Organizations/OpenPopup');
     }
+
     function onDeletingOrganization(model)
     {
         Util.makeRequest(model,'/Organizations/Delete', { onSuccessComplete: reloadPage() });
