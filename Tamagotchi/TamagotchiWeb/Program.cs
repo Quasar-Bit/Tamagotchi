@@ -1,16 +1,13 @@
 using MediatR;
+using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using TamagotchiWeb.Data;
 using TamagotchiWeb.Data.Repositories;
 using TamagotchiWeb.Data.Repositories.Interfaces;
-using Mapster;
-using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
-using TamagotchiWeb.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
@@ -23,8 +20,6 @@ builder.Services.AddSingleton(config);
 builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
 builder.Services.AddTransient<IAnimalTypeRepository, AnimalTypeRepository>();
 builder.Services.AddTransient<IOrganizationRepository, OrganizationRepository>();
-builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
-
 
 builder.Services.AddMvc();
 builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
@@ -33,6 +28,8 @@ builder.Services.AddScoped<IMapper, ServiceMapper>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+//builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
