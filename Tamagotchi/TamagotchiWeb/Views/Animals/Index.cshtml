@@ -22,15 +22,14 @@
                     <table id="tableAnimals" class="table table-bordered table-striped">
                         <thead>
                             <tr>
+                                <th>Id</th>
                                 <th>Name</th>
                                 <th>Type</th>
-                                @*
-                                <th>Id</th>
                                 <th>Breed</th>
                                 <th>Gender</th>
                                 <th>Age</th>
                                 <th>Color</th>
-                                <th>Organization Id</th>*@
+                                <th>Organization Id</th>
                                 <th style="width: 5%">Action</th>
                             </tr>
                         </thead>
@@ -64,14 +63,14 @@
                 }
             },
             "columns": [
+                { data: "animalId" },
                 { data: "name" },
                 { data: "type" },
-                //{ data: "animalId" },
-                //{ data: "primaryBreed" },
-                //{ data: "gender" },
-                //{ data: "age" },
-                //{ data: "primaryColor" },
-                //{ data: "organizationId" },
+                { data: "primaryBreed" },
+                { data: "gender" },
+                { data: "age" },
+                { data: "primaryColor" },
+                { data: "organizationId" },
                 {
                     data: "id",
                     render: function (data, type, row) {

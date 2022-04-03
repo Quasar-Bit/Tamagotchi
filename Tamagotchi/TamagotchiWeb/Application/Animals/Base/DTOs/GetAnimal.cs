@@ -7,17 +7,19 @@ namespace TamagotchiWeb.Application.Animals.Base.DTOs
     {
         public int Id { get; set; }
         [DisplayName("Animal Id")]
-        public int AnimalId { get; set; }
+        public int? AnimalId { get; set; }
         [Required(ErrorMessage = "Type field is required!")]
-        public string Type { get; set; }
+        public string? Type { get; set; }
         [Required(ErrorMessage = "Name field is required!")]
         [DisplayName("Name")]
-        public string Name { get; set; }
-        //public string OrganizationId { get; set; }
-        //public string PrimaryBreed { get; set; }
-        //public string PrimaryColor { get; set; }
-        //public string Age { get; set; }
-        //public string Gender { get; set; }
+        public string? Name { get; set; }
+
+        public string PrimaryBreed { get; set; }
+        public string Gender { get; set; }
+        public string Age { get; set; }
+        public string PrimaryColor { get; set; }
+        public string OrganizationId { get; set; }
+
         //public string Size { get; set; }
         //public bool SpayedNeutered { get; set; }
         //public bool Declawed { get; set; }

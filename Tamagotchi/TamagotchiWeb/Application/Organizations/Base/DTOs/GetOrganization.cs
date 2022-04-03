@@ -9,23 +9,19 @@ namespace TamagotchiWeb.Application.Organizations.Base.DTOs
 
         [Required(ErrorMessage = "Organization Id field is required!")]
         [DisplayName("Organization Id")]
-        public string organizationId { get; set; }
+        public string? OrganizationId { get; set; }
 
         [Required(ErrorMessage = "Name field is required!")]
-        [DisplayName("Name")]
-        public string name { get; set; }
+        public string Name { get; set; }
 
-        [DisplayName("Email")]
-        public string email { get; set; }
+        public string Email { get; set; }
 
-        [DisplayName("Phone")]
-        public string phone { get; set; }
+        public string Phone { get; set; }
 
-        [DisplayName("Website")]
-        public string website { get; set; }
+        public string Website { get; set; }
 
         [DisplayName("Address")]
-        public string address1 { get; set; }
+        public string Address1 { get; set; }
 
         //public string url { get; set; }
         //public string photos { get; set; }
