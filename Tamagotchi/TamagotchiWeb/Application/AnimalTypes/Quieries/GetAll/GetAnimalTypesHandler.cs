@@ -38,10 +38,10 @@ namespace TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll
 
             var searchBy = request.DtParameters.Search?.Value;
 
-            Expression<Func<GetAnimalType, bool>> filter = x => x.Coats.ContainsInsensitive(searchBy) ||
-                                                         x.Colors.ContainsInsensitive(searchBy) ||
-                                                         x.Genders.ContainsInsensitive(searchBy) ||
-                                                         x.Name.ContainsInsensitive(searchBy);
+            Expression<Func<GetAnimalType, bool>> filter = x => x.Coats.Contains(searchBy) ||
+                                                         x.Colors.Contains(searchBy) ||
+                                                         x.Genders.Contains(searchBy) ||
+                                                         x.Name.Contains(searchBy);
 
             return await Parametrization(animalTypes, request.DtParameters, filter, nameof(GetAnimalType.Name));
         }

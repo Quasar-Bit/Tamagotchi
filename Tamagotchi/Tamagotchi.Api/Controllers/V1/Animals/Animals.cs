@@ -46,8 +46,8 @@ public class Animals : BaseApiController<Animals>
             var searchBy = dtParameters.Search?.Value;
 
             if (!string.IsNullOrEmpty(searchBy))
-                subscriptions = subscriptions.Where(s => s.Type.ContainsInsensitive(searchBy) ||
-                                                         s.Name.ContainsInsensitive(searchBy)
+                subscriptions = subscriptions.Where(s => s.Type.Contains(searchBy) ||
+                                                         s.Name.Contains(searchBy)
                 );
 
             var orderableProperty = nameof(GetAnimal.OrganizationId);

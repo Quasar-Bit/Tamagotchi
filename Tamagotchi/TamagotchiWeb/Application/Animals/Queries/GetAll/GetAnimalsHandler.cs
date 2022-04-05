@@ -40,11 +40,11 @@ public class GetAnimalsHandler : BaseRequestHandler, IRequestHandler<GetAnimalsQ
 
         var searchBy = request.DtParameters.Search?.Value;
 
-        Expression<Func<GetAnimal, bool>> filter = x => x.Type.ContainsInsensitive(searchBy) ||
-                                                     x.Name.ContainsInsensitive(searchBy) ||
-                                                     x.Gender.ContainsInsensitive(searchBy) ||
-                                                     x.PrimaryBreed.ContainsInsensitive(searchBy) ||
-                                                     x.OrganizationId.ContainsInsensitive(searchBy);
+        Expression<Func<GetAnimal, bool>> filter = x => x.Type.Contains(searchBy) ||
+                                                     x.Name.Contains(searchBy) ||
+                                                     x.Gender.Contains(searchBy) ||
+                                                     x.PrimaryBreed.Contains(searchBy) ||
+                                                     x.OrganizationId.Contains(searchBy);
 
         return await Parametrization(animals, request.DtParameters, filter, nameof(GetAnimal.Name));
     }
