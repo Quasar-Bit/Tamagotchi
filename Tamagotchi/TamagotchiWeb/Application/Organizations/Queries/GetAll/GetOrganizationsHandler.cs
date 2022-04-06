@@ -45,7 +45,7 @@ namespace TamagotchiWeb.Application.Organizations.Queries.GetAll
                                                          x.Website.Contains(searchBy) ||
                                                          x.Address1.Contains(searchBy);
 
-            return await Parametrization(organizations, request.DtParameters, filter, nameof(GetOrganization.Name));
+            return await Parametrization(organizations, request.DtParameters, filter, nameof(GetOrganization.Website));
         }
     }
 }

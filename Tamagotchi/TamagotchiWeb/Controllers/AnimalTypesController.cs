@@ -102,10 +102,10 @@ namespace TamagotchiWeb.Controllers
                     {
                         var animalType = new AnimalType
                         {
-                            coats = model.Coats,
-                            colors = model.Colors,
-                            name = model.Name,
-                            genders = model.Genders
+                            Coats = model.Coats,
+                            Colors = model.Colors,
+                            Name = model.Name,
+                            Genders = model.Genders
                         };
 
                         await _animalTypeRepository.AddAsync(animalType);
@@ -113,14 +113,14 @@ namespace TamagotchiWeb.Controllers
                     }
                     else
                     {
-                        var editableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
+                        var editableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
 
                         if(editableAnimalType != null)
                         {
-                            editableAnimalType.coats = model.Coats;
-                            editableAnimalType.colors = model.Colors;
-                            editableAnimalType.name = model.Name;
-                            editableAnimalType.genders = model.Genders;
+                            editableAnimalType.Coats = model.Coats;
+                            editableAnimalType.Colors = model.Colors;
+                            editableAnimalType.Name = model.Name;
+                            editableAnimalType.Genders = model.Genders;
 
                             _animalTypeRepository.Update(editableAnimalType);
                             TempData["success"] = "Animal type updated successfully.";
@@ -149,7 +149,7 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var deletableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
+                var deletableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
 
                 if (deletableAnimalType != null)
                     _animalTypeRepository.Remove(deletableAnimalType);

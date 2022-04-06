@@ -27,14 +27,7 @@ namespace TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll
         public async Task<DtResult<GetAnimalType>> Handle(GetAnimalTypesQuery request,
             CancellationToken cancellationToken)
         {
-            var animalTypes = _animalTypeRepository.GetReadOnlyQuery().Select(x => new GetAnimalType
-            {
-                Id = x.id,
-                Name = x.name,
-                Coats = x.coats,
-                Colors = x.colors,
-                Genders = x.genders
-            });
+            var animalTypes = _animalTypeRepository.GetReadOnlyQuery().Select(x => Mapper.Map<GetAnimalType>(x));
 
             var searchBy = request.DtParameters.Search?.Value;
 
@@ -43,7 +36,7 @@ namespace TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll
                                                          x.Genders.Contains(searchBy) ||
                                                          x.Name.Contains(searchBy);
 
-            return await Parametrization(animalTypes, request.DtParameters, filter, nameof(GetAnimalType.Name));
+            return await Parametrization(animalTypes.AsQueryable(), request.DtParameters, filter, nameof(GetAnimalType.Name));
         }
     }
 }
