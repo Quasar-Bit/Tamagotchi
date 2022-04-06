@@ -23,6 +23,95 @@
 using System.Linq.Expressions;
 
 namespace TamagotchiWeb.Extensions;
+using System.Reflection;
+
+/// <summary>
+/// EXPERIMENT LINQ IQUERYABLE
+/// 
+//Expression<Func<GetAnimalType, string>> propertyGetter = x => x.Name;
+//Expression<Func<GetAnimalType, bool>> filter = x => propertyGetter.Call()(x).Contains(searchBy);
+//Expression<Func<GetAnimalType, bool>> finalFilter = filter.SubstituteMarker();
+/// </summary>
+public static class ExpressionExtension
+{
+    public static TFunc Call<TFunc>(this Expression<TFunc> expression)
+    {
+        throw new InvalidOperationException(
+            "This method should never be called. It is a marker for constructing filter expressions.");
+    }
+
+    public static Expression<TFunc> SubstituteMarker<TFunc>(this Expression<TFunc> expression)
+    {
+        var visitor = new SubstituteExpressionCallVisitor();
+        return (Expression<TFunc>)visitor.Visit(expression);
+    }
+}
+
+public class SubstituteParameterVisitor : ExpressionVisitor
+{
+    private readonly LambdaExpression _expressionToVisit;
+    private readonly Dictionary<ParameterExpression, Expression> _substitutionByParameter;
+
+    public SubstituteParameterVisitor(Expression[] parameterSubstitutions, LambdaExpression expressionToVisit)
+    {
+        _expressionToVisit = expressionToVisit;
+        _substitutionByParameter = expressionToVisit.Parameters
+                                                    .Select(
+                                                        (parameter, index) =>
+                                                            new { Parameter = parameter, Index = index })
+                                                    .ToDictionary(pair => pair.Parameter,
+                                                        pair => parameterSubstitutions[pair.Index]);
+    }
+
+    public Expression Replace()
+    {
+        return Visit(_expressionToVisit.Body);
+    }
+
+    protected override Expression VisitParameter(ParameterExpression node)
+    {
+        Expression substitution;
+        if (_substitutionByParameter.TryGetValue(node, out substitution))
+        {
+            return Visit(substitution);
+        }
+        return base.VisitParameter(node);
+    }
+}
+
+public class SubstituteExpressionCallVisitor : ExpressionVisitor
+{
+    private readonly MethodInfo _markerDesctiprion;
+
+    public SubstituteExpressionCallVisitor()
+    {
+        _markerDesctiprion =
+            typeof(ExpressionExtension).GetMethod(nameof(ExpressionExtension.Call)).GetGenericMethodDefinition();
+    }
+
+    protected override Expression VisitInvocation(InvocationExpression node)
+    {
+        if (node.Expression.NodeType == ExpressionType.Call && IsMarker((MethodCallExpression)node.Expression))
+        {
+            var parameterReplacer = new SubstituteParameterVisitor(node.Arguments.ToArray(),
+                Unwrap((MethodCallExpression)node.Expression));
+            var target = parameterReplacer.Replace();
+            return Visit(target);
+        }
+        return base.VisitInvocation(node);
+    }
+
+    private LambdaExpression Unwrap(MethodCallExpression node)
+    {
+        var target = node.Arguments[0];
+        return (LambdaExpression)Expression.Lambda(target).Compile().DynamicInvoke();
+    }
+
+    private bool IsMarker(MethodCallExpression node)
+    {
+        return node.Method.IsGenericMethod && node.Method.GetGenericMethodDefinition() == _markerDesctiprion;
+    }
+}
 
 public static class QueryableExtensions
 {

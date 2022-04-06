@@ -97,16 +97,16 @@ namespace TamagotchiWeb.Controllers
                 if (ModelState.IsValid)
                 {
                     ModelState.Clear();
-                    if (model.id is 0)
+                    if (model.Id is 0)
                     {
                         var organization = new Organization
                         {
-                            phone = model.Phone,
-                            name = model.Name,
-                            email = model.Email,
-                            website = model.Website,
-                            address1 = model.Address1,
-                            organizationId = model.OrganizationId
+                            Phone = model.Phone,
+                            Name = model.Name,
+                            Email = model.Email,
+                            Website = model.Website,
+                            Address1 = model.Address1,
+                            OrganizationId = model.OrganizationId
                         };
 
                         await _organizationRepository.AddAsync(organization);
@@ -114,16 +114,16 @@ namespace TamagotchiWeb.Controllers
                     }
                     else
                     {
-                        var editableOrganization = await _organizationRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.id, new CancellationToken());
+                        var editableOrganization = await _organizationRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
 
                         if (editableOrganization != null)
                         {
-                            editableOrganization.phone = model.Phone;
-                            editableOrganization.name = model.Name;
-                            editableOrganization.email = model.Email;
-                            editableOrganization.website = model.Website;
-                            editableOrganization.address1 = model.Address1;
-                            editableOrganization.organizationId = model.OrganizationId;
+                            editableOrganization.Phone = model.Phone;
+                            editableOrganization.Name = model.Name;
+                            editableOrganization.Email = model.Email;
+                            editableOrganization.Website = model.Website;
+                            editableOrganization.Address1 = model.Address1;
+                            editableOrganization.OrganizationId = model.OrganizationId;
 
                             _organizationRepository.Update(editableOrganization);
                             TempData["success"] = "Organization updated successfully.";
@@ -152,7 +152,7 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var deletableOrganization = await _organizationRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.id, new CancellationToken());
+                var deletableOrganization = await _organizationRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
 
                 if (deletableOrganization != null)
                     _organizationRepository.Remove(deletableOrganization);

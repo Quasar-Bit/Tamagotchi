@@ -27,24 +27,24 @@ public class GetAnimalsHandler : BaseRequestHandler, IRequestHandler<GetAnimalsQ
     {
         var animals = _animalRepository.GetReadOnlyQuery().Select(x => new GetAnimal
         {
-            Id = x.id,
-            AnimalId = x.animalId,
-            Name = x.name,
-            Type = x.type,
-            Age = x.age,
-            Gender = x.gender,
-            PrimaryBreed = x.primaryBreed,
-            PrimaryColor = x.primaryColor,
-            OrganizationId = x.organizationId
+            Id = x.Id,
+            AnimalId = x.AnimalId,
+            Name = x.Name,
+            Type = x.Type,
+            Age = x.Age,
+            Gender = x.Gender,
+            PrimaryBreed = x.PrimaryBreed,
+            PrimaryColor = x.PrimaryColor,
+            OrganizationId = x.OrganizationId
         });
 
         var searchBy = request.DtParameters.Search?.Value;
 
-        Expression<Func<GetAnimal, bool>> filter = x => x.Type.ContainsInsensitive(searchBy) ||
-                                                     x.Name.ContainsInsensitive(searchBy) ||
-                                                     x.Gender.ContainsInsensitive(searchBy) ||
-                                                     x.PrimaryBreed.ContainsInsensitive(searchBy) ||
-                                                     x.OrganizationId.ContainsInsensitive(searchBy);
+        Expression<Func<GetAnimal, bool>> filter = x => x.Type.Contains(searchBy) ||
+                                                     x.Name.Contains(searchBy) ||
+                                                     x.Gender.Contains(searchBy) ||
+                                                     x.PrimaryBreed.Contains(searchBy) ||
+                                                     x.OrganizationId.Contains(searchBy);
 
         return await Parametrization(animals, request.DtParameters, filter, nameof(GetAnimal.Name));
     }

@@ -22,10 +22,10 @@ namespace TamagotchiWeb.Services
         {
             var content = data.types.Select(x => new Entities.AnimalType
             {
-                name = x.name,
-                coats = string.Join(",", x.coats),
-                colors = string.Join(",", x.colors),
-                genders = string.Join(",", x.genders),
+                Name = x.name,
+                Coats = string.Join(",", x.coats),
+                Colors = string.Join(",", x.colors),
+                Genders = string.Join(",", x.genders),
             });
 
             return new GetAnimalTypes

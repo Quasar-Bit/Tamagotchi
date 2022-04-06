@@ -26,26 +26,17 @@ namespace TamagotchiWeb.Application.Organizations.Queries.GetAll
             CancellationToken cancellationToken)
         {
             var organizations = _organizationRepository.GetReadOnlyQuery()
-                .Select(x => new GetOrganization
-                {
-                    id = x.id,
-                    Phone = x.phone,
-                    Name = x.name,
-                    Email = x.email,
-                    Website = x.website,
-                    Address1 = x.address1,
-                    OrganizationId = x.organizationId
-                });
+                .Select(x => Mapper.Map<GetOrganization>(x));
 
             var searchBy = request.DtParameters.Search?.Value;
 
-            Expression<Func<GetOrganization, bool>> filter = x => x.Name.ContainsInsensitive(searchBy) ||
-                                                         x.Email.ContainsInsensitive(searchBy) ||
-                                                         x.Phone.ContainsInsensitive(searchBy) ||
-                                                         x.Website.ContainsInsensitive(searchBy) ||
-                                                         x.Address1.ContainsInsensitive(searchBy);
+            Expression<Func<GetOrganization, bool>> filter = x => x.Name.Contains(searchBy) ||
+                                                         x.Email.Contains(searchBy) ||
+                                                         x.Phone.Contains(searchBy) ||
+                                                         x.Website.Contains(searchBy) ||
+                                                         x.Address1.Contains(searchBy);
 
-            return await Parametrization(organizations, request.DtParameters, filter, nameof(GetOrganization.Name));
+            return await Parametrization(organizations, request.DtParameters, filter, nameof(GetOrganization.Website));
         }
     }
 }

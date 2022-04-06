@@ -2,36 +2,36 @@
 {
     public class Organization
     {
-        public int id { get; set; }
-        public string? organizationId { get; set; }
-        public string? name { get; set; }
-        public string? email { get; set; }
-        public string? phone { get; set; }
-        public string? monday { get; set; }
-        public string? tuesday { get; set; }
-        public string? wednesday { get; set; }
-        public string? thursday { get; set; }
-        public string? friday { get; set; }
-        public string? saturday { get; set; }
-        public string? sunday { get; set; }
-        public string? url { get; set; }
-        public string? website { get; set; }
-        public string? mission_statement { get; set; }
-        public string? adoptionPolicy { get; set; }
-        public string? adoptionUrl { get; set; }
-        public string? facebook { get; set; }
-        public string? twitter { get; set; }
-        public string? youtube { get; set; }
-        public string? instagram { get; set; }
-        public string? pinterest { get; set; }
-        public string? photos { get; set; }
-        public string? primaryPhoto { get; set; }
-        public string? primaryIcon { get; set; }
-        public string? address1 { get; set; }
-        public string? address2 { get; set; }
-        public string? city { get; set; }
-        public string? state { get; set; }
-        public string? postcode { get; set; }
-        public string? country { get; set; }
+        public int Id { get; set; }
+        public string? OrganizationId { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public string? Monday { get; set; }
+        public string? Tuesday { get; set; }
+        public string? Wednesday { get; set; }
+        public string? Thursday { get; set; }
+        public string? Friday { get; set; }
+        public string? Saturday { get; set; }
+        public string? Sunday { get; set; }
+        public string? Url { get; set; }
+        public string? Website { get; set; }
+        public string? Mission_Statement { get; set; }
+        public string? AdoptionPolicy { get; set; }
+        public string? AdoptionUrl { get; set; }
+        public string? Facebook { get; set; }
+        public string? Twitter { get; set; }
+        public string? Youtube { get; set; }
+        public string? Instagram { get; set; }
+        public string? Pinterest { get; set; }
+        public string? Photos { get; set; }
+        public string? PrimaryPhoto { get; set; }
+        public string? PrimaryIcon { get; set; }
+        public string? Address1 { get; set; }
+        public string? Address2 { get; set; }
+        public string? City { get; set; }
+        public string? State { get; set; }
+        public string? Postcode { get; set; }
+        public string? Country { get; set; }
     }
 }

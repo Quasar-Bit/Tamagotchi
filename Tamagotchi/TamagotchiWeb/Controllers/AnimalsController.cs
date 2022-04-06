@@ -101,9 +101,9 @@ namespace TamagotchiWeb.Controllers
                     {
                         var animal = new Animal
                         {
-                            animalId = model.AnimalId,
-                            type = model.Type,
-                            name = model.Name
+                            AnimalId = model.AnimalId,
+                            Type = model.Type,
+                            Name = model.Name
                             //organizationAnimalId = model.OrganizationAnimalId,
                             //primaryBreed = model.PrimaryBreed,
                             //organizationId = model.OrganizationId
@@ -114,18 +114,18 @@ namespace TamagotchiWeb.Controllers
                     }
                     else
                     {
-                        var editableAnimal = await _animalRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
+                        var editableAnimal = await _animalRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
                         
                         if (editableAnimal != null)
                         {
-                            if (editableAnimal.animalId != model.AnimalId)
+                            if (editableAnimal.AnimalId != model.AnimalId)
                             {
                                 return RedirectToAction("Index"); //fix logic
                             }
 
-                            editableAnimal.name = model.Name;
-                            editableAnimal.type = model.Type;
-                            editableAnimal.animalId = model.AnimalId;
+                            editableAnimal.Name = model.Name;
+                            editableAnimal.Type = model.Type;
+                            editableAnimal.AnimalId = model.AnimalId;
                             //editableAnimal.organizationAnimalId = model.OrganizationAnimalId;
                             //editableAnimal.primaryBreed = model.PrimaryBreed;
                             //editableAnimal.organizationId = model.OrganizationId;
@@ -157,7 +157,7 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var deletableAnimal = await _animalRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.id == model.Id, new CancellationToken());
+                var deletableAnimal = await _animalRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
 
                 if (deletableAnimal != null)
                     _animalRepository.Remove(deletableAnimal);
