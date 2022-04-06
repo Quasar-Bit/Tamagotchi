@@ -27,15 +27,15 @@ public class GetAnimalsHandler : BaseRequestHandler, IRequestHandler<GetAnimalsQ
     {
         var animals = _animalRepository.GetReadOnlyQuery().Select(x => new GetAnimal
         {
-            Id = x.id,
-            AnimalId = x.animalId,
-            Name = x.name,
-            Type = x.type,
-            Age = x.age,
-            Gender = x.gender,
-            PrimaryBreed = x.primaryBreed,
-            PrimaryColor = x.primaryColor,
-            OrganizationId = x.organizationId
+            Id = x.Id,
+            AnimalId = x.AnimalId,
+            Name = x.Name,
+            Type = x.Type,
+            Age = x.Age,
+            Gender = x.Gender,
+            PrimaryBreed = x.PrimaryBreed,
+            PrimaryColor = x.PrimaryColor,
+            OrganizationId = x.OrganizationId
         });
 
         var searchBy = request.DtParameters.Search?.Value;
