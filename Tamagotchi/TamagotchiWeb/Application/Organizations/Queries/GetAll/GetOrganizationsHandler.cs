@@ -26,16 +26,7 @@ namespace TamagotchiWeb.Application.Organizations.Queries.GetAll
             CancellationToken cancellationToken)
         {
             var organizations = _organizationRepository.GetReadOnlyQuery()
-                .Select(x => new GetOrganization
-                {
-                    id = x.id,
-                    Phone = x.phone,
-                    Name = x.name,
-                    Email = x.email,
-                    Website = x.website,
-                    Address1 = x.address1,
-                    OrganizationId = x.organizationId
-                });
+                .Select(x => Mapper.Map<GetOrganization>(x));
 
             var searchBy = request.DtParameters.Search?.Value;
 

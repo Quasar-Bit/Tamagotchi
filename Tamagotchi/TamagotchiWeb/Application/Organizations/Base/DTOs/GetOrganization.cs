@@ -5,7 +5,7 @@ namespace TamagotchiWeb.Application.Organizations.Base.DTOs
 {
     public class GetOrganization
     {
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Organization Id field is required!")]
         [DisplayName("Organization Id")]
