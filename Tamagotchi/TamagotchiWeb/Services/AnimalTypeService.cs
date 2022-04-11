@@ -3,6 +3,7 @@ using TamagotchiWeb.Services.Base;
 using TamagotchiWeb.Models;
 using TamagotchiWeb.Services.DTOs.OutPut;
 using TamagotchiWeb.Services.Interfaces;
+using Tamagotchi.Data.Entities;
 
 namespace TamagotchiWeb.Services
 {
@@ -20,7 +21,7 @@ namespace TamagotchiWeb.Services
 
         private GetAnimalTypes MappingInventory(AnimalTypesDto data = null)
         {
-            var content = data.types.Select(x => new Entities.AnimalType
+            var content = data.types.Select(x => new AnimalType
             {
                 Name = x.name,
                 Coats = string.Join(",", x.coats),

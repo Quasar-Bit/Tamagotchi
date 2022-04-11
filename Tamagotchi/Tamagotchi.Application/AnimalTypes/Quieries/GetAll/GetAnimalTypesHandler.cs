@@ -1,0 +1,39 @@
+﻿
+using MapsterMapper;
+using MediatR;
+using System.Linq.Expressions;
+using Tamagotchi.Application.AnimalTypes.Base.DTOs;
+using Tamagotchi.Application.AnimalTypes.Quieries.GetAll.DTOs;
+using Tamagotchi.Application.Base;
+using Tamagotchi.Data.DataTableProcessing;
+using Tamagotchi.Data.Repositories.Interfaces;
+
+namespace Tamagotchi.Application.AnimalTypes.Quieries.GetAll
+{
+    public class GetAnimalTypesHandler : BaseRequestHandler, IRequestHandler<GetAnimalTypesQuery, DtResult<GetAnimalType>>
+    {
+        private readonly IAnimalTypeRepository _animalTypeRepository;
+
+        public GetAnimalTypesHandler(
+            IAnimalTypeRepository animalTypeRepository,
+            IMapper mapper) : base(mapper)
+        {
+            _animalTypeRepository = animalTypeRepository;
+        }
+
+        public async Task<DtResult<GetAnimalType>> Handle(GetAnimalTypesQuery request,
+            CancellationToken cancellationToken)
+        {
+            var animalTypes = _animalTypeRepository.GetReadOnlyQuery().Select(x => Mapper.Map<GetAnimalType>(x));
+
+            var searchBy = request.DtParameters.Search?.Value;
+
+            Expression<Func<GetAnimalType, bool>> filter = x => x.Coats.Contains(searchBy) ||
+                                                         x.Colors.Contains(searchBy) ||
+                                                         x.Genders.Contains(searchBy) ||
+                                                         x.Name.Contains(searchBy);
+
+            return await Parametrization(animalTypes.AsQueryable(), request.DtParameters, filter, nameof(GetAnimalType.Name));
+        }
+    }
+}

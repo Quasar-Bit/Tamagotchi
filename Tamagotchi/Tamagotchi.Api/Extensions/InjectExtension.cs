@@ -13,7 +13,6 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Tamagotchi.Api.Utilities;
 using Swashbuckle.AspNetCore.SwaggerGen;

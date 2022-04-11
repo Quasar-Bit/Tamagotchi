@@ -19,7 +19,7 @@ namespace TamagotchiWeb.Services
 
         private GetOrganizations MappingInventory(OrganizationsDto data = null)
         {
-            var content = data.organizations.Select(x => new Entities.Organization
+            var content = data.organizations.Select(x => new Tamagotchi.Data.Entities.Organization
             {
                 OrganizationId = x.id,
                 Name = x.name,

@@ -5,7 +5,11 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TamagotchiWeb", "TamagotchiWeb\TamagotchiWeb.csproj", "{B790504D-8CAE-40DB-BB0B-12FD0F1F55B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tamagotchi.Api", "Tamagotchi.Api\Tamagotchi.Api.csproj", "{EE6B69EC-8860-4038-88D8-CEBB802EAB68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tamagotchi.Api", "Tamagotchi.Api\Tamagotchi.Api.csproj", "{EE6B69EC-8860-4038-88D8-CEBB802EAB68}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tamagotchi.Application", "Tamagotchi.Application\Tamagotchi.Application.csproj", "{FFFA6AB1-FAEC-49EF-85FB-1B6A12427A41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tamagotchi.Data", "Tamagotchi.Data\Tamagotchi.Data.csproj", "{CEF45E41-CEA1-4FF4-A09F-282A1526FC00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{EE6B69EC-8860-4038-88D8-CEBB802EAB68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE6B69EC-8860-4038-88D8-CEBB802EAB68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE6B69EC-8860-4038-88D8-CEBB802EAB68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFFA6AB1-FAEC-49EF-85FB-1B6A12427A41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFFA6AB1-FAEC-49EF-85FB-1B6A12427A41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFFA6AB1-FAEC-49EF-85FB-1B6A12427A41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFFA6AB1-FAEC-49EF-85FB-1B6A12427A41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEF45E41-CEA1-4FF4-A09F-282A1526FC00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEF45E41-CEA1-4FF4-A09F-282A1526FC00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEF45E41-CEA1-4FF4-A09F-282A1526FC00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEF45E41-CEA1-4FF4-A09F-282A1526FC00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

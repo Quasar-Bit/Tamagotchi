@@ -1,7 +1,9 @@
-﻿namespace TamagotchiWeb.Models
+﻿using Tamagotchi.Data.Entities;
+
+namespace TamagotchiWeb.Models
 {
     public class GetAnimalTypes
     {
-        public IEnumerable<Entities.AnimalType> AnimalTypes { get; set; }
+        public IEnumerable<AnimalType> AnimalTypes { get; set; }
     }
 }

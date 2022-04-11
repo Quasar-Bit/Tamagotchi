@@ -18,7 +18,7 @@ namespace TamagotchiWeb.Services
 
         private GetAnimals MappingInventory(AnimalsDto data = null)
         {
-            var content = data.animals.Select(x => new Entities.Animal
+            var content = data.animals.Select(x => new Tamagotchi.Data.Entities.Animal
             {
                 AnimalId = x.id,
                 OrganizationId = x.organization_id,

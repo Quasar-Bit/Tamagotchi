@@ -3,14 +3,12 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TamagotchiWeb.Application.Animals.Base.DTOs;
-using TamagotchiWeb.Application.AnimalTypes.Base.DTOs;
-using TamagotchiWeb.Application.AnimalTypes.Quieries.GetAll.DTOs;
+using Tamagotchi.Application.AnimalTypes.Base.DTOs;
+using Tamagotchi.Application.AnimalTypes.Quieries.GetAll.DTOs;
 using TamagotchiWeb.Controllers.Base;
-using TamagotchiWeb.Data.DataTableProcessing;
-using TamagotchiWeb.Data.Repositories.Interfaces;
-using TamagotchiWeb.Entities;
-using TamagotchiWeb.Extensions;
+using Tamagotchi.Data.DataTableProcessing;
+using Tamagotchi.Data.Repositories.Interfaces;
+using Tamagotchi.Data.Entities;
 
 namespace TamagotchiWeb.Controllers
 {
