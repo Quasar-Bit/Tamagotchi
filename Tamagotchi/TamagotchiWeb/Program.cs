@@ -20,14 +20,15 @@ var config = TypeAdapterConfig.GlobalSettings;
 config.Apply(config.Scan(Assembly.GetExecutingAssembly()));
 builder.Services.AddSingleton(config);
 
-builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
-builder.Services.AddTransient<IAnimalTypeRepository, AnimalTypeRepository>();
-builder.Services.AddTransient<IOrganizationRepository, OrganizationRepository>();
-
 builder.Services.AddMvc();
+
 builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 builder.Services.AddTransient<IMediator, Mediator>();
 builder.Services.AddScoped<IMapper, ServiceMapper>();
+
+builder.Services.AddTransient<IAnimalRepository, AnimalRepository>();
+builder.Services.AddTransient<IAnimalTypeRepository, AnimalTypeRepository>();
+builder.Services.AddTransient<IOrganizationRepository, OrganizationRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();

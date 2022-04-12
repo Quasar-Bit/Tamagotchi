@@ -41,19 +41,6 @@ namespace TamagotchiWeb.Controllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    try
-        //    {
-        //        return PartialView("_Table");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return GetErrorView(ex);
-        //    }
-        //}
-
         [HttpPost]
         public async Task<IActionResult> GetPaginatedTable(DtParameters data)
         {

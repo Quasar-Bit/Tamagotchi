@@ -72,11 +72,11 @@ public static class StringExtensions
         return string.IsNullOrEmpty(value) || value.StartsWith("http") ? value : value.Insert(0, "http://");
     }
 
-    //public static bool ContainsInsensitive(this string value, string query)
-    //{
-    //    return !string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(query)
-    //            && value.ToUpper().Contains(query.ToUpper());
-    //}
+    public static bool ContainsInsensitive(this string value, string query)
+    {
+        return !string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(query)
+                && value.ToUpper().Contains(query.ToUpper());
+    }
 
     public static string NumericCharacters(this string value)
     {

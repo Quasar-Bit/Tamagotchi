@@ -3,6 +3,7 @@ using MapsterMapper;
 using MediatR;
 using System.Linq.Expressions;
 using Tamagotchi.Application.Base;
+using Tamagotchi.Application.Extensions;
 using Tamagotchi.Application.Organizations.Base.DTOs;
 using Tamagotchi.Application.Organizations.Queries.GetAll.DTOs;
 using Tamagotchi.Data.DataTableProcessing;
@@ -25,17 +26,17 @@ namespace Tamagotchi.Application.Organizations.Queries.GetAll
             CancellationToken cancellationToken)
         {
             var organizations = _organizationRepository.GetReadOnlyQuery()
-                .Select(x => Mapper.Map<GetOrganization>(x));
+                .Select(Mapper.Map<GetOrganization>);
 
             var searchBy = request.DtParameters.Search?.Value;
 
-            Expression<Func<GetOrganization, bool>> filter = x => x.Name.Contains(searchBy) ||
-                                                         x.Email.Contains(searchBy) ||
-                                                         x.Phone.Contains(searchBy) ||
-                                                         x.Website.Contains(searchBy) ||
-                                                         x.Address1.Contains(searchBy);
+            Expression<Func<GetOrganization, bool>> filter = x => x.Name.ContainsInsensitive(searchBy) ||
+                                                         x.Email.ContainsInsensitive(searchBy) ||
+                                                         x.Phone.ContainsInsensitive(searchBy) ||
+                                                         x.Website.ContainsInsensitive(searchBy) ||
+                                                         x.Address1.ContainsInsensitive(searchBy);
 
-            return await Parametrization(organizations, request.DtParameters, filter, nameof(GetOrganization.Website));
+            return await Parametrization(organizations.AsQueryable(), request.DtParameters, filter, nameof(GetOrganization.Website));
         }
     }
 }
