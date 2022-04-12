@@ -7,11 +7,11 @@ using Tamagotchi.Data;
 
 #nullable disable
 
-namespace TamagotchiWeb.Migrations
+namespace Tamagotchi.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20220310013914_changeAnimalId")]
-    partial class changeAnimalId
+    [Migration("20220310011718_ChangeAnimalTable")]
+    partial class ChangeAnimalTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,9 +41,6 @@ namespace TamagotchiWeb.Migrations
                     b.Property<string>("age")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("animalId")
-                        .HasColumnType("int");
 
                     b.Property<bool?>("catsEnvinronment")
                         .HasColumnType("bit");

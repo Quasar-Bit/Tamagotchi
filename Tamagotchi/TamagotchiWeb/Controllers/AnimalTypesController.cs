@@ -1,14 +1,10 @@
-﻿
-using MapsterMapper;
+﻿using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Tamagotchi.Application.AnimalTypes.Base.DTOs;
 using Tamagotchi.Application.AnimalTypes.Quieries.GetAll.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using Tamagotchi.Data.DataTableProcessing;
-using Tamagotchi.Data.Repositories.Interfaces;
-using Tamagotchi.Data.Entities;
 using Tamagotchi.Application.AnimalTypes.Commands.Create.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Update.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Delete.DTOs;
@@ -17,19 +13,16 @@ namespace TamagotchiWeb.Controllers
 {
     public class AnimalTypesController : BaseController<AnimalTypesController>
     {
-        private readonly IAnimalTypeRepository _animalTypeRepository;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
         public AnimalTypesController(
             IMediator mediator,
             IMapper mapper,
-            IAnimalTypeRepository animalTypeRepository,
             ILogger<AnimalTypesController> logger) : base(logger)
         {
             _mediator = mediator;
             _mapper = mapper;
-            _animalTypeRepository = animalTypeRepository;
         }
 
         public async Task<IActionResult> Index()

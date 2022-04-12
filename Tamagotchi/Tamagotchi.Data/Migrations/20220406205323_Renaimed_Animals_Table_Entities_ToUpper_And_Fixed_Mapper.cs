@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace TamagotchiWeb.Migrations
+namespace Tamagotchi.Data.Migrations
 {
     public partial class Renaimed_Animals_Table_Entities_ToUpper_And_Fixed_Mapper : Migration
     {

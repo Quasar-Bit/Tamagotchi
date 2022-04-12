@@ -6,11 +6,11 @@ using Tamagotchi.Data;
 
 #nullable disable
 
-namespace TamagotchiWeb.Migrations
+namespace Tamagotchi.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20220406204538_Renaimed_Organizations_Table_Entities_ToUpper_And_Fixed_Mapper")]
-    partial class Renaimed_Organizations_Table_Entities_ToUpper_And_Fixed_Mapper
+    [Migration("20220406205323_Renaimed_Animals_Table_Entities_ToUpper_And_Fixed_Mapper")]
+    partial class Renaimed_Animals_Table_Entities_ToUpper_And_Fixed_Mapper
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,142 +23,142 @@ namespace TamagotchiWeb.Migrations
 
             modelBuilder.Entity("TamagotchiWeb.Entities.Animal", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("address1")
+                    b.Property<string>("Address1")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("address2")
+                    b.Property<string>("Address2")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("age")
+                    b.Property<string>("Age")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("animalId")
+                    b.Property<int?>("AnimalId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("catsEnvinronment")
+                    b.Property<bool?>("CatsEnvinronment")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("childrenEnvinronment")
+                    b.Property<bool?>("ChildrenEnvinronment")
                         .HasColumnType("bit");
 
-                    b.Property<string>("city")
+                    b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("coat")
+                    b.Property<string>("Coat")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("country")
+                    b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("declawed")
+                    b.Property<bool?>("Declawed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("description")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("dogsEnvinronment")
+                    b.Property<bool?>("DogsEnvinronment")
                         .HasColumnType("bit");
 
-                    b.Property<string>("email")
+                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("gender")
+                    b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("houseTrained")
+                    b.Property<bool?>("HouseTrained")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("isMixedBreed")
+                    b.Property<bool?>("IsMixedBreed")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("isUnknownBreed")
+                    b.Property<bool?>("IsUnknownBreed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("organizationAnimalId")
+                    b.Property<string>("OrganizationAnimalId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("organizationId")
+                    b.Property<string>("OrganizationId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("phone")
+                    b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("photos")
+                    b.Property<string>("Photos")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("postcode")
+                    b.Property<string>("Postcode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("primaryBreed")
+                    b.Property<string>("PrimaryBreed")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("primaryColor")
+                    b.Property<string>("PrimaryColor")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("primaryIcon")
+                    b.Property<string>("PrimaryIcon")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("primaryPhoto")
+                    b.Property<string>("PrimaryPhoto")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("published_at")
+                    b.Property<DateTime?>("Published_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("secondaryBreed")
+                    b.Property<string>("SecondaryBreed")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("secondaryColor")
+                    b.Property<string>("SecondaryColor")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("shotsCurrent")
+                    b.Property<bool?>("ShotsCurrent")
                         .HasColumnType("bit");
 
-                    b.Property<string>("size")
+                    b.Property<string>("Size")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("spayedNeutered")
+                    b.Property<bool?>("SpayedNeutered")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("specialNeeds")
+                    b.Property<bool?>("SpecialNeeds")
                         .HasColumnType("bit");
 
-                    b.Property<string>("species")
+                    b.Property<string>("Species")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("state")
+                    b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("status")
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("status_changed_at")
+                    b.Property<DateTime?>("Status_changed_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("tags")
+                    b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("tertiaryColor")
+                    b.Property<string>("TertiaryColor")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("type")
+                    b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("url")
+                    b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("videos")
+                    b.Property<string>("Videos")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Animals");
                 });

@@ -2,9 +2,9 @@
 
 #nullable disable
 
-namespace TamagotchiWeb.Migrations
+namespace Tamagotchi.Data.Migrations
 {
-    public partial class returnedIdChangesBack : Migration
+    public partial class changeAnimalId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,8 @@ namespace TamagotchiWeb.Migrations
                 name: "animalId",
                 table: "Animals",
                 type: "int",
-                nullable: true);
+                nullable: false,
+                defaultValue: 0);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -16,19 +16,16 @@ namespace TamagotchiWeb.Controllers
 {
     public class AnimalsController : BaseController<AnimalsController>
     {
-        private readonly IAnimalRepository _animalRepository;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
         public AnimalsController(
             IMapper mapper,
             IMediator mediator,
-            IAnimalRepository animalRepository,
             ILogger<AnimalsController> logger) : base(logger)
         {
             _mediator = mediator;
             _mapper = mapper;
-            _animalRepository = animalRepository;
         }
 
         public async Task<IActionResult> Index()
