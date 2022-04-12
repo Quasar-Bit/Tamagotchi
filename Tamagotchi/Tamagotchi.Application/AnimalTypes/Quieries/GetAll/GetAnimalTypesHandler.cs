@@ -11,7 +11,7 @@ using Tamagotchi.Data.Repositories.Interfaces;
 
 namespace Tamagotchi.Application.AnimalTypes.Quieries.GetAll
 {
-    public class GetAnimalTypesHandler : BaseRequestHandler, IRequestHandler<GetAnimalTypesQuery, DtResult<GetAnimalType>>
+    internal class GetAnimalTypesHandler : BaseRequestHandler, IRequestHandler<GetAnimalTypesQuery, DtResult<GetAnimalType>>
     {
         private readonly IAnimalTypeRepository _animalTypeRepository;
 

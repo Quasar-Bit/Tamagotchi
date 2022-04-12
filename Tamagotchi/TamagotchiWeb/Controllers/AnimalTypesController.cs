@@ -9,6 +9,9 @@ using TamagotchiWeb.Controllers.Base;
 using Tamagotchi.Data.DataTableProcessing;
 using Tamagotchi.Data.Repositories.Interfaces;
 using Tamagotchi.Data.Entities;
+using Tamagotchi.Application.AnimalTypes.Commands.Create.DTOs;
+using Tamagotchi.Application.AnimalTypes.Commands.Update.DTOs;
+using Tamagotchi.Application.AnimalTypes.Commands.Delete.DTOs;
 
 namespace TamagotchiWeb.Controllers
 {
@@ -85,43 +88,24 @@ namespace TamagotchiWeb.Controllers
                     ModelState.Clear();
                     if (model.Id is 0)
                     {
-                        var animalType = new AnimalType
-                        {
-                            Coats = model.Coats,
-                            Colors = model.Colors,
-                            Name = model.Name,
-                            Genders = model.Genders
-                        };
-
-                        await _animalTypeRepository.AddAsync(animalType);
-                        TempData["success"] = "Animal type created successfully.";
+                        var result = await _mediator.Send(_mapper.Map<CreateAnimalTypeCommand>(model));
+                        if (result != null)
+                            TempData["success"] = "Animal type has created successfully.";
                     }
                     else
                     {
-                        var editableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
-
-                        if(editableAnimalType != null)
-                        {
-                            editableAnimalType.Coats = model.Coats;
-                            editableAnimalType.Colors = model.Colors;
-                            editableAnimalType.Name = model.Name;
-                            editableAnimalType.Genders = model.Genders;
-
-                            _animalTypeRepository.Update(editableAnimalType);
-                            TempData["success"] = "Animal type updated successfully.";
-                        }
-                        else
-                        {
+                        var result = await _mediator.Send(_mapper.Map<UpdateAnimalTypeCommand>(model));
+                        if (result == null)
                             return NotFound();
-                        }
+                        else
+                            TempData["success"] = "Animal type has updated successfully.";
                     }
-                    await _animalTypeRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                    return RedirectToAction("Index");
                 }
                 else
                 {
                     return RedirectToAction("Index");
                 }
-                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -134,14 +118,10 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var deletableAnimalType = await _animalTypeRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
-
-                if (deletableAnimalType != null)
-                    _animalTypeRepository.Remove(deletableAnimalType);
-                else
+                var result = await _mediator.Send(new DeleteAnimalTypeCommand { Id = model.Id });
+                if (result == null)
                     return NotFound();
 
-                await _animalTypeRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
                 TempData["success"] = "Animal type deleted successfully.";
                 return RedirectToActionPermanent(nameof(Index));
             }

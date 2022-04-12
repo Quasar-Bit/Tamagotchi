@@ -107,11 +107,11 @@ namespace TamagotchiWeb.Controllers
                     else
                     {
                         var result = await _mediator.Send(_mapper.Map<UpdateAnimalCommand>(model));
-                        if(result != null)
+                        if (result == null)
+                            return NotFound();
+                        else
                             TempData["success"] = "Animal has updated successfully.";
                     }
-                    await _animalRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
-
                     return RedirectToAction("Index");
                 }
                 else
