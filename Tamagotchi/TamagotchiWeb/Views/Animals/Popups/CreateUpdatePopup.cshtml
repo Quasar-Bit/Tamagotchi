@@ -11,11 +11,7 @@
     <div class="modal-body">
         
         <input asp-for="Id" class="form-control" hidden="hidden" />
-        
-        <div class="mb-3">
-            <label asp-for="AnimalId"></label>
-            <input asp-for="AnimalId" class="form-control" placeholder="Input Animal Id" required />
-        </div>
+        <input asp-for="AnimalId" class="form-control" hidden="hidden" />
 
         <div class="mb-3">
             <label asp-for="Name"></label>
@@ -24,7 +20,7 @@
         
         <div class="mb-3">
             <label asp-for="Type"></label>
-            <input asp-for="Type" class="form-control" placeholder="Input Type" />
+            <input asp-for="Type" class="form-control" placeholder="Input Type" required />
         </div>
         
         <div class="mb-3">

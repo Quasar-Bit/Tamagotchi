@@ -10,7 +10,7 @@ using Tamagotchi.Data.Repositories.Interfaces;
 
 namespace Tamagotchi.Application.Animals.Queries.GetAll;
 
-public class GetAnimalsHandler : BaseRequestHandler, IRequestHandler<GetAnimalsQuery, DtResult<GetAnimal>>
+internal class GetAnimalsHandler : BaseRequestHandler, IRequestHandler<GetAnimalsQuery, DtResult<GetAnimal>>
 {
     private readonly IAnimalRepository _animalRepository;
 
@@ -24,7 +24,7 @@ public class GetAnimalsHandler : BaseRequestHandler, IRequestHandler<GetAnimalsQ
     public async Task<DtResult<GetAnimal>> Handle(GetAnimalsQuery request,
         CancellationToken cancellationToken)
     {
-        //Best performance way to handle(getting and searching) 200k notes
+        //Best performance way(at this situation) to handle(getting and searching) 200k notes
         var animals = _animalRepository.GetReadOnlyQuery().Select(x => new GetAnimal
         {
             Id = x.Id,

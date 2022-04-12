@@ -2,13 +2,15 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Tamagotchi.Application.Animals.Base.DTOs;
 using Tamagotchi.Application.Animals.Queries.GetAll.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using Tamagotchi.Data.DataTableProcessing;
 using Tamagotchi.Data.Repositories.Interfaces;
-using Tamagotchi.Data.Entities;
+using Tamagotchi.Application.Animals.Commands.Create.DTOs;
+using Tamagotchi.Application.Animals.Commands.Update.DTOs;
+using Tamagotchi.Application.Animals.Commands.Delete.DTOs;
+using Tamagotchi.Application.Animals.Queries.GetUnicId.DTOs;
 
 namespace TamagotchiWeb.Controllers
 {
@@ -60,7 +62,6 @@ namespace TamagotchiWeb.Controllers
             try
             {
                 var result = await _mediator.Send(new GetAnimalsQuery { DtParameters = data });
-
                 return new JsonResult(result);
             }
             catch (Exception ex)
@@ -89,61 +90,34 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                //if (model.Name == model.Type)
-                //{
-                //    ModelState.AddModelError("isMatchError", "The Name cannot exactly match Type.");
-                //}
+                if (model.Name == model.Type)
+                {
+                    ModelState.AddModelError("isMatchError", "The Name cannot exactly match Type.");
+                }
                 if (ModelState.IsValid)
                 {
                     ModelState.Clear();
                     if (model.Id is 0)
                     {
-                        var animal = new Animal
-                        {
-                            AnimalId = model.AnimalId,
-                            Type = model.Type,
-                            Name = model.Name
-                            //organizationAnimalId = model.OrganizationAnimalId,
-                            //primaryBreed = model.PrimaryBreed,
-                            //organizationId = model.OrganizationId
-                        };
-
-                        await _animalRepository.AddAsync(animal);
-                        TempData["success"] = "Animal has created successfully.";
+                        model.AnimalId = await _mediator.Send(new GetUnicIdQuery());
+                        var result = await _mediator.Send(_mapper.Map<CreateAnimalCommand>(model));
+                        if(result != null)
+                            TempData["success"] = "Animal has created successfully.";
                     }
                     else
                     {
-                        var editableAnimal = await _animalRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
-                        
-                        if (editableAnimal != null)
-                        {
-                            if (editableAnimal.AnimalId != model.AnimalId)
-                            {
-                                return RedirectToAction("Index"); //fix logic
-                            }
-
-                            editableAnimal.Name = model.Name;
-                            editableAnimal.Type = model.Type;
-                            editableAnimal.AnimalId = model.AnimalId;
-                            //editableAnimal.organizationAnimalId = model.OrganizationAnimalId;
-                            //editableAnimal.primaryBreed = model.PrimaryBreed;
-                            //editableAnimal.organizationId = model.OrganizationId;
-
-                            _animalRepository.Update(editableAnimal);
+                        var result = await _mediator.Send(_mapper.Map<UpdateAnimalCommand>(model));
+                        if(result != null)
                             TempData["success"] = "Animal has updated successfully.";
-                        }
-                        else
-                        {
-                            return NotFound();
-                        }
                     }
                     await _animalRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+
+                    return RedirectToAction("Index");
                 }
                 else
                 {
                     return RedirectToAction("Index");
                 }
-                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -156,14 +130,9 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var deletableAnimal = await _animalRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
-
-                if (deletableAnimal != null)
-                    _animalRepository.Remove(deletableAnimal);
-                else
+                var result = await _mediator.Send(new DeleteAnimalCommand { Id = model.Id });
+                if(result == null)
                     return NotFound();
-
-                await _animalRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
 
                 TempData["success"] = "Animal has deleted successfully.";
                 return RedirectToActionPermanent(nameof(Index));
