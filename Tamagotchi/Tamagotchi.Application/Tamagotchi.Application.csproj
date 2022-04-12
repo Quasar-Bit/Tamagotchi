@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Organizations\Commands\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Tamagotchi.Data\Tamagotchi.Data.csproj" />
   </ItemGroup>
 

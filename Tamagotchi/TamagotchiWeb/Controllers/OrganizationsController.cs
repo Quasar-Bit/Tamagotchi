@@ -2,31 +2,29 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Tamagotchi.Application.Organizations.Base.DTOs;
 using Tamagotchi.Application.Organizations.Queries.GetAll.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using Tamagotchi.Data.DataTableProcessing;
-using Tamagotchi.Data.Repositories.Interfaces;
-using Tamagotchi.Data.Entities;
+using Tamagotchi.Application.Organizations.Commands.Create.DTOs;
+using Tamagotchi.Application.Organizations.Queries.GetUnicId.DTOs;
+using Tamagotchi.Application.Organizations.Commands.Update.DTOs;
+using Tamagotchi.Application.Organizations.Commands.Delete.DTOs;
 
 namespace TamagotchiWeb.Controllers
 {
     public class OrganizationsController : BaseController<OrganizationsController>
     {
-        private readonly IOrganizationRepository _organizationRepository;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
         public OrganizationsController(
             IMediator mediator,
             IMapper mapper,
-            IOrganizationRepository organizationRepository,
             ILogger<OrganizationsController> logger) : base(logger)
         {
             _mediator = mediator;
             _mapper = mapper;
-            _organizationRepository = organizationRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -40,19 +38,6 @@ namespace TamagotchiWeb.Controllers
                 return GetErrorView(ex);
             }
         }
-
-        //[HttpPost]
-        //public IActionResult GetAll()
-        //{
-        //    try
-        //    {
-        //        return PartialView("_Table");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return GetErrorView(ex);
-        //    }
-        //}
 
         [HttpPost]
         public async Task<IActionResult> GetPaginatedTable(DtParameters data)
@@ -98,47 +83,25 @@ namespace TamagotchiWeb.Controllers
                     ModelState.Clear();
                     if (model.Id is 0)
                     {
-                        var organization = new Organization
-                        {
-                            Phone = model.Phone,
-                            Name = model.Name,
-                            Email = model.Email,
-                            Website = model.Website,
-                            Address1 = model.Address1,
-                            OrganizationId = model.OrganizationId
-                        };
-
-                        await _organizationRepository.AddAsync(organization);
-                        TempData["success"] = "Organization created successfully.";
+                        model.OrganizationId += await _mediator.Send(new GetUnicOrganizationIdQuery());
+                        var result = await _mediator.Send(_mapper.Map<CreateOrganizationCommand>(model));
+                        if (result != null)
+                            TempData["success"] = "Organization has created successfully.";
                     }
                     else
                     {
-                        var editableOrganization = await _organizationRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
-
-                        if (editableOrganization != null)
-                        {
-                            editableOrganization.Phone = model.Phone;
-                            editableOrganization.Name = model.Name;
-                            editableOrganization.Email = model.Email;
-                            editableOrganization.Website = model.Website;
-                            editableOrganization.Address1 = model.Address1;
-                            editableOrganization.OrganizationId = model.OrganizationId;
-
-                            _organizationRepository.Update(editableOrganization);
-                            TempData["success"] = "Organization updated successfully.";
-                        }
-                        else
-                        {
+                        var result = await _mediator.Send(_mapper.Map<UpdateOrganizationCommand>(model));
+                        if (result == null)
                             return NotFound();
-                        }
+                        else
+                            TempData["success"] = "Organization updated successfully.";
                     }
-                    await _organizationRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+                    return RedirectToAction("Index");
                 }
                 else
                 {
                     return RedirectToAction("Index");
                 }
-                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -151,14 +114,9 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var deletableOrganization = await _organizationRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Id == model.Id, new CancellationToken());
-
-                if (deletableOrganization != null)
-                    _organizationRepository.Remove(deletableOrganization);
-                else
+                var result = await _mediator.Send(new DeleteOrganizationCommand { Id = model.Id });
+                if (result == null)
                     return NotFound();
-
-                await _organizationRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
 
                 TempData["success"] = "Organization has deleted successfully.";
                 return RedirectToActionPermanent(nameof(Index));

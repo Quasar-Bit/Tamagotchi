@@ -6,7 +6,6 @@ using Tamagotchi.Application.Animals.Base.DTOs;
 using Tamagotchi.Application.Animals.Queries.GetAll.DTOs;
 using TamagotchiWeb.Controllers.Base;
 using Tamagotchi.Data.DataTableProcessing;
-using Tamagotchi.Data.Repositories.Interfaces;
 using Tamagotchi.Application.Animals.Commands.Create.DTOs;
 using Tamagotchi.Application.Animals.Commands.Update.DTOs;
 using Tamagotchi.Application.Animals.Commands.Delete.DTOs;
