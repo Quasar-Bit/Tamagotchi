@@ -11,21 +11,47 @@
     <div class="modal-body">
         
         <input asp-for="Id" class="form-control" hidden="hidden" />
+        
+        <div class="mb-3">
+            <label asp-for="AnimalId"></label>
+            <input asp-for="AnimalId" class="form-control" placeholder="Input Animal Id" required />
+        </div>
 
         <div class="mb-3">
             <label asp-for="Name"></label>
             <input asp-for="Name" class="form-control" placeholder="Input Name" required />
         </div>
-
+        
         <div class="mb-3">
             <label asp-for="Type"></label>
             <input asp-for="Type" class="form-control" placeholder="Input Type" />
         </div>
-
+        
         <div class="mb-3">
-            <label asp-for="AnimalId"></label>
-            <input asp-for="AnimalId" class="form-control" placeholder="Input Animal Id" required />
+            <label asp-for="PrimaryBreed"></label>
+            <input asp-for="PrimaryBreed" class="form-control" placeholder="Input Breed" />
         </div>
+        
+        <div class="mb-3">
+            <label asp-for="Gender"></label>
+            <input asp-for="Gender" class="form-control" placeholder="Input Gender" />
+        </div>
+        
+        <div class="mb-3">
+            <label asp-for="Age"></label>
+            <input asp-for="Age" class="form-control" placeholder="Input Age" />
+        </div>
+        
+        <div class="mb-3">
+            <label asp-for="PrimaryColor"></label>
+            <input asp-for="PrimaryColor" class="form-control" placeholder="Input Color" />
+        </div>
+        
+        <div class="mb-3">
+            <label asp-for="OrganizationId"></label>
+            <input asp-for="OrganizationId" class="form-control" placeholder="Input Organization Id" />
+        </div>
+
     </div>
         
     <div class="modal-footer">

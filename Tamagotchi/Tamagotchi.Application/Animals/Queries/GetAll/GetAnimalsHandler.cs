@@ -24,8 +24,7 @@ public class GetAnimalsHandler : BaseRequestHandler, IRequestHandler<GetAnimalsQ
     public async Task<DtResult<GetAnimal>> Handle(GetAnimalsQuery request,
         CancellationToken cancellationToken)
     {
-        //var animals = _animalRepository.GetReadOnlyQuery().Select(x => Mapper.Map<GetAnimal>(x));
-
+        //Best performance way to handle(getting and searching) 200k notes
         var animals = _animalRepository.GetReadOnlyQuery().Select(x => new GetAnimal
         {
             Id = x.Id,
