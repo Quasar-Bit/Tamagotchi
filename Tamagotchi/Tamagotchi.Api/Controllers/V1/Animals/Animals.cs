@@ -1,14 +1,15 @@
-﻿
-using MapsterMapper;
+﻿using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Tamagotchi.Api.Controllers.Base;
-using Tamagotchi.Application.Animals.Base.DTOs;
 using Tamagotchi.Application.Animals.Queries.GetAll.DTOs;
+using MediatR;
+using Tamagotchi.Application.Animals.Base.DTOs;
 using Tamagotchi.Data.DataTableProcessing;
-using Tamagotchi.Data.Repositories.Interfaces;
-using Tamagotchi.Application.Extensions;
+using Tamagotchi.Application.Animals.Commands.Create.DTOs;
+using Tamagotchi.Application.Animals.Commands.Delete.DTOs;
+using Tamagotchi.Application.Animals.Commands.Update.DTOs;
 
 namespace Tamagotchi.Api.Controllers.V1.Animals;
 
@@ -16,68 +17,45 @@ namespace Tamagotchi.Api.Controllers.V1.Animals;
 [SwaggerTag("Application Api")]
 public class Animals : BaseApiController<Animals>
 {
-    private readonly IAnimalRepository _animalRepository;
     private readonly IMapper _mapper;
-    public Animals(IAnimalRepository animalRepository, ILogger<Animals> logger, IMapper mapper)
-        : base(logger)
+    public Animals(
+        IMapper mapper,
+        IMediator mediator,
+        ILogger<Animals> logger)
+        : base(mediator, logger)
     {
-        _animalRepository = animalRepository;
         _mapper = mapper;
     }
 
-    [SwaggerOperation(Summary = "Get Animals By Different Parameters")]
+    [SwaggerOperation(Summary = "Get Animals By Different Parameters", Description = "Several settings exist: count per page, etc...")]
     [AllowAnonymous]
     [HttpGet(nameof(GetAnimals))]
-    public async Task<IActionResult> GetAnimals([FromQuery] GetAnimalsQuery query)
+    public async Task<IActionResult> GetAnimals()
     {
+        return await CommonQueryMethod<DtResult<GetAnimal>>(new GetAnimalsQuery { DtParameters = GetStandardParameters() });
+    }
 
-        try
-        {
-            IEnumerable<GetAnimal> subscriptions;
+    [SwaggerOperation(Summary = "Create Animal", Description = "Type and Name are required")]
+    [AllowAnonymous]
+    [HttpPost(nameof(CreateAnimal))]
+    public async Task<IActionResult> CreateAnimal([FromBody] CreateAnimalCommand query)
+    {
+        return await CommonQueryMethod<GetAnimal>(query);
+    }
 
-            var dtParameters = query.DtParameters;
+    [SwaggerOperation(Summary = "Update Animal", Description = "Type and Name are required")]
+    [AllowAnonymous]
+    [HttpPost(nameof(UpdateAnimal))]
+    public async Task<IActionResult> UpdateAnimal([FromBody] UpdateAnimalCommand query)
+    {
+        return await CommonQueryMethod<GetAnimal>(query);
+    }
 
-            subscriptions = _animalRepository.GetReadOnlyQuery()
-                .Select(_mapper.Map<GetAnimal>);
-
-            var total = subscriptions.Count();
-
-            var searchBy = dtParameters.Search?.Value;
-
-            if (!string.IsNullOrEmpty(searchBy))
-                subscriptions = subscriptions.Where(s => s.Type.Contains(searchBy) ||
-                                                         s.Name.Contains(searchBy)
-                );
-
-            var orderableProperty = nameof(GetAnimal.OrganizationId);
-            var toOrderAscending = true;
-            if (dtParameters.Order != null && dtParameters.Length > 0)
-            {
-                orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
-                toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
-            }
-
-            var orderedSubscriptions = toOrderAscending
-                ? subscriptions.OrderBy(x => x.GetPropertyValue(orderableProperty))
-                : subscriptions.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
-
-            var result = new DtResult<GetAnimal>
-            {
-                Draw = dtParameters.Draw,
-                RecordsTotal = total,
-                RecordsFiltered = orderedSubscriptions.Count(),
-                Data = orderedSubscriptions
-                .Skip(dtParameters.Start)
-                .Take(dtParameters.Length)
-            };
-
-            //var gg = result.Data.ToList();
-            return new JsonResult(result);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.StackTrace);
-            return null;
-        }
+    [SwaggerOperation(Summary = "Delete Animal", Description = "Id is required")]
+    [AllowAnonymous]
+    [HttpPost(nameof(DeleteAnimal))]
+    public async Task<IActionResult> DeleteAnimal([FromBody] DeleteAnimalCommand query)
+    {
+        return await CommonQueryMethod<GetAnimal>(query);
     }
 }

@@ -15,26 +15,26 @@
 
 using System.Runtime.Serialization;
 
-namespace TamagotchiWeb.Exceptions;
+namespace Tamagotchi.Application.Exceptions;
 
 [Serializable]
-public class NotFoundException : Exception
+public class ForbiddenAccessException : Exception
 {
-    public NotFoundException()
+    public ForbiddenAccessException()
     {
     }
 
-    public NotFoundException(string message)
+    public ForbiddenAccessException(string message)
         : base(message)
     {
     }
 
-    public NotFoundException(string message, Exception innerException)
+    public ForbiddenAccessException(string message, Exception innerException)
         : base(message, innerException)
     {
     }
 
-    protected NotFoundException(SerializationInfo info, StreamingContext context)
+    protected ForbiddenAccessException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
     }
