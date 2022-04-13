@@ -1,28 +1,24 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Tamagotchi.Data;
+using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using Tamagotchi.Application.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ApplicationConfigureServices();
-
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
 builder.Services.AddMvc();
 builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
-
-// Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 //builder.Services.AddHttpContextAccessor();
 
-var app = builder.Build();
-
 // Configure the HTTP request pipeline.
+var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

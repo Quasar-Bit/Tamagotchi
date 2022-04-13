@@ -27,7 +27,6 @@ public class ResultResponse<T>
 
     public T Model { get; set; }
     public string Error { get; set; }
-    public string Content { get; set; }
 
     #endregion
 }

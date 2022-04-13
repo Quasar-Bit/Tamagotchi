@@ -1,6 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tamagotchi.Api.Models;
+using Tamagotchi.Api.Models.Base;
+using Tamagotchi.Data.DataTableProcessing;
 using ApplicationException = Tamagotchi.Application.Exceptions.ApplicationException;
 
 namespace Tamagotchi.Api.Controllers.Base;
@@ -12,8 +15,9 @@ public abstract class BaseApiController<T> : ControllerBase, IDisposable
 {
     private const string RequiredField = "The '{0}' field is required.";
 
-    protected BaseApiController( ILogger<T> logger)
+    protected BaseApiController(IMediator mediator, ILogger<T> logger)
     {
+        Mediator = mediator;
         Logger = logger;
     }
 
@@ -26,23 +30,28 @@ public abstract class BaseApiController<T> : ControllerBase, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    protected async Task<IActionResult> CommonQueryMethod(object query)
+    protected async Task<IActionResult> CommonQueryMethod<TResult>(object query)
     {
+        var answer = new ResultResponse<TResult>();
         try
         {
-            return Ok(await Mediator.Send(query));
+            var result = await Mediator.Send(query);
+            answer.Model = (TResult)result;
+
+            return Ok(answer);
         }
         catch (ApplicationException ex)
         {
-            return Error(new[] { ex.Message });
+            answer.Error = ex.Message;
+            return BadRequest(answer);
         }
         catch (Exception ex)
         {
-#if DEBUG
-#else
+#if !DEBUG
             Logger.LogCritical(ex.Message);
 #endif
-            return BadRequest(ex.Message);
+            answer.Error = ex.Message;
+            return BadRequest(answer);
         }
     }
 
@@ -52,6 +61,30 @@ public abstract class BaseApiController<T> : ControllerBase, IDisposable
             ModelState.AddModelError("errors", item);
 
         return BadRequest(ModelState);
+    }
+
+    protected DtParameters GetStandardParameters()
+    {
+        return new DtParameters
+        {
+            Start = 0,
+            Draw = 1,
+            Length = 10,
+            Search = new DtSearch(),
+            Order = new List<DtOrder> { new DtOrder { Column = 0, Dir = DtOrderDir.Asc } }.ToArray(),
+            AdditionalValues = new List<string> { string.Empty }.AsEnumerable(),
+            Columns = new List<DtColumn>
+            {
+                new DtColumn { Searchable = true, Orderable = true, Data = "id", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "name", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "type", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "primaryBreed", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "gender", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "age", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "primaryColor", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "organizationId", Search = new DtSearch() }
+            }.ToArray()
+        };
     }
 
     protected string RequiredString(string field)
