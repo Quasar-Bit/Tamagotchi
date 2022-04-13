@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ApplicationException = TamagotchiWeb.Exceptions.ApplicationException;
+using ApplicationException = Tamagotchi.Application.Exceptions.ApplicationException;
 
 namespace Tamagotchi.Api.Controllers.Base;
 

@@ -1,14 +1,14 @@
-﻿
-using MapsterMapper;
+﻿using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Tamagotchi.Api.Controllers.Base;
-using Tamagotchi.Application.Animals.Base.DTOs;
 using Tamagotchi.Application.Animals.Queries.GetAll.DTOs;
 using Tamagotchi.Data.DataTableProcessing;
-using Tamagotchi.Data.Repositories.Interfaces;
-using Tamagotchi.Application.Extensions;
+using MediatR;
+using Tamagotchi.Application.AnimalTypes.Quieries.GetAll.DTOs;
+using Tamagotchi.Application.Animals.Base.DTOs;
+using Tamagotchi.Api.Models;
 
 namespace Tamagotchi.Api.Controllers.V1.Animals;
 
@@ -16,68 +16,62 @@ namespace Tamagotchi.Api.Controllers.V1.Animals;
 [SwaggerTag("Application Api")]
 public class Animals : BaseApiController<Animals>
 {
-    private readonly IAnimalRepository _animalRepository;
     private readonly IMapper _mapper;
-    public Animals(IAnimalRepository animalRepository, ILogger<Animals> logger, IMapper mapper)
+    private readonly IMediator _mediator;
+    public Animals(
+        IMapper mapper,
+        IMediator mediator,
+        ILogger<Animals> logger)
         : base(logger)
     {
-        _animalRepository = animalRepository;
         _mapper = mapper;
+        _mediator = mediator;
     }
 
     [SwaggerOperation(Summary = "Get Animals By Different Parameters")]
     [AllowAnonymous]
     [HttpGet(nameof(GetAnimals))]
-    public async Task<IActionResult> GetAnimals([FromQuery] GetAnimalsQuery query)
+    public async Task<IActionResult> GetAnimals()
     {
-
+        var answer = new ResultResponse<IEnumerable<GetAnimal>>();
         try
         {
-            IEnumerable<GetAnimal> subscriptions;
-
-            var dtParameters = query.DtParameters;
-
-            subscriptions = _animalRepository.GetReadOnlyQuery()
-                .Select(_mapper.Map<GetAnimal>);
-
-            var total = subscriptions.Count();
-
-            var searchBy = dtParameters.Search?.Value;
-
-            if (!string.IsNullOrEmpty(searchBy))
-                subscriptions = subscriptions.Where(s => s.Type.Contains(searchBy) ||
-                                                         s.Name.Contains(searchBy)
-                );
-
-            var orderableProperty = nameof(GetAnimal.OrganizationId);
-            var toOrderAscending = true;
-            if (dtParameters.Order != null && dtParameters.Length > 0)
-            {
-                orderableProperty = dtParameters.Columns[dtParameters.Order.FirstOrDefault().Column].Data.CapitalizeFirst();
-                toOrderAscending = dtParameters.Order.FirstOrDefault().Dir == DtOrderDir.Asc;
-            }
-
-            var orderedSubscriptions = toOrderAscending
-                ? subscriptions.OrderBy(x => x.GetPropertyValue(orderableProperty))
-                : subscriptions.OrderByDescending(x => x.GetPropertyValue(orderableProperty));
-
-            var result = new DtResult<GetAnimal>
-            {
-                Draw = dtParameters.Draw,
-                RecordsTotal = total,
-                RecordsFiltered = orderedSubscriptions.Count(),
-                Data = orderedSubscriptions
-                .Skip(dtParameters.Start)
-                .Take(dtParameters.Length)
-            };
-
-            //var gg = result.Data.ToList();
-            return new JsonResult(result);
+            var result = await _mediator.Send(new GetAnimalsQuery { DtParameters = GetStandardParameters() });
+            answer.Model = result.Data;
+            return new JsonResult(answer);
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.StackTrace);
-            return null;
+            answer.Error = ex.Message;
+            return new JsonResult(answer);
         }
     }
+
+    #region Local Methods
+
+    private DtParameters GetStandardParameters()
+    {
+        return new DtParameters
+        {
+            Start = 0,
+            Draw = 1,
+            Length = 10,
+            Search = new DtSearch(),
+            Order = new List<DtOrder> { new DtOrder { Column = 0, Dir = DtOrderDir.Asc } }.ToArray(),
+            AdditionalValues = new List<string> { string.Empty }.AsEnumerable(),
+            Columns = new List<DtColumn>
+            {
+                new DtColumn { Searchable = true, Orderable = true, Data = "id", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "name", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "type", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "primaryBreed", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "gender", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "age", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "primaryColor", Search = new DtSearch() },
+                new DtColumn { Searchable = true, Orderable = true, Data = "organizationId", Search = new DtSearch() }
+            }.ToArray()
+        };
+    }
+
+    #endregion
 }

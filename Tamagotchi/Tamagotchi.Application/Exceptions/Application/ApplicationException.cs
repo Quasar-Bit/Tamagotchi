@@ -22,7 +22,7 @@
 
 using System.Runtime.Serialization;
 
-namespace TamagotchiWeb.Exceptions;
+namespace Tamagotchi.Application.Exceptions;
 
 [Serializable]
 public class ApplicationException : Exception
