@@ -3,6 +3,8 @@ using Tamagotchi.Data;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Tamagotchi.Application.Startup;
+using TamagotchiWeb.Services.Interfaces;
+using TamagotchiWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,9 @@ builder.Services.AddMvc();
 builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
+builder.Services.AddTransient<IAnimalTypeService, AnimalTypeService>();
+
 //builder.Services.AddHttpContextAccessor();
 
 // Configure the HTTP request pipeline.

@@ -23,16 +23,12 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header  row clearfix">
-                       @* <div class="row col-4">
-                            @await Html.PartialAsync("_Filter", Model)
-                        </div>
-
                         <div class="col-3 offset-5 float-left">
-                            <button id="newSubscription" class="btn btn-success  col-12"
-                                    onclick="onCreateSubscription(getById('#userList'))">
-                                @Localizer["new_subscription"]
+                            <button id="sync" class="btn btn-success  col-12"
+                                    onclick="onSynch()">
+                                Synchronize with Petfinder
                             </button>
-                        </div>*@
+                        </div>
                     </div>
                     
                     <div>
@@ -108,6 +104,7 @@
         {
             Util.editModal(model,'/AnimalTypes/OpenPopup');
         }
+
         function onDeletingAnimalType(model)
         {
             Util.makeRequest(model,'/AnimalTypes/Delete', { onSuccessComplete: reloadPage() });
@@ -117,17 +114,15 @@
         {
              location.reload();
         }
+
+        function onSynch() {
+            $.ajaxSetup({ cache: true });
+            $.ajax({
+                async: true,
+                type: "Post",
+                url: '/AnimalTypes/Synch'
+            });
+            //second way:
+            //Util.makeRequest({ gg: 'some parameter' }, '/AnimalTypes/Synch');
+        }
     </script>
-    
-@*
-<script>
-    function onSynch() {
-        $.ajaxSetup({ cache: true });
-        $.ajax({
-            async: true,
-            type: "Post",
-            url: '/AnimalTypes/Synch'
-        });
-       // util.makeRequest(null, '/Animals/Synch');
-    }
-    </script>*@

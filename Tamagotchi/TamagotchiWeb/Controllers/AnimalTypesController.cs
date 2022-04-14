@@ -8,6 +8,7 @@ using Tamagotchi.Data.DataTableProcessing;
 using Tamagotchi.Application.AnimalTypes.Commands.Create.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Update.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Delete.DTOs;
+using TamagotchiWeb.Services.Interfaces;
 
 namespace TamagotchiWeb.Controllers
 {
@@ -15,14 +16,17 @@ namespace TamagotchiWeb.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
+        private readonly IAnimalTypeService _animalTypeService;
 
         public AnimalTypesController(
             IMediator mediator,
             IMapper mapper,
+            IAnimalTypeService animalTypeService,
             ILogger<AnimalTypesController> logger) : base(logger)
         {
             _mediator = mediator;
             _mapper = mapper;
+            _animalTypeService = animalTypeService;
         }
 
         public async Task<IActionResult> Index()
@@ -123,25 +127,25 @@ namespace TamagotchiWeb.Controllers
                 return GetErrorView(ex);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Synch(string gg)
+        {
+            var firstRequest = await _animalTypeService.GetAnimalTypes();
+
+            //for (int i = 6; i <= firstRequest.Pagination.total_pages; i++)
+            //{
+            //    var answer = await _animalService.GetOrganizations(i);
+
+            //    foreach (var item in answer.Organizations)
+            //    {
+            //        _db.Organizations.Add(item);
+            //    }
+
+            //    _db.SaveChanges();
+            //}
+
+            return RedirectToAction("index");
+        }
     }
 }
-
-//        [HttpPost]
-//        public async Task<IActionResult> Synch(string gg)
-//        {
-//            var firstRequest = await _animalService.GetOrganizations(1);
-
-//            //for (int i = 6; i <= firstRequest.Pagination.total_pages; i++)
-//            //{
-//            //    var answer = await _animalService.GetOrganizations(i);
-
-//            //    foreach (var item in answer.Organizations)
-//            //    {
-//            //        _db.Organizations.Add(item);
-//            //    }
-
-//            //    _db.SaveChanges();
-//            //}
-
-//            return RedirectToAction("index");
-//        }
