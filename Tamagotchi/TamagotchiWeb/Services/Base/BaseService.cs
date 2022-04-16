@@ -4,6 +4,7 @@ using System.Text;
 using TamagotchiWeb.Exceptions;
 using TamagotchiWeb.Models;
 using Newtonsoft.Json;
+using System.Web;
 
 namespace TamagotchiWeb.Services.Base
 {
@@ -19,7 +20,6 @@ namespace TamagotchiWeb.Services.Base
                 {
                     var body = string.Empty;
 
-                    request.Headers.Add("Authorization", "Bearer " + token);
 
                     if (method != HttpMethod.Get)
                     {
@@ -31,13 +31,9 @@ namespace TamagotchiWeb.Services.Base
                                 new KeyValuePair<string, string>("client_id", Constants.ApiKey),
                                 new KeyValuePair<string, string>("client_secret", Constants.ApiSecret)
                             };
+                            //request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
-                            request.Headers.Clear();
-
-                            var content = new FormUrlEncodedContent(pairs);
-                            content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-
-                            request.Content = content;
+                            request.Content = new FormUrlEncodedContent(pairs);
                         }
                         else
                         {
@@ -45,7 +41,10 @@ namespace TamagotchiWeb.Services.Base
                             request.Content = new StringContent(body, Encoding.UTF8, "application/json");
                         }
                     }
-
+                    else
+                    {
+                        request.Headers.Add("Authorization", "Bearer " + token);
+                    }
 
                     var stopWatch = new Stopwatch();
                     stopWatch.Start();
@@ -64,8 +63,11 @@ namespace TamagotchiWeb.Services.Base
                         else if ((int)response.StatusCode >= 400 && (int)response.StatusCode < 500)
                         {
                             var resultError = JsonConvert.DeserializeObject<Response<string>>(str);
-                            throw new WebServiceException(resultError?.errors ?? new List<string>
-                                { response?.ReasonPhrase });
+                            if (str.Contains("Unauthorized"))
+                                throw new WebServiceException(new List<string>
+                                    { response?.ReasonPhrase });
+                            else
+                                throw new WebServiceException(resultError?.errors);
                         }
                         else
                         {

@@ -28,10 +28,19 @@ namespace TamagotchiWeb.Services
 
             var token = await _appSettingsRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Name == "PetFinderToken", new CancellationToken());
             if (token == null)
-                return await Task.FromResult(false);
+            {
+                _appSettingsRepository.AddAsync(new AppSetting
+                {
+                    Name = "PetFinderToken",
+                    Value = petFinderToken.Data.access_token
+                }, new CancellationToken());
+            }
+            else
+            {
+                token.Value = petFinderToken.Data.token_type + " " + petFinderToken.Data.access_token;
+                var result = _appSettingsRepository.Update(token);
+            }
 
-            token.Value = petFinderToken.Data.token_type + " " + petFinderToken.Data.access_token;
-            var result = _appSettingsRepository.Update(token);
             var answer = await _appSettingsRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
 
             return await Task.FromResult(answer > 0);

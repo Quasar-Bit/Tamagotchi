@@ -23,8 +23,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header  row clearfix">
-                        <div class="col-3 offset-5 float-left">
-                            <button id="sync" class="btn btn-success  col-12"
+                        <div class="text-end">
+                            <button id="sync" class="btn btn-success"
                                     onclick="onSynch()">
                                 Synchronize with Petfinder
                             </button>
@@ -109,20 +109,27 @@
         {
             Util.makeRequest(model,'/AnimalTypes/Delete', { onSuccessComplete: reloadPage() });
         }
-
+        
         function reloadPage()
         {
-             location.reload();
+            location.reload();
+        }
+
+        function allSynchronized()
+        {
+            toastr.success('Successfully synchronized');
+            setInterval(reloadPage, 1000);
         }
 
         function onSynch() {
-            $.ajaxSetup({ cache: true });
-            $.ajax({
-                async: true,
-                type: "Post",
-                url: '/AnimalTypes/Synch'
-            });
+            //$.ajaxSetup({ cache: true });
+            //$.ajax({
+            //    async: true,
+            //    type: "Post",
+            //    url: '/AnimalTypes/Synch',
+            //    success: reloadPage()
+            //});
             //second way:
-            //Util.makeRequest({ stringParameter: 'some parameter' }, '/AnimalTypes/Synch');
+            Util.makeRequest(null, '/AnimalTypes/Synch', { onSuccessComplete: allSynchronized() });
         }
     </script>

@@ -143,7 +143,7 @@ namespace TamagotchiWeb.Controllers
                     var obj = dbAnimalTypes.Data.FirstOrDefault(x => x.Name == item.Name);
                     if (obj == null)
                     {
-                        var result = await _mediator.Send(_mapper.Map<CreateAnimalTypeCommand>(_mapper.Map<GetAnimalType>(item)));
+                        var result = await _mediator.Send(_mapper.Map<CreateAnimalTypeCommand>(item));
                         if(result == null)
                             Console.WriteLine("Something went wrong with creation " + item.Name + " Animal Type");
                         else
