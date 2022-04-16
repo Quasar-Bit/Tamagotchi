@@ -10,6 +10,7 @@ using Tamagotchi.Application.Animals.Commands.Create.DTOs;
 using Tamagotchi.Application.Animals.Commands.Update.DTOs;
 using Tamagotchi.Application.Animals.Commands.Delete.DTOs;
 using Tamagotchi.Application.Animals.Queries.GetUnicId.DTOs;
+using TamagotchiWeb.Services.Interfaces;
 
 namespace TamagotchiWeb.Controllers
 {
@@ -21,7 +22,8 @@ namespace TamagotchiWeb.Controllers
         public AnimalsController(
             IMapper mapper,
             IMediator mediator,
-            ILogger<AnimalsController> logger) : base(logger)
+            ITokenService tokenService,
+            ILogger<AnimalsController> logger) : base(tokenService, logger)
         {
             _mediator = mediator;
             _mapper = mapper;

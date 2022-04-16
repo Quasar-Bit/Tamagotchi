@@ -9,7 +9,7 @@ namespace TamagotchiWeb.Services.Base
 {
     public class BaseService
     {
-        protected async Task<Result<TResult>> MakeApiCall<TResult>(string url, HttpMethod method,
+        protected async Task<Result<TResult>> MakeApiCall<TResult>(string url, HttpMethod method, string token = null,
             object data = null)
             where TResult : class
         {
@@ -18,13 +18,34 @@ namespace TamagotchiWeb.Services.Base
                 using (var request = new HttpRequestMessage { RequestUri = new Uri(url), Method = method })
                 {
                     var body = string.Empty;
+
+                    request.Headers.Add("Authorization", "Bearer " + token);
+
                     if (method != HttpMethod.Get)
                     {
-                        body = JsonConvert.SerializeObject(data, Formatting.Indented);
-                        request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+                        if(token == null)
+                        {
+                            var pairs = new[]
+                            {
+                                new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                                new KeyValuePair<string, string>("client_id", Constants.ApiKey),
+                                new KeyValuePair<string, string>("client_secret", Constants.ApiSecret)
+                            };
+
+                            request.Headers.Clear();
+
+                            var content = new FormUrlEncodedContent(pairs);
+                            content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+
+                            request.Content = content;
+                        }
+                        else
+                        {
+                            body = JsonConvert.SerializeObject(data, Formatting.Indented);
+                            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+                        }
                     }
 
-                    request.Headers.Add("Authorization", "Bearer " + Constants.AccessToken);
 
                     var stopWatch = new Stopwatch();
                     stopWatch.Start();
@@ -44,12 +65,16 @@ namespace TamagotchiWeb.Services.Base
                         {
                             var resultError = JsonConvert.DeserializeObject<Response<string>>(str);
                             throw new WebServiceException(resultError?.errors ?? new List<string>
-                                { response.ReasonPhrase });
+                                { response?.ReasonPhrase });
                         }
                         else
                         {
                             throw new BaseException();
                         }
+                    }
+                    catch (WebServiceException ex)
+                    {
+                        throw ex;
                     }
                     catch (Exception ex)
                     {

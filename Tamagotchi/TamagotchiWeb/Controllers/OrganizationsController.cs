@@ -10,6 +10,7 @@ using Tamagotchi.Application.Organizations.Commands.Create.DTOs;
 using Tamagotchi.Application.Organizations.Queries.GetUnicId.DTOs;
 using Tamagotchi.Application.Organizations.Commands.Update.DTOs;
 using Tamagotchi.Application.Organizations.Commands.Delete.DTOs;
+using TamagotchiWeb.Services.Interfaces;
 
 namespace TamagotchiWeb.Controllers
 {
@@ -21,7 +22,8 @@ namespace TamagotchiWeb.Controllers
         public OrganizationsController(
             IMediator mediator,
             IMapper mapper,
-            ILogger<OrganizationsController> logger) : base(logger)
+            ITokenService tokenService,
+            ILogger<OrganizationsController> logger) : base(tokenService, logger)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -128,3 +130,16 @@ namespace TamagotchiWeb.Controllers
         }
     }
 }
+
+
+//for (int i = 6; i <= firstRequest.Pagination.total_pages; i++)
+//{
+//    var answer = await _animalService.GetOrganizations(i);
+
+//    foreach (var item in answer.Organizations)
+//    {
+//        _db.Organizations.Add(item);
+//    }
+
+//    _db.SaveChanges();
+//}

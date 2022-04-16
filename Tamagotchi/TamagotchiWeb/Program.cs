@@ -18,6 +18,7 @@ builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
+builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IAnimalTypeService, AnimalTypeService>();
 
 //builder.Services.AddHttpContextAccessor();

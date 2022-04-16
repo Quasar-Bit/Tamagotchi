@@ -9,6 +9,7 @@ using Tamagotchi.Application.AnimalTypes.Commands.Create.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Update.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Delete.DTOs;
 using TamagotchiWeb.Services.Interfaces;
+using TamagotchiWeb.Exceptions;
 
 namespace TamagotchiWeb.Controllers
 {
@@ -22,7 +23,8 @@ namespace TamagotchiWeb.Controllers
             IMediator mediator,
             IMapper mapper,
             IAnimalTypeService animalTypeService,
-            ILogger<AnimalTypesController> logger) : base(logger)
+            ITokenService tokenService,
+            ILogger<AnimalTypesController> logger) : base(tokenService, logger)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -129,21 +131,45 @@ namespace TamagotchiWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Synch(string gg)
+        public async Task<IActionResult> Synch()
         {
-            var firstRequest = await _animalTypeService.GetAnimalTypes();
+            try
+            {
+                var dbAnimalTypes = await _mediator.Send(new GetAnimalTypesQuery { DtParameters = GetStandardParameters() });
+                var petFinderAnimalTypes = await _animalTypeService.GetAnimalTypes();
 
-            //for (int i = 6; i <= firstRequest.Pagination.total_pages; i++)
-            //{
-            //    var answer = await _animalService.GetOrganizations(i);
-
-            //    foreach (var item in answer.Organizations)
-            //    {
-            //        _db.Organizations.Add(item);
-            //    }
-
-            //    _db.SaveChanges();
-            //}
+                foreach (var item in petFinderAnimalTypes.AnimalTypes)
+                {
+                    var obj = dbAnimalTypes.Data.FirstOrDefault(x => x.Name == item.Name);
+                    if (obj == null)
+                    {
+                        var result = await _mediator.Send(_mapper.Map<CreateAnimalTypeCommand>(_mapper.Map<GetAnimalType>(item)));
+                        if(result == null)
+                            Console.WriteLine("Something went wrong with creation " + item.Name + " Animal Type");
+                        else
+                            Console.WriteLine("Animal Type " + result.Name + " has added");
+                    }
+                }
+            }
+            catch (WebServiceException ex)
+            {
+                if(ex.Errors.Contains("Unauthorized"))
+                {
+                    var isUpdatedPetFinderToken = await TokenService.GetPetFinderToken();
+                    if (isUpdatedPetFinderToken)
+                        await Synch();
+                    else
+                    {
+                        ModelState.AddModelError("authorizationError", "Something went wrong with getting PetFinder token!");
+                    }
+                }
+                else
+                    ModelState.AddModelError("webServiceError", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("synchError", ex.Message);
+            }
 
             return RedirectToAction("index");
         }
