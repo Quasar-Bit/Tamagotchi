@@ -54,6 +54,8 @@ public abstract class BaseController<T> : BaseController
     {
         var isSynchronizing = await Mediator.Send(new GetAppSettingsQuery { Name = "IsSynchronizing" });
         isSynchronizing.BoolValue = touch;
+        if (touch)
+            isSynchronizing.UpdateTime = DateTime.UtcNow;
         await Mediator.Send(Mapper.Map<UpdateAppSettingsCommand>(isSynchronizing));
     }
 }

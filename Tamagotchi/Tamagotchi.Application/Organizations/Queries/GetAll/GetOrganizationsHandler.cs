@@ -1,5 +1,4 @@
-﻿
-using MapsterMapper;
+﻿using MapsterMapper;
 using MediatR;
 using System.Linq.Expressions;
 using Tamagotchi.Application.Base;

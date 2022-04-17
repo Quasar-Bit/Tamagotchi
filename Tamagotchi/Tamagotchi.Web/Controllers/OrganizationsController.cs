@@ -29,7 +29,7 @@ public class OrganizationsController : BaseController<OrganizationsController>
         _organizationService = organizationService;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
         try
         {
@@ -135,14 +135,13 @@ public class OrganizationsController : BaseController<OrganizationsController>
         try
         {
             var isSynchronizing = await Mediator.Send(new GetAppSettingsQuery { Name = "IsSynchronizing" });
-            if(isSynchronizing.BoolValue)
+            var lastCheckedUpdatedTime = DateTime.UtcNow - isSynchronizing.UpdateTime;
+            if (isSynchronizing.BoolValue && lastCheckedUpdatedTime.TotalMinutes < 5)
             {
                 TempData["error"] = "Some kind of synchronization is already running...";
                 ModelState.AddModelError("synchronizing", "Some kind of synchronization is already running...");
                 return RedirectToAction("index");
             }
-
-            await ToggleSinchronization(true);
 
             var orgTotal = await _organizationService.GetOrganizations(1);
 
@@ -150,6 +149,7 @@ public class OrganizationsController : BaseController<OrganizationsController>
             
             for (int i = 1; i < orgTotal.Pagination.total_pages; i++)
             {
+                await ToggleSinchronization(true);
                 var petFinderOrganizations = await _organizationService.GetOrganizations(i);
                 
                 foreach (var item in petFinderOrganizations.Organizations)
@@ -168,13 +168,13 @@ public class OrganizationsController : BaseController<OrganizationsController>
         }
         catch (WebServiceException ex)
         {
-            await ToggleSinchronization(false);
             if (ex.Errors.Contains("Unauthorized"))
             {
                 var isUpdatedPetFinderToken = await TokenService.GetPetFinderToken();
                 if (isUpdatedPetFinderToken)
-
+                {
                     await Synch();
+                }
                 else
                     ModelState.AddModelError("authorizationError", "Something went wrong with getting PetFinder token!");
             }
@@ -183,11 +183,13 @@ public class OrganizationsController : BaseController<OrganizationsController>
         }
         catch (Exception ex)
         {
-            await ToggleSinchronization(false);
             ModelState.AddModelError("synchError", ex.Message);
         }
+        finally
+        {
+            await ToggleSinchronization(false);
+        }
 
-        await ToggleSinchronization(false);
         return RedirectToAction("index");
     }
 }
