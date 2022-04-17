@@ -3,7 +3,7 @@ using Tamagotchi.Data.Repositories.Base.Interfaces;
 
 namespace Tamagotchi.Data.Repositories.Interfaces
 {
-    public interface IAppSettingsRepository : IRepository<AppSetting>
+    public interface IAppSettingRepository : IRepository<AppSetting>
     {
     }
 }

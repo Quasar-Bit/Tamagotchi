@@ -9,19 +9,19 @@ namespace Tamagotchi.Application.Settings.Queries.GetAll
 {
     internal class GetAllSettingsHandler : BaseRequestHandler, IRequestHandler<GetAppSettingsQuery, IEnumerable<GetAppSetting>>
     {
-        private readonly IAppSettingsRepository _appSettingsRepository;
+        private readonly IAppSettingRepository _appSettingRepository;
 
         public GetAllSettingsHandler(
-            IAppSettingsRepository appSettingsRepository,
+            IAppSettingRepository appSettingRepository,
             IMapper mapper) : base(mapper)
         {
-            _appSettingsRepository = appSettingsRepository;
+            _appSettingRepository = appSettingRepository;
         }
 
         public async Task<IEnumerable<GetAppSetting>> Handle(GetAppSettingsQuery request,
             CancellationToken cancellationToken)
         {
-            return _appSettingsRepository.GetReadOnlyQuery().Select(Mapper.Map<GetAppSetting>);
+            return _appSettingRepository.GetReadOnlyQuery().Select(Mapper.Map<GetAppSetting>);
         }
     }
 }

@@ -4,9 +4,9 @@ using Tamagotchi.Data.Repositories.Interfaces;
 
 namespace Tamagotchi.Data.Repositories
 {
-    public class AppSettingsRepository : BaseRepository<AppSetting>, IAppSettingsRepository
+    public class AppSettingRepository : BaseRepository<AppSetting>, IAppSettingRepository
     {
-        public AppSettingsRepository(Context context) : base(context)
+        public AppSettingRepository(Context context) : base(context)
         {
         }
     }

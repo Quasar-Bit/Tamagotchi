@@ -13,11 +13,11 @@ namespace TamagotchiWeb.Services
         private const string PageSegment = "oauth2/token";
         private const string GetPetFinderTokenSegment = Constants.BaseApiController + PageSegment;
 
-        private readonly IAppSettingsRepository _appSettingsRepository;
+        private readonly IAppSettingRepository _appSettingRepository;
 
-        public TokenService(IAppSettingsRepository appSettingsRepository)
+        public TokenService(IAppSettingRepository appSettingRepository)
         {
-            _appSettingsRepository = appSettingsRepository;
+            _appSettingRepository = appSettingRepository;
         }
 
         public async Task<bool> GetPetFinderToken()
@@ -26,10 +26,10 @@ namespace TamagotchiWeb.Services
             if(petFinderToken == null)
                 return await Task.FromResult(false);
 
-            var token = await _appSettingsRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Name == "PetFinderToken", new CancellationToken());
+            var token = await _appSettingRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Name == "PetFinderToken", new CancellationToken());
             if (token == null)
             {
-                _appSettingsRepository.AddAsync(new AppSetting
+                _appSettingRepository.AddAsync(new AppSetting
                 {
                     Name = "PetFinderToken",
                     Value = petFinderToken.Data.access_token
@@ -38,10 +38,10 @@ namespace TamagotchiWeb.Services
             else
             {
                 token.Value = petFinderToken.Data.access_token;
-                var result = _appSettingsRepository.Update(token);
+                var result = _appSettingRepository.Update(token);
             }
 
-            var answer = await _appSettingsRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
+            var answer = await _appSettingRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
 
             return await Task.FromResult(answer > 0);
         }
