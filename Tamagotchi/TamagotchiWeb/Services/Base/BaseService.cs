@@ -1,10 +1,8 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 using TamagotchiWeb.Exceptions;
 using TamagotchiWeb.Models;
 using Newtonsoft.Json;
-using System.Web;
 
 namespace TamagotchiWeb.Services.Base
 {
@@ -20,7 +18,6 @@ namespace TamagotchiWeb.Services.Base
                 {
                     var body = string.Empty;
 
-
                     if (method != HttpMethod.Get)
                     {
                         if(token == null)
@@ -31,8 +28,6 @@ namespace TamagotchiWeb.Services.Base
                                 new KeyValuePair<string, string>("client_id", Constants.ApiKey),
                                 new KeyValuePair<string, string>("client_secret", Constants.ApiSecret)
                             };
-                            //request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-
                             request.Content = new FormUrlEncodedContent(pairs);
                         }
                         else
@@ -42,9 +37,7 @@ namespace TamagotchiWeb.Services.Base
                         }
                     }
                     else
-                    {
                         request.Headers.Add("Authorization", "Bearer " + token);
-                    }
 
                     var stopWatch = new Stopwatch();
                     stopWatch.Start();
@@ -57,9 +50,7 @@ namespace TamagotchiWeb.Services.Base
                     try
                     {
                         if ((int)response.StatusCode >= 200 && (int)response.StatusCode < 300)
-                        {
                             resultData = JsonConvert.DeserializeObject<TResult>(str);
-                        }
                         else if ((int)response.StatusCode >= 400 && (int)response.StatusCode < 500)
                         {
                             var resultError = JsonConvert.DeserializeObject<Response<string>>(str);
@@ -70,9 +61,7 @@ namespace TamagotchiWeb.Services.Base
                                 throw new WebServiceException(resultError?.errors);
                         }
                         else
-                        {
                             throw new BaseException();
-                        }
                     }
                     catch (WebServiceException ex)
                     {

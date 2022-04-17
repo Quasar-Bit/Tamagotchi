@@ -18,9 +18,7 @@ namespace TamagotchiWeb.Services
         }
         public async Task<GetAnimals> GetAnimals(int page)
         {
-            var settings = await _mediator.Send(new GetAppSettingsQuery());
-
-            var token = settings?.FirstOrDefault(x => x.Name == "PetFinderToken");
+            var token = await _mediator.Send(new GetAppSettingsQuery { Name = "PetFinderToken" });
 
             var result = await MakeApiCall<AnimalsDto>(string.Format(GetAnimalsSegment, page), HttpMethod.Get, token?.Value);
 

@@ -1,10 +1,10 @@
 ﻿using TamagotchiWeb.Services.Base;
-using TamagotchiWeb.Models;
 using TamagotchiWeb.Services.DTOs.OutPut;
 using TamagotchiWeb.Services.Interfaces;
-using Tamagotchi.Data.Entities;
-using Tamagotchi.Data.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using MediatR;
+using Tamagotchi.Application.Settings.Queries.GetAll.DTOs;
+using Tamagotchi.Application.Settings.Commands.Update.DTOs;
+using MapsterMapper;
 
 namespace TamagotchiWeb.Services
 {
@@ -13,11 +13,12 @@ namespace TamagotchiWeb.Services
         private const string PageSegment = "oauth2/token";
         private const string GetPetFinderTokenSegment = Constants.BaseApiController + PageSegment;
 
-        private readonly IAppSettingRepository _appSettingRepository;
-
-        public TokenService(IAppSettingRepository appSettingRepository)
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
+        public TokenService(IMediator mediator, IMapper mapper)
         {
-            _appSettingRepository = appSettingRepository;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
         public async Task<bool> GetPetFinderToken()
@@ -26,24 +27,11 @@ namespace TamagotchiWeb.Services
             if(petFinderToken == null)
                 return await Task.FromResult(false);
 
-            var token = await _appSettingRepository.GetChangeTrackingQuery().FirstOrDefaultAsync(x => x.Name == "PetFinderToken", new CancellationToken());
-            if (token == null)
-            {
-                _appSettingRepository.AddAsync(new AppSetting
-                {
-                    Name = "PetFinderToken",
-                    Value = petFinderToken.Data.access_token
-                }, new CancellationToken());
-            }
-            else
-            {
-                token.Value = petFinderToken.Data.access_token;
-                var result = _appSettingRepository.Update(token);
-            }
+            var token = await _mediator.Send(new GetAppSettingsQuery { Name = "PetFinderToken" });
+            token.Value = petFinderToken.Data.access_token;
+            await _mediator.Send(_mapper.Map<UpdateAppSettingsCommand>(token));
 
-            var answer = await _appSettingRepository.UnitOfWork.SaveChangesAsync(new CancellationToken());
-
-            return await Task.FromResult(answer > 0);
+            return await Task.FromResult(true);
         }
     }
 }

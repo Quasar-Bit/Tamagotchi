@@ -7,21 +7,23 @@ using Tamagotchi.Data.Repositories.Interfaces;
 
 namespace Tamagotchi.Application.Settings.Queries.GetAll
 {
-    internal class GetAllSettingsHandler : BaseRequestHandler, IRequestHandler<GetAppSettingsQuery, IEnumerable<GetAppSetting>>
+    internal class GetAppSettingsHandler : BaseRequestHandler, IRequestHandler<GetAppSettingsQuery, GetAppSetting>
     {
         private readonly IAppSettingRepository _appSettingRepository;
 
-        public GetAllSettingsHandler(
+        public GetAppSettingsHandler(
             IAppSettingRepository appSettingRepository,
             IMapper mapper) : base(mapper)
         {
             _appSettingRepository = appSettingRepository;
         }
 
-        public async Task<IEnumerable<GetAppSetting>> Handle(GetAppSettingsQuery request,
+        public async Task<GetAppSetting> Handle(GetAppSettingsQuery request,
             CancellationToken cancellationToken)
         {
-            return _appSettingRepository.GetReadOnlyQuery().Select(Mapper.Map<GetAppSetting>);
+            var settings = _appSettingRepository.GetReadOnlyQuery().Select(Mapper.Map<GetAppSetting>);
+
+            return settings.FirstOrDefault(x => x.Name == request.Name);
         }
     }
 }

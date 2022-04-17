@@ -12,12 +12,11 @@ using Tamagotchi.Application.Organizations.Commands.Update.DTOs;
 using Tamagotchi.Application.Organizations.Commands.Delete.DTOs;
 using TamagotchiWeb.Services.Interfaces;
 using TamagotchiWeb.Exceptions;
+using Tamagotchi.Application.Settings.Queries.GetAll.DTOs;
 
 namespace TamagotchiWeb.Controllers;
 public class OrganizationsController : BaseController<OrganizationsController>
 {
-    private readonly IMapper _mapper;
-    private readonly IMediator _mediator;
     private readonly IOrganizationService _organizationService;
 
     public OrganizationsController(
@@ -25,10 +24,8 @@ public class OrganizationsController : BaseController<OrganizationsController>
         IMapper mapper,
         ITokenService tokenService,
         IOrganizationService organizationService,
-        ILogger<OrganizationsController> logger) : base(tokenService, logger)
+        ILogger<OrganizationsController> logger) : base(mapper, mediator, tokenService, logger)
     {
-        _mapper = mapper;
-        _mediator = mediator;
         _organizationService = organizationService;
     }
 
@@ -49,7 +46,7 @@ public class OrganizationsController : BaseController<OrganizationsController>
     {
         try
         {
-            var result = await _mediator.Send(new GetOrganizationsQuery { DtParameters = data });
+            var result = await Mediator.Send(new GetOrganizationsQuery { DtParameters = data });
 
             return new JsonResult(result);
         }
@@ -88,14 +85,14 @@ public class OrganizationsController : BaseController<OrganizationsController>
                 ModelState.Clear();
                 if (model.Id is 0)
                 {
-                    model.OrganizationId += await _mediator.Send(new GetUnicOrganizationIdQuery());
-                    var result = await _mediator.Send(_mapper.Map<CreateOrganizationCommand>(model));
+                    model.OrganizationId += await Mediator.Send(new GetUnicOrganizationIdQuery());
+                    var result = await Mediator.Send(Mapper.Map<CreateOrganizationCommand>(model));
                     if (result != null)
                         TempData["success"] = "Organization has created successfully.";
                 }
                 else
                 {
-                    var result = await _mediator.Send(_mapper.Map<UpdateOrganizationCommand>(model));
+                    var result = await Mediator.Send(Mapper.Map<UpdateOrganizationCommand>(model));
                     if (result == null)
                         return NotFound();
                     else
@@ -119,7 +116,7 @@ public class OrganizationsController : BaseController<OrganizationsController>
     {
         try
         {
-            var result = await _mediator.Send(new DeleteOrganizationCommand { Id = model.Id });
+            var result = await Mediator.Send(new DeleteOrganizationCommand { Id = model.Id });
             if (result == null)
                 return NotFound();
 
@@ -137,9 +134,19 @@ public class OrganizationsController : BaseController<OrganizationsController>
     {
         try
         {
+            var isSynchronizing = await Mediator.Send(new GetAppSettingsQuery { Name = "IsSynchronizing" });
+            if(isSynchronizing.BoolValue)
+            {
+                TempData["error"] = "Some kind of synchronization is already running...";
+                ModelState.AddModelError("synchronizing", "Some kind of synchronization is already running...");
+                return RedirectToAction("index");
+            }
+
+            await ToggleSinchronization(true);
+
             var orgTotal = await _organizationService.GetOrganizations(1);
 
-            var dbOrganizations = _mediator.Send(new GetAllOrganizationsQuery()).Result.ToList();
+            var dbOrganizations = Mediator.Send(new GetAllOrganizationsQuery()).Result.ToList();
             
             for (int i = 1; i < orgTotal.Pagination.total_pages; i++)
             {
@@ -150,7 +157,7 @@ public class OrganizationsController : BaseController<OrganizationsController>
                     var obj = dbOrganizations.FirstOrDefault(x => x.Name == item.Name && x.OrganizationId == item.OrganizationId);
                     if (obj == null)
                     {
-                        var result = await _mediator.Send(_mapper.Map<CreateOrganizationCommand>(item));
+                        var result = await Mediator.Send(Mapper.Map<CreateOrganizationCommand>(item));
                         if (result == null)
                             Console.WriteLine("Something went wrong with creation " + item.Name + " Organization");
                         else
@@ -161,10 +168,12 @@ public class OrganizationsController : BaseController<OrganizationsController>
         }
         catch (WebServiceException ex)
         {
+            await ToggleSinchronization(false);
             if (ex.Errors.Contains("Unauthorized"))
             {
                 var isUpdatedPetFinderToken = await TokenService.GetPetFinderToken();
                 if (isUpdatedPetFinderToken)
+
                     await Synch();
                 else
                     ModelState.AddModelError("authorizationError", "Something went wrong with getting PetFinder token!");
@@ -174,9 +183,11 @@ public class OrganizationsController : BaseController<OrganizationsController>
         }
         catch (Exception ex)
         {
+            await ToggleSinchronization(false);
             ModelState.AddModelError("synchError", ex.Message);
         }
 
+        await ToggleSinchronization(false);
         return RedirectToAction("index");
     }
 }

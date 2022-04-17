@@ -16,17 +16,12 @@ namespace TamagotchiWeb.Controllers
 {
     public class AnimalsController : BaseController<AnimalsController>
     {
-        private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
-
         public AnimalsController(
             IMapper mapper,
             IMediator mediator,
             ITokenService tokenService,
-            ILogger<AnimalsController> logger) : base(tokenService, logger)
+            ILogger<AnimalsController> logger) : base(mapper, mediator, tokenService, logger)
         {
-            _mediator = mediator;
-            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -59,7 +54,7 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetAnimalsQuery { DtParameters = data });
+                var result = await Mediator.Send(new GetAnimalsQuery { DtParameters = data });
                 return new JsonResult(result);
             }
             catch (Exception ex)
@@ -97,14 +92,14 @@ namespace TamagotchiWeb.Controllers
                     ModelState.Clear();
                     if (model.Id is 0)
                     {
-                        model.AnimalId = await _mediator.Send(new GetUnicIdQuery());
-                        var result = await _mediator.Send(_mapper.Map<CreateAnimalCommand>(model));
+                        model.AnimalId = await Mediator.Send(new GetUnicIdQuery());
+                        var result = await Mediator.Send(Mapper.Map<CreateAnimalCommand>(model));
                         if(result != null)
                             TempData["success"] = "Animal has created successfully.";
                     }
                     else
                     {
-                        var result = await _mediator.Send(_mapper.Map<UpdateAnimalCommand>(model));
+                        var result = await Mediator.Send(Mapper.Map<UpdateAnimalCommand>(model));
                         if (result == null)
                             return NotFound();
                         else
@@ -128,7 +123,7 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new DeleteAnimalCommand { Id = model.Id });
+                var result = await Mediator.Send(new DeleteAnimalCommand { Id = model.Id });
                 if(result == null)
                     return NotFound();
 

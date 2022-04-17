@@ -10,14 +10,11 @@ using Tamagotchi.Application.AnimalTypes.Commands.Update.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Delete.DTOs;
 using TamagotchiWeb.Services.Interfaces;
 using TamagotchiWeb.Exceptions;
-using Tamagotchi.Data.Repositories.Interfaces;
 
 namespace TamagotchiWeb.Controllers
 {
     public class AnimalTypesController : BaseController<AnimalTypesController>
     {
-        private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
         private readonly IAnimalTypeService _animalTypeService;
 
         public AnimalTypesController(
@@ -25,10 +22,8 @@ namespace TamagotchiWeb.Controllers
             IMapper mapper,
             ITokenService tokenService,
             IAnimalTypeService animalTypeService, 
-            ILogger<AnimalTypesController> logger) : base(tokenService, logger)
+            ILogger<AnimalTypesController> logger) : base(mapper, mediator, tokenService, logger)
         {
-            _mediator = mediator;
-            _mapper = mapper;
             _animalTypeService = animalTypeService;
         }
 
@@ -49,7 +44,7 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetAnimalTypesQuery { DtParameters = data });
+                var result = await Mediator.Send(new GetAnimalTypesQuery { DtParameters = data });
                 
                 return new JsonResult(result);
             }
@@ -88,13 +83,13 @@ namespace TamagotchiWeb.Controllers
                     ModelState.Clear();
                     if (model.Id is 0)
                     {
-                        var result = await _mediator.Send(_mapper.Map<CreateAnimalTypeCommand>(model));
+                        var result = await Mediator.Send(Mapper.Map<CreateAnimalTypeCommand>(model));
                         if (result != null)
                             TempData["success"] = "Animal type has created successfully.";
                     }
                     else
                     {
-                        var result = await _mediator.Send(_mapper.Map<UpdateAnimalTypeCommand>(model));
+                        var result = await Mediator.Send(Mapper.Map<UpdateAnimalTypeCommand>(model));
                         if (result == null)
                             return NotFound();
                         else
@@ -118,7 +113,7 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new DeleteAnimalTypeCommand { Id = model.Id });
+                var result = await Mediator.Send(new DeleteAnimalTypeCommand { Id = model.Id });
                 if (result == null)
                     return NotFound();
 
@@ -136,7 +131,7 @@ namespace TamagotchiWeb.Controllers
         {
             try
             {
-                var dbAnimalTypes = await _mediator.Send(new GetAnimalTypesQuery { DtParameters = GetStandardParameters() });
+                var dbAnimalTypes = await Mediator.Send(new GetAnimalTypesQuery { DtParameters = GetStandardParameters() });
                 var petFinderAnimalTypes = await _animalTypeService.GetAnimalTypes();
 
                 foreach (var item in petFinderAnimalTypes.AnimalTypes)
@@ -144,7 +139,7 @@ namespace TamagotchiWeb.Controllers
                     var obj = dbAnimalTypes.Data.FirstOrDefault(x => x.Name == item.Name);
                     if (obj == null)
                     {
-                        var result = await _mediator.Send(_mapper.Map<CreateAnimalTypeCommand>(item));
+                        var result = await Mediator.Send(Mapper.Map<CreateAnimalTypeCommand>(item));
                         if(result == null)
                             Console.WriteLine("Something went wrong with creation " + item.Name + " Animal Type");
                         else

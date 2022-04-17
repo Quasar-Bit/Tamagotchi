@@ -21,23 +21,41 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
+using MapsterMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Tamagotchi.Application.Settings.Commands.Update.DTOs;
+using Tamagotchi.Application.Settings.Queries.GetAll.DTOs;
 using Tamagotchi.Data.DataTableProcessing;
-using Tamagotchi.Data.Repositories.Interfaces;
 using TamagotchiWeb.Services.Interfaces;
 
 namespace TamagotchiWeb.Controllers.Base;
 
 public abstract class BaseController<T> : BaseController
 {
-    protected BaseController(ITokenService tokenService, ILogger<T> logger)
+    protected BaseController(
+            IMapper mapper,
+            IMediator mediator,
+            ITokenService tokenService,
+            ILogger<T> logger)
     {
+        Mediator = mediator;
+        Mapper = mapper;
         Logger = logger;
         TokenService = tokenService;
     }
 
+    protected readonly IMapper Mapper;
+    protected readonly IMediator Mediator;
     protected readonly ITokenService TokenService;
     protected ILogger<T> Logger { get; }
+
+    protected async Task ToggleSinchronization(bool touch)
+    {
+        var isSynchronizing = await Mediator.Send(new GetAppSettingsQuery { Name = "IsSynchronizing" });
+        isSynchronizing.BoolValue = touch;
+        await Mediator.Send(Mapper.Map<UpdateAppSettingsCommand>(isSynchronizing));
+    }
 }
 
 public abstract class BaseController : Controller
