@@ -18,10 +18,11 @@ builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
+//builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IAnimalTypeService, AnimalTypeService>();
-
-//builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<IOrganizationService, OrganizationService>();
+builder.Services.AddTransient<IAnimalService, AnimalService>();
 
 // Configure the HTTP request pipeline.
 var app = builder.Build();

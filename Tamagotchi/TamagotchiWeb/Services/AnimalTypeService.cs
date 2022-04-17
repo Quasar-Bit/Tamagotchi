@@ -4,8 +4,8 @@ using TamagotchiWeb.Models;
 using TamagotchiWeb.Services.DTOs.OutPut;
 using TamagotchiWeb.Services.Interfaces;
 using Tamagotchi.Data.Entities;
-using Tamagotchi.Data.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using MediatR;
+using Tamagotchi.Application.Settings.Queries.GetAll.DTOs;
 
 namespace TamagotchiWeb.Services
 {
@@ -14,16 +14,17 @@ namespace TamagotchiWeb.Services
         private const string PageSegment = "types";
         private const string GetAnimalTypesSegment = Constants.BaseApiController + PageSegment;
 
-        private readonly IAppSettingsRepository _appSettingsRepository;
-
-        public AnimalTypeService(IAppSettingsRepository appSettingsRepository)
+        private readonly IMediator _mediator;
+        public AnimalTypeService(IMediator mediator)
         {
-            _appSettingsRepository = appSettingsRepository;
+            _mediator = mediator;
         }
 
         public async Task<GetAnimalTypes> GetAnimalTypes()
         {
-            var token = await _appSettingsRepository.GetReadOnlyQuery().FirstOrDefaultAsync(x => x.Name == "PetFinderToken", new CancellationToken());
+            var settings = await _mediator.Send(new GetAppSettingsQuery());
+
+            var token = settings?.FirstOrDefault(x => x.Name == "PetFinderToken");
 
             var result = await MakeApiCall<AnimalTypesDto>(GetAnimalTypesSegment, HttpMethod.Get, token?.Value);
 

@@ -2,6 +2,8 @@
 using TamagotchiWeb.Models;
 using TamagotchiWeb.Services.DTOs.OutPut;
 using TamagotchiWeb.Services.Interfaces;
+using MediatR;
+using Tamagotchi.Application.Settings.Queries.GetAll.DTOs;
 
 namespace TamagotchiWeb.Services
 {
@@ -10,14 +12,23 @@ namespace TamagotchiWeb.Services
         private const string PageSegment = "organizations?limit=100&page={0}";
         private const string GetOrganizationsSegment = Constants.BaseApiController + PageSegment;
 
+        private readonly IMediator _mediator;
+        public OrganizationService(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
         public async Task<GetOrganizations> GetOrganizations(int page)
         {
-            var result = await MakeApiCall<OrganizationsDto>(string.Format(GetOrganizationsSegment, page), HttpMethod.Get);
+            var settings = await _mediator.Send(new GetAppSettingsQuery());
 
-            return await Task.FromResult(MappingInventory(result.Data));
+            var token = settings?.FirstOrDefault(x => x.Name == "PetFinderToken");
+
+            var result = await MakeApiCall<OrganizationsDto>(string.Format(GetOrganizationsSegment, page), HttpMethod.Get, token?.Value);
+
+            return await Task.FromResult(MappingOrganizations(result.Data));
         }
 
-        private GetOrganizations MappingInventory(OrganizationsDto data = null)
+        private GetOrganizations MappingOrganizations(OrganizationsDto data = null)
         {
             var content = data.organizations.Select(x => new Tamagotchi.Data.Entities.Organization
             {

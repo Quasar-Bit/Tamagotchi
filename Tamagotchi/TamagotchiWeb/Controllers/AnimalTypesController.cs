@@ -10,6 +10,7 @@ using Tamagotchi.Application.AnimalTypes.Commands.Update.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Delete.DTOs;
 using TamagotchiWeb.Services.Interfaces;
 using TamagotchiWeb.Exceptions;
+using Tamagotchi.Data.Repositories.Interfaces;
 
 namespace TamagotchiWeb.Controllers
 {
@@ -22,8 +23,8 @@ namespace TamagotchiWeb.Controllers
         public AnimalTypesController(
             IMediator mediator,
             IMapper mapper,
-            IAnimalTypeService animalTypeService,
             ITokenService tokenService,
+            IAnimalTypeService animalTypeService, 
             ILogger<AnimalTypesController> logger) : base(tokenService, logger)
         {
             _mediator = mediator;
@@ -159,9 +160,7 @@ namespace TamagotchiWeb.Controllers
                     if (isUpdatedPetFinderToken)
                         await Synch();
                     else
-                    {
                         ModelState.AddModelError("authorizationError", "Something went wrong with getting PetFinder token!");
-                    }
                 }
                 else
                     ModelState.AddModelError("webServiceError", ex.Message);

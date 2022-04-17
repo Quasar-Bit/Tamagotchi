@@ -23,6 +23,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Tamagotchi.Data.DataTableProcessing;
+using Tamagotchi.Data.Repositories.Interfaces;
 using TamagotchiWeb.Services.Interfaces;
 
 namespace TamagotchiWeb.Controllers.Base;
@@ -35,7 +36,7 @@ public abstract class BaseController<T> : BaseController
         TokenService = tokenService;
     }
 
-    protected ITokenService TokenService { get; }
+    protected readonly ITokenService TokenService;
     protected ILogger<T> Logger { get; }
 }
 
@@ -63,7 +64,7 @@ public abstract class BaseController : Controller
         {
             Start = 0,
             Draw = 1,
-            Length = 10,
+            Length = 100,
             Search = new DtSearch(),
             Order = new List<DtOrder> { new DtOrder { Column = 0, Dir = DtOrderDir.Asc } }.ToArray(),
             AdditionalValues = new List<string> { string.Empty }.AsEnumerable(),

@@ -37,7 +37,7 @@ namespace TamagotchiWeb.Services
             }
             else
             {
-                token.Value = petFinderToken.Data.token_type + " " + petFinderToken.Data.access_token;
+                token.Value = petFinderToken.Data.access_token;
                 var result = _appSettingsRepository.Update(token);
             }
 
