@@ -9,7 +9,7 @@ using Tamagotchi.Application.AnimalTypes.Commands.Create.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Update.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Delete.DTOs;
 using TamagotchiWeb.Services.Interfaces;
-using TamagotchiWeb.Exceptions;
+using Tamagotchi.Application.Exceptions;
 
 namespace TamagotchiWeb.Controllers
 {

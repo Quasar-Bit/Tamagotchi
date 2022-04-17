@@ -11,7 +11,7 @@ using Tamagotchi.Application.Organizations.Queries.GetUnicId.DTOs;
 using Tamagotchi.Application.Organizations.Commands.Update.DTOs;
 using Tamagotchi.Application.Organizations.Commands.Delete.DTOs;
 using TamagotchiWeb.Services.Interfaces;
-using TamagotchiWeb.Exceptions;
+using Tamagotchi.Application.Exceptions;
 using Tamagotchi.Application.Settings.Queries.GetAll.DTOs;
 
 namespace TamagotchiWeb.Controllers;

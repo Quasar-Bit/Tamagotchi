@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using TamagotchiWeb.Exceptions;
+using Tamagotchi.Application.Exceptions;
 using TamagotchiWeb.Models;
 using Newtonsoft.Json;
 
