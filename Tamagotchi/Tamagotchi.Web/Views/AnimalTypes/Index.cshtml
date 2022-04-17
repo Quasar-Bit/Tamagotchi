@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "Animal Types";
+}
+
+    <div class="container p-3">
+        <div class="row pt-4">
+            <div class="col-6">
+                <h2 class="text-primary">Animal Types</h2>
+            </div>
+            <div class="col-6 text-end">
+                @*asp-controller="AnimalTypes" asp-action="CreateOrUpdate"*@
+                <a onclick="Util.editModal(null,'/AnimalTypes/OpenPopup')" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> &nbsp; Create
+                </a>
+            </div>
+        </div>
+        <br />
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header  row clearfix">
+                        <div class="text-end">
+                            <button id="sync" class="btn btn-success"
+                                    onclick="onSynch()">
+                                Synchronize with Petfinder
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <table id="tableAnimalTypes" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Coats</th>
+                                <th>Genders</th>
+                                <th>Colors</th>
+                                <th style="width: 5%">Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js" defer ></script>
+    <script>$(document).ready(function () {
+           var r = $('#tableAnimalTypes').DataTable({
+                "paging": true,
+                "processing": true,
+                "serverSide": true,
+                "searching": true,
+                "lengthChange": true,
+                "responsive": true,
+                "columnDefs": [{ targets: 'no-sort', orderable: true }],
+                "ordering": true,
+                "autoWidth": false,
+                "ajax": {
+                    "url": '/AnimalTypes/GetPaginatedTable',
+                    "type": "POST",
+                    "data": function (data) {
+                        var additionalValues = [];
+                        additionalValues[0] = null;
+                        data.additionalValues = additionalValues;
+                        return data;
+                    }
+                },
+                "columns": [
+                    { data: "name" },
+                    { data: "coats" },
+                    { data: "genders" },
+                    { data: "colors" },
+                //{
+                //    data: "creationTime",
+                //    render: function (data, type, row) {
+                //        let date = new Date(data);
+                //        return date.toUTCString();
+                //    }
+                //},
+                    {
+                        data: "id",
+                        render: function (data, type, row) {
+                            return "<div class='btn-group btn-group-sm'>"
+                                + "<a onclick='onEditingAnimalType(" + JSON.stringify(row) + ")' class='btn btn-info'><i class='bi bi-pencil-fill'></i></a>"
+                                + "<a onclick='onDeletingAnimalType(" + JSON.stringify(row) + ")' class='btn btn-danger'><i class='bi bi-trash-fill'></i></a>"
+                                + "</div>";
+                        }
+                    }
+                ]
+            });
+        });
+        
+        function onEditingAnimalType(model)
+        {
+            Util.editModal(model,'/AnimalTypes/OpenPopup');
+        }
+
+        function onDeletingAnimalType(model)
+        {
+            Util.makeRequest(model,'/AnimalTypes/Delete', { onSuccessComplete: reloadPage() });
+        }
+        
+        function reloadPage()
+        {
+            location.reload();
+        }
+
+        function allSynchronized()
+        {
+            toastr.success('Successfully synchronized');
+            setInterval(reloadPage, 1000);
+        }
+
+        function onSynch() {
+            //$.ajaxSetup({ cache: true });
+            //$.ajax({
+            //    async: true,
+            //    type: "Post",
+            //    url: '/AnimalTypes/Synch',
+            //    success: reloadPage()
+            //});
+            //second way:
+            Util.makeRequest(null, '/AnimalTypes/Synch', { onSuccessComplete: allSynchronized() });
+        }
+    </script>

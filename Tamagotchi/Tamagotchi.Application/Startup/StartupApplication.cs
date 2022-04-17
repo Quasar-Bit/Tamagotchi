@@ -26,6 +26,7 @@ public static class StartupApplication
         services.AddTransient<IAnimalRepository, AnimalRepository>();
         services.AddTransient<IAnimalTypeRepository, AnimalTypeRepository>();
         services.AddTransient<IOrganizationRepository, OrganizationRepository>();
+        services.AddTransient<IAppSettingRepository, AppSettingRepository>();
     }
     private static TypeAdapterConfig GetConfiguredMappingConfig()
     {

@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "Organizations";
+}
+    <div class="container p-3">
+        <div class="row pt-4">
+            <div class="col-6">
+                <h2 class="text-primary">Organizations</h2>
+            </div>
+            <div class="col-6 text-end">
+                <a onclick="Util.editModal(null,'/Organizations/OpenPopup')" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> &nbsp; Create
+                </a>
+            </div>
+        </div>
+        <br />
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header  row clearfix">
+                        <div class="text-end">
+                            <button id="sync" class="btn btn-success"
+                                    onclick="onSynch()">
+                                Synchronize with Petfinder
+                            </button>
+                        </div>
+                    </div>
+
+                    <table id="tableOrganizations" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Organization Id</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Website</th>
+                                <th>Address</th>
+                                <th style="width: 5%">Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js" defer ></script>
+    <script>$(document).ready(function () {
+       var r = $('#tableOrganizations').DataTable({
+            "paging": true,
+            "processing": true,
+            "serverSide": true,
+            "searching": true,
+            "lengthChange": true,
+            "responsive": true,
+            "columnDefs": [{ targets: 'no-sort', orderable: true }],
+            "ordering": true,
+            "autoWidth": false,
+            "ajax": {
+                "url": '/Organizations/GetPaginatedTable',
+                "type": "POST",
+                "data": function (data) {
+                    var additionalValues = [];
+                    additionalValues[0] = null;
+                    data.additionalValues = additionalValues;
+                    return data;
+                }
+            },
+            "columns": [
+                { data: "organizationId" },
+                { data: "name" },
+                { data: "email" },
+                { data: "phone" },
+                { data: "website" },
+                { data: "address1" },
+                {
+                    data: "id",
+                    render: function (data, type, row) {
+                        return "<div class='btn-group btn-group-sm'>"
+                            + "<a onclick='onEditingOrganization(" + JSON.stringify(row) + ")' class='btn btn-info'><i class='bi bi-pencil-fill'></i></a>"
+                            + "<a onclick='onDeletingOrganization(" + JSON.stringify(row) + ")' class='btn btn-danger'><i class='bi bi-trash-fill'></i></a>"
+                            + "</div>";
+                    }
+                }
+            ]
+        });
+    });
+
+    function onEditingOrganization(model)
+    {
+        Util.editModal(model,'/Organizations/OpenPopup');
+    }
+
+    function onDeletingOrganization(model)
+    {
+        Util.makeRequest(model,'/Organizations/Delete', { onSuccessComplete: reloadPage() });
+    }
+
+    function reloadPage()
+    {
+        location.reload();
+    }
+
+    function allSynchronized()
+    {
+        toastr.success('Successfully synchronized');
+        setInterval(reloadPage, 1000);
+    }
+    
+    function onSynch() {
+        Util.makeRequest(null, '/Organizations/Synch', { onSuccessComplete: allSynchronized() });
+    }
+    </script>

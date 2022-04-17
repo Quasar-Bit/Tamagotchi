@@ -16,6 +16,7 @@ namespace Tamagotchi.Data
         public DbSet<Animal> Animals { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<AnimalType> AnimalTypes { get; set; }
+        public DbSet<AppSetting> AppSettings { get; set; }
 
         public IDisposable BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {

@@ -1,5 +1,4 @@
-﻿
-using MapsterMapper;
+﻿using MapsterMapper;
 using MediatR;
 using System.Linq.Expressions;
 using Tamagotchi.Application.Base;
@@ -11,7 +10,8 @@ using Tamagotchi.Data.Repositories.Interfaces;
 
 namespace Tamagotchi.Application.Organizations.Queries.GetAll
 {
-    public class GetOrganizationsHandler : BaseRequestHandler, IRequestHandler<GetOrganizationsQuery, DtResult<GetOrganization>>
+    internal class GetOrganizationsHandler : BaseRequestHandler, IRequestHandler<GetOrganizationsQuery, DtResult<GetOrganization>>,
+        IRequestHandler<GetAllOrganizationsQuery, IEnumerable<GetOrganization>>
     {
         private readonly IOrganizationRepository _organizationRepository;
 
@@ -37,6 +37,13 @@ namespace Tamagotchi.Application.Organizations.Queries.GetAll
                                                          x.Address1.ContainsInsensitive(searchBy);
 
             return await Parametrization(organizations.AsQueryable(), request.DtParameters, filter, nameof(GetOrganization.Website));
+        }
+
+        public async Task<IEnumerable<GetOrganization>> Handle(GetAllOrganizationsQuery request,
+            CancellationToken cancellationToken)
+        {
+            return await Task.FromResult(_organizationRepository.GetReadOnlyQuery()
+                .Select(Mapper.Map<GetOrganization>));
         }
     }
 }

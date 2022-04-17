@@ -3,8 +3,6 @@ using Tamagotchi.Data;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Tamagotchi.Application.Startup;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 

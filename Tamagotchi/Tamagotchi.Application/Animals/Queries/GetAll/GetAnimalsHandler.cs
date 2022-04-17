@@ -10,7 +10,8 @@ using Tamagotchi.Data.Repositories.Interfaces;
 
 namespace Tamagotchi.Application.Animals.Queries.GetAll;
 
-internal class GetAnimalsHandler : BaseRequestHandler, IRequestHandler<GetAnimalsQuery, DtResult<GetAnimal>>
+internal class GetAnimalsHandler : BaseRequestHandler, IRequestHandler<GetAnimalsQuery, DtResult<GetAnimal>>,
+    IRequestHandler<GetAllAnimalsQuery, IEnumerable<GetAnimal>>
 {
     private readonly IAnimalRepository _animalRepository;
 
@@ -47,5 +48,11 @@ internal class GetAnimalsHandler : BaseRequestHandler, IRequestHandler<GetAnimal
                                                      x.OrganizationId.Contains(searchBy);
 
         return await Parametrization(animals, request.DtParameters, filter, nameof(GetAnimal.Name));
+    }
+    public async Task<IEnumerable<GetAnimal>> Handle(GetAllAnimalsQuery request,
+        CancellationToken cancellationToken)
+    {
+        return await Task.FromResult(_animalRepository.GetReadOnlyQuery()
+            .Select(Mapper.Map<GetAnimal>));
     }
 }
