@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Tamagotchi.Application.Startup;
 using Tamagotchi.Web.Services.Interfaces;
 using Tamagotchi.Web.Services;
+//using FluentValidation.AspNetCore;
+//using FluentValidation;
+//using Tamagotchi.Application.Validations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,9 @@ builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
     ));
 
 builder.Services.AddMvc();
+    //.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ValidateModelStateAttribute>());
+//builder.Services.AddValidatorsFromAssembly(typeof(StartupApplication).Assembly);
+
 builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
