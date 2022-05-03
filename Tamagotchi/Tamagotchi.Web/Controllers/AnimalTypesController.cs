@@ -10,27 +10,32 @@ using Tamagotchi.Application.AnimalTypes.Commands.Update.DTOs;
 using Tamagotchi.Application.AnimalTypes.Commands.Delete.DTOs;
 using Tamagotchi.Web.Services.Interfaces;
 using Tamagotchi.Application.Exceptions;
+using Tamagotchi.Application.Localization.Interface;
 
 namespace Tamagotchi.Web.Controllers
 {
     public class AnimalTypesController : BaseController<AnimalTypesController>
     {
         private readonly IAnimalTypeService _animalTypeService;
+        private readonly ILocalizationService localizer;
 
         public AnimalTypesController(
             IMediator mediator,
             IMapper mapper,
             ITokenService tokenService,
-            IAnimalTypeService animalTypeService, 
+            IAnimalTypeService animalTypeService,
+            ILocalizationService localizationService,
             ILogger<AnimalTypesController> logger) : base(mapper, mediator, tokenService, logger)
         {
             _animalTypeService = animalTypeService;
+            localizer = localizationService;
         }
 
         public async Task<IActionResult> Index()
         {
             try
             {
+                var tempText = localizer["start"];
                 return View();
             }
             catch (Exception ex)

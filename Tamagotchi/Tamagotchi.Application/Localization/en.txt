@@ -1,0 +1,12 @@
+﻿add = Add
+create = Create
+update = Update
+delete = Delete
+get = Get
+show = Show
+go = Go
+apply = Apply
+previous = Previous
+next = Next
+start = Start
+finish = Finish
