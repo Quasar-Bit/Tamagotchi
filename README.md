@@ -1,6 +1,6 @@
 # Project name: Tamagotchi
 Subject: Give meal to real dogs with Tamagotchi App.
-Description: The application allow users to give meal to real pets and grow theirs account states or whatever.
+Description: The application allows users to give meal to real pets and grow theirs account states or whatever. The application can handle data with 200k and get responses in a tick. The approach is a Sql Database + DataTables Queries + Parametrized request body and finally we have the fastest possible way to get some data from the table filled by 200k lines.
 
 # Data
 The Database has over 200k Animals and was implemented with posibillity to handle it fast. For example, fetching the animal page and searching take almost no time.
