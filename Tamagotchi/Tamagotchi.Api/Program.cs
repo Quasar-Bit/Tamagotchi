@@ -3,6 +3,10 @@ using Tamagotchi.Data;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Tamagotchi.Application.Startup;
+using Microsoft.Extensions.DependencyInjection;
+using Tamagotchi.Api.HealthChecks;
+using Tamagotchi.Api.Settings;
+using HealthChecks.UI.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +30,13 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddHealthChecks()
+    .AddCheck<TamagotchiApisHealthCheck>(nameof(TamagotchiApisHealthCheck));
+    //.AddCheck<AnotherHealthCheck>(nameof(AnotherHealthCheck));
+
+builder.Services.AddOptions();
+builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection(nameof(ConnectionStrings)));
+
 // Configure the HTTP request pipeline.
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -39,5 +50,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();

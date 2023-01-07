@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tamagotchi.Api.Models;
-using Tamagotchi.Api.Models.Base;
 using Tamagotchi.Data.DataTableProcessing;
 using ApplicationException = Tamagotchi.Application.Exceptions.ApplicationException;
 

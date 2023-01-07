@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Tamagotchi.Application.Startup;
 using Tamagotchi.Web.Services.Interfaces;
 using Tamagotchi.Web.Services;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
+using Tamagotchi.Web.HealthChecks;
 //using FluentValidation.AspNetCore;
 //using FluentValidation;
 //using Tamagotchi.Application.Validations;
@@ -30,6 +33,10 @@ builder.Services.AddTransient<IAnimalTypeService, AnimalTypeService>();
 builder.Services.AddTransient<IOrganizationService, OrganizationService>();
 builder.Services.AddTransient<IAnimalService, AnimalService>();
 
+builder.Services.AddHealthChecks()
+    .AddCheck<PetFinderApiConnectionHealthCheck>(nameof(PetFinderApiConnectionHealthCheck))
+    .AddCheck<PetFinderTokenHealthCheck>(nameof(PetFinderTokenHealthCheck));
+
 // Configure the HTTP request pipeline.
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
@@ -49,5 +56,10 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHealthChecks("/health", new HealthCheckOptions()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();
