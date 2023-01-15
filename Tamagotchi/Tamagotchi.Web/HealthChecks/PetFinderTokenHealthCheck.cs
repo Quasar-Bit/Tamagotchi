@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Diagnostics;
 using Tamagotchi.Web.Services.Interfaces;
 
 namespace Tamagotchi.Web.HealthChecks
@@ -26,12 +27,12 @@ namespace Tamagotchi.Web.HealthChecks
             try
             {
                 var result = await _tokenService.GetPetFinderToken();
-                //logger - something is successfull
+                Debug.WriteLine("Success pet finder token check");
                 return result;
             }
-            catch
+            catch(Exception ex)
             {
-                //logger ex.Message
+                Debug.WriteLine(ex.Message);
                 return false;
             }
 

@@ -26,12 +26,12 @@ namespace Tamagotchi.Api.HealthChecks
 
         private async Task<bool> IsTamagotchiApisConnectionOkAsync()
         {
-            using var connection = new SqlConnection(_dbConnectionStrings.DefaultConnection);
-
             //return await Task.FromResult(DateTime.Now.Millisecond % 2 == 0);
             try
             {
-                if(connection.State == System.Data.ConnectionState.Closed)
+                using var connection = new SqlConnection(_dbConnectionStrings.DefaultConnection);
+
+                if (connection.State == System.Data.ConnectionState.Closed)
                     await connection.OpenAsync();
                 //logger - Checking the connection of the db is OK.
                 return true;

@@ -58,4 +58,12 @@ public class Animals : BaseApiController<Animals>
     {
         return await CommonQueryMethod<GetAnimal>(query);
     }
+
+    [HttpOptions]
+    [AllowAnonymous]
+    public IActionResult Options()
+    {
+        Response.Headers.Add("Allow", "GET,OPTIONS");
+        return Ok();
+    }
 }
